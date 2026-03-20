@@ -10,7 +10,7 @@ export class PlayerBullet extends Component {
   speed = GameConfig.BULLET_SPEED;
   damage = GameConfig.BULLET_DAMAGE;
 
-  update(_dt: number) {
+  update(dt: number) {
     const p = this.node.position;
     const ny = p.y + this.speed * dt;
     this.node.setPosition(p.x, ny, p.z);

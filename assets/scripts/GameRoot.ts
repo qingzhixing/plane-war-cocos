@@ -6,6 +6,7 @@ import {
   Graphics,
   Label,
   Node,
+  Prefab,
   UITransform,
 } from 'cc';
 import { BattleMain } from './BattleMain';
@@ -13,10 +14,13 @@ import { EnemySpawner } from './EnemySpawner';
 import { PlayerController } from './PlayerController';
 import * as GameConfig from './GameConfig';
 
-const { ccclass } = _decorator;
+const { ccclass, property } = _decorator;
 
 @ccclass('GameRoot')
 export class GameRoot extends Component {
+  @property(Prefab)
+  upgradePickPrefab: Prefab | null = null;
+
   private _backBtn: Node | null = null;
 
   onLoad() {
@@ -45,7 +49,7 @@ export class GameRoot extends Component {
     hut.setContentSize(620, 120);
     hint.setPosition(0, 420, 0);
     const hintLab = hint.addComponent(Label);
-    hintLab.string = '拖拽 / WASD 移动 · 清场后点屏幕继续下一波';
+    hintLab.string = '拖拽 / WASD 移动 · 清场后三选一升级，再进入下一波';
     hintLab.fontSize = 22;
     hintLab.color = Color.WHITE;
     this.node.addChild(hint);
@@ -63,7 +67,7 @@ export class GameRoot extends Component {
     this._backBtn = back;
 
     const battle = this.node.addComponent(BattleMain);
-    battle.init(playField);
+    battle.init(playField, this.upgradePickPrefab);
   }
 
   onDestroy() {

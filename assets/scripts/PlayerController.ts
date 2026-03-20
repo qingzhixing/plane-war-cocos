@@ -22,6 +22,10 @@ const { ccclass } = _decorator;
 export class PlayerController extends Component {
   private _playField: Node | null = null;
   private _fireTimer = 0;
+  private _fireInterval = GameConfig.FIRE_INTERVAL;
+  private _damageMult = 1;
+  private _bulletCount = 1;
+  private _bulletSpeedMult = 1;
   private _hasPointer = false;
   private _lastUi = new Vec2();
   private _pressedKeys = new Set<number>();
@@ -63,8 +67,27 @@ export class PlayerController extends Component {
 
     this._fireTimer -= dt;
     if (this._fireTimer <= 0) {
-      this._fireTimer = GameConfig.FIRE_INTERVAL;
-      this._spawnBullet();
+      this._fireTimer = this._fireInterval;
+      this._spawnBullets();
+    }
+  }
+
+  applyUpgrade(id: string) {
+    switch (id) {
+      case 'fire_rate':
+        this._fireInterval *= 0.85;
+        break;
+      case 'damage_percent':
+        this._damageMult *= 1.2;
+        break;
+      case 'multi_shot':
+        this._bulletCount += 1;
+        break;
+      case 'bullet_speed':
+        this._bulletSpeedMult *= 1.12;
+        break;
+      default:
+        break;
     }
   }
 
@@ -97,7 +120,20 @@ export class PlayerController extends Component {
     }
   }
 
-  private _spawnBullet() {
+  private _spawnBullets() {
+    if (!this._playField) {
+      return;
+    }
+    const count = Math.max(1, Math.floor(this._bulletCount));
+    const spread = 20;
+    for (let i = 0; i < count; i++) {
+      const ox =
+        count === 1 ? 0 : (i - (count - 1) * 0.5) * spread;
+      this._spawnOneBullet(ox);
+    }
+  }
+
+  private _spawnOneBullet(offsetX: number) {
     if (!this._playField) {
       return;
     }
@@ -110,10 +146,12 @@ export class PlayerController extends Component {
     g.fillColor = new Color(255, 255, 120, 255);
     g.rect(-4, -8, 8, 16);
     g.fill();
-    n.addComponent(PlayerBullet);
+    const pb = n.addComponent(PlayerBullet);
+    pb.damage = Math.max(1, Math.round(GameConfig.BULLET_DAMAGE * this._damageMult));
+    pb.speed = GameConfig.BULLET_SPEED * this._bulletSpeedMult;
 
     const p = this.node.position;
-    n.setPosition(p.x, p.y + 28, 0);
+    n.setPosition(p.x + offsetX, p.y + 28, 0);
     this._playField.addChild(n);
   }
 
