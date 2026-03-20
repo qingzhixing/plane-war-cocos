@@ -18,7 +18,12 @@
 ## 本仓库目录约定（建议）
 
 - 启动流程：**主菜单** `assets/scenes/MainMenu.scene` → **开始游戏** 进入 `assets/scenes/Game.scene`（后续在 `Game` 中挂载战斗与 HUD，与 Godot `Main.tscn` 对齐）。
-- 脚本：`assets/scripts/`（例如主菜单入口 `MainMenu.ts`、战斗场景根节点 `GameRoot.ts`）。
+- 脚本：`assets/scripts/`  
+  - 主菜单：`MainMenu.ts`  
+  - 战斗场景根：`GameRoot.ts`（构建 `PlayField`、玩家与 UI）  
+  - 玩家：`PlayerController.ts`（对齐 Godot `player.gd`：拖拽 / 键控移动、边界、自动射击）  
+  - 玩家基础弹：`PlayerBullet.ts`（对齐 Godot `PlayerBullet.gd` / `BulletBase.gd`：向上运动、出屏销毁；碰撞留待敌人接入）  
+  - 常量：`GameConfig.ts`（设计分辨率、与 Godot 默认一致的基础射速/弹速等）
 - 美术与音频：由 `plane-war/assets/` 复制到本仓库 `assets/`（勿提交 Godot 的 `.import`），命名保持与 `docs/gdd/sections/11_art_and_assets.md` 一致。
 - 本地成绩：与 Godot 的 `user://records.cfg` 类似，实现阶段使用 **本地存储**（如 `sys.localStorage` 或原生文件 API），键名与字段见 GDD 与 Godot `Main` 读写逻辑。
 
@@ -34,6 +39,6 @@
 ## 第一阶段实现目标（本仓库）
 
 - 主菜单与战斗场景可切换，设计分辨率 **720×1280**。
-- 下一里程碑：在 `Game` 场景中接入玩家移动、自动射击、子弹与敌人（见 `10_mvp_acceptance_and_milestones.md`）。
+- **当前进度**：`Game` 场景中已用占位图元（Graphics）实现 **玩家拖拽/键控、自动射击、基础子弹**；下一里程碑为 **敌人与碰撞**（见 `10_mvp_acceptance_and_milestones.md`）。
 
 > 若实现与 Godot 版有路径或 API 差异，优先更新本节与 `README`，再改代码。
