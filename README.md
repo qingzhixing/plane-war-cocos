@@ -11,7 +11,7 @@
 1. 用 Cocos Creator 打开本仓库根目录。
 2. 首次打开若未识别启动场景：菜单 **项目 → 项目设置 → 通用**，将 **设计分辨率** 设为 **720 × 1280**，并勾选 **适配高度 / 适配宽度**（与 Godot 版一致）。
 3. 在 **资源管理器** 中双击 **`assets/scenes/MainMenu.scene`**，或到 **项目设置** 里将 **启动场景** 设为 `MainMenu.scene`。
-4. 点击编辑器 **预览** 运行：主菜单点击屏幕进入 **Game** 占位场景，再点击返回主菜单。
+4. 点击编辑器 **预览** 运行：主菜单点击屏幕进入 **Game**；战斗中 **拖拽 / WASD** 移动，**自动射击**；点 **菜单** 返回主菜单。
 
 ## 仓库结构（摘要）
 
@@ -19,7 +19,7 @@
 |------|------|
 | `docs/gdd/` | 游戏设计文档（与 Godot 版同步，技术栈说明见 `sections/12_technical_notes.md`） |
 | `assets/scenes/` | `MainMenu`（主菜单）、`Game`（战斗占位，后续接入玩法） |
-| `assets/scripts/` | TypeScript：`MainMenu.ts`、`GameRoot.ts` |
+| `assets/scripts/` | TypeScript：`MainMenu.ts`、`GameRoot.ts`、`PlayerController.ts`、`PlayerBullet.ts`、`GameConfig.ts` |
 
 ## 下一步（移植里程碑）
 
