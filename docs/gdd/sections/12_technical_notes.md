@@ -24,7 +24,9 @@
   - 玩家：`PlayerController.ts`（对齐 Godot `player.gd`：拖拽 / 键控移动、边界、自动射击）  
   - 玩家基础弹：`PlayerBullet.ts`（对齐 Godot `PlayerBullet.gd` / `BulletBase.gd`：向上运动、出屏销毁；命中敌人后销毁）  
   - 敌人：`EnemyBasic.ts`（对齐 Godot `enemy_basic.gd` / `EnemyBase.gd`：下落、`apply_damage`、HP 归零销毁；占位 Graphics）  
-  - 刷怪（MVP）：`EnemySpawner.ts`（定时随机 X 生成基础敌；完整波次逻辑对齐 `enemy_spawner.gd`，后续接 `Main` 状态机）  
+  - 刷怪：`EnemySpawner.ts`（对齐 `enemy_spawner.gd`：`startWave(wave)` 按波次数量刷怪、间隔定时；清场后通知 `BattleMain`）  
+  - 战斗状态（MVP）：`BattleMain.ts`（对齐 `main.gd` 子集：波次递增、`onWaveCleared`、经验/得分累计、简易 HUD；升级三选一后续接 `UpgradeUI`）  
+  - 全局引用：`battleAccess.ts`（`getBattleMain()`，供 `EnemyBasic` 击杀上报经验/得分）  
   - 碰撞：`EnemyRegistry.ts` 登记敌机，`PlayerBullet` 用 **`UITransform.getBoundingBoxToWorld()` + `Rect.intersects`** 做 AABB 检测（与物理引擎解耦，便于与 Godot 判定口径对齐）  
   - 常量：`GameConfig.ts`（设计分辨率、射速/弹速、敌机速度与血量等）
 - 美术与音频：由 `plane-war/assets/` 复制到本仓库 `assets/`（勿提交 Godot 的 `.import`），命名保持与 `docs/gdd/sections/11_art_and_assets.md` 一致。
@@ -42,6 +44,6 @@
 ## 第一阶段实现目标（本仓库）
 
 - 主菜单与战斗场景可切换，设计分辨率 **720×1280**。
-- **当前进度**：`Game` 场景中已实现 **基础敌机下落、定时刷怪、玩家子弹与敌机 AABB 碰撞与扣血**；下一里程碑为 **Main 状态机、波次清场、经验与 HUD**（对齐 `main.gd`）。
+- **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后暂停并点「继续」进入下一波、经验/得分与简易 HUD**；下一里程碑为 **升级三选一 UI、Boss、连击与完整 `main.gd` 统计**。
 
 > 若实现与 Godot 版有路径或 API 差异，优先更新本节与 `README`，再改代码。
