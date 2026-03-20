@@ -8,6 +8,7 @@ import {
   Node,
   UITransform,
 } from 'cc';
+import { EnemySpawner } from './EnemySpawner';
 import { PlayerController } from './PlayerController';
 import * as GameConfig from './GameConfig';
 
@@ -36,13 +37,14 @@ export class GameRoot extends Component {
     pg.fill();
     player.addComponent(PlayerController);
     playField.addChild(player);
+    playField.addComponent(EnemySpawner);
 
     const hint = new Node('Hint');
     const hut = hint.addComponent(UITransform);
     hut.setContentSize(620, 120);
     hint.setPosition(0, 480, 0);
     const hintLab = hint.addComponent(Label);
-    hintLab.string = '拖拽 / WASD 移动 · 自动射击';
+    hintLab.string = '拖拽 / WASD 移动 · 自动射击 · 击落空敌机';
     hintLab.fontSize = 22;
     hintLab.color = Color.WHITE;
     this.node.addChild(hint);

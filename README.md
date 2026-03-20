@@ -19,7 +19,7 @@
 |------|------|
 | `docs/gdd/` | 游戏设计文档（与 Godot 版同步，技术栈说明见 `sections/12_technical_notes.md`） |
 | `assets/scenes/` | `MainMenu`（主菜单）、`Game`（战斗占位，后续接入玩法） |
-| `assets/scripts/` | TypeScript：`MainMenu.ts`、`GameRoot.ts`、`PlayerController.ts`、`PlayerBullet.ts`、`GameConfig.ts` |
+| `assets/scripts/` | `MainMenu.ts`、`GameRoot.ts`、`PlayerController.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`EnemySpawner.ts`、`EnemyRegistry.ts`、`GameConfig.ts` |
 
 ## 下一步（移植里程碑）
 
