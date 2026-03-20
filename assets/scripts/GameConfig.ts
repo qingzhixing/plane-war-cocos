@@ -23,3 +23,15 @@ export const ENEMY_SPAWN_INTERVAL = 1;
 export const ENEMY_MAX_HP = 4;
 /** 生成时 Y（PlayField 局部坐标，靠屏幕上沿） */
 export const ENEMY_SPAWN_Y = 580;
+
+/** 与 enemy_spawner.gd enemies_per_wave_base / increment 一致 */
+export const ENEMIES_PER_WAVE_BASE = 7;
+export const ENEMIES_PER_WAVE_INCREMENT = 3;
+
+/** 与 EnemyBase.apply_wave_scaling 主线公式一致：wave>1 时 max_hp × (1 + 0.25×(wave−1)) */
+export function waveHpFactor(wave: number): number {
+  if (wave <= 1) {
+    return 1;
+  }
+  return 1 + 0.25 * (wave - 1);
+}
