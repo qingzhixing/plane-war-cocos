@@ -25,7 +25,8 @@
   - 玩家基础弹：`PlayerBullet.ts`（对齐 Godot `PlayerBullet.gd` / `BulletBase.gd`：向上运动、出屏销毁；命中敌人后销毁）  
   - 敌人：`EnemyBasic.ts`（对齐 Godot `enemy_basic.gd` / `EnemyBase.gd`：下落、`apply_damage`、HP 归零销毁；占位 Graphics）  
   - 刷怪：`EnemySpawner.ts`（对齐 `enemy_spawner.gd`：`startWave(wave)` 按波次数量刷怪、间隔定时；清场后通知 `BattleMain`）  
-  - 战斗状态（MVP）：`BattleMain.ts`（对齐 `main.gd` 子集：波次递增、`onWaveCleared`、经验/得分累计、简易 HUD；升级三选一后续接 `UpgradeUI`）  
+  - 战斗状态（MVP）：`BattleMain.ts`（对齐 `main.gd` 子集：波次递增、`onWaveCleared`、经验/得分累计、简易 HUD；清场后 **升级三选一**）  
+  - 升级三选一：**预制体 + 编辑器** — 预制体路径 `assets/prefabs/ui/UpgradePick.prefab`（根节点挂 `UpgradeUI.ts`）；**Game** 场景里 **Canvas → GameRoot** 的 **「升级三选一预制体」** 属性拖入该预制体。详见同目录 `EDITOR_SETUP.md`。数据池：`UpgradePool.ts`（与 Godot `upgrade_ui.gd` 的 `UPGRADES` 对齐子集）。  
   - 全局引用：`battleAccess.ts`（`getBattleMain()`，供 `EnemyBasic` 击杀上报经验/得分）  
   - 碰撞：`EnemyRegistry.ts` 登记敌机，`PlayerBullet` 用 **`UITransform.getBoundingBoxToWorld()` + `Rect.intersects`** 做 AABB 检测（与物理引擎解耦，便于与 Godot 判定口径对齐）  
   - 常量：`GameConfig.ts`（设计分辨率、射速/弹速、敌机速度与血量等）
