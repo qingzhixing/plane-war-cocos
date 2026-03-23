@@ -1,14 +1,10 @@
 import {
   _decorator,
-  Color,
   Component,
   EventKeyboard,
   EventMouse,
   EventTouch,
-  Graphics,
-  KeyCode,
   Node,
-  UITransform,
   Vec2,
 } from 'cc';
 import * as GameConfig from './GameConfig';
@@ -17,6 +13,14 @@ import {
   type PlayerInputHandlers,
   unbindPlayerInput,
 } from './playerInput';
+import {
+  clampDeltaLength,
+  clampToPlayableRect,
+  keyboardDisplacement,
+  keyboardMoveDirection,
+  multiShotOffsets,
+  playableHalfExtents,
+} from './playerMotion';
 import { spawnPlayerBullet } from './playerBulletFactory';
 
 const { ccclass } = _decorator;
@@ -34,10 +38,21 @@ export class PlayerController extends Component {
   private _pressedKeys = new Set<number>();
   private _mouseHeld = false;
 
+  private _halfX = 0;
+  private _halfY = 0;
+
   private _inputHandlers: PlayerInputHandlers | null = null;
 
   start() {
     this._playField = this.node.parent;
+
+    const { halfX, halfY } = playableHalfExtents(
+      GameConfig.DESIGN_W,
+      GameConfig.DESIGN_H,
+      GameConfig.MARGIN,
+    );
+    this._halfX = halfX;
+    this._halfY = halfY;
 
     this._inputHandlers = {
       onTouchStart: this._onTouchStart,
@@ -90,31 +105,25 @@ export class PlayerController extends Component {
   }
 
   private _applyKeyboardMove(dt: number) {
-    let dx = 0;
-    let dy = 0;
-    const k = this._pressedKeys;
-    if (k.has(KeyCode.KEY_W) || k.has(KeyCode.ARROW_UP)) dy += 1;
-    if (k.has(KeyCode.KEY_S) || k.has(KeyCode.ARROW_DOWN)) dy -= 1;
-    if (k.has(KeyCode.KEY_A) || k.has(KeyCode.ARROW_LEFT)) dx -= 1;
-    if (k.has(KeyCode.KEY_D) || k.has(KeyCode.ARROW_RIGHT)) dx += 1;
-    if (dx === 0 && dy === 0) {
+    const dir = keyboardMoveDirection(this._pressedKeys);
+    const d = keyboardDisplacement(
+      dir,
+      dt,
+      GameConfig.MOVE_SPEED,
+      GameConfig.KEYBOARD_SPEED_MULT,
+    );
+    if (d.dx === 0 && d.dy === 0) {
       return;
     }
-    const len = Math.sqrt(dx * dx + dy * dy);
-    const m =
-      GameConfig.MOVE_SPEED * GameConfig.KEYBOARD_SPEED_MULT * dt * (1 / len);
     const p = this.node.position;
-    this.node.setPosition(p.x + dx * m, p.y + dy * m, p.z);
+    this.node.setPosition(p.x + d.dx, p.y + d.dy, p.z);
   }
 
   private _clampToBounds() {
-    const maxX = GameConfig.DESIGN_W * 0.5 - GameConfig.MARGIN;
-    const maxY = GameConfig.DESIGN_H * 0.5 - GameConfig.MARGIN;
     const p = this.node.position;
-    const x = Math.min(maxX, Math.max(-maxX, p.x));
-    const y = Math.min(maxY, Math.max(-maxY, p.y));
-    if (x !== p.x || y !== p.y) {
-      this.node.setPosition(x, y, p.z);
+    const r = clampToPlayableRect(p.x, p.y, this._halfX, this._halfY);
+    if (r.moved) {
+      this.node.setPosition(r.x, r.y, p.z);
     }
   }
 
@@ -122,11 +131,8 @@ export class PlayerController extends Component {
     if (!this._playField) {
       return;
     }
-    const count = Math.max(1, Math.floor(this._bulletCount));
     const spread = 20;
-    for (let i = 0; i < count; i++) {
-      const ox =
-        count === 1 ? 0 : (i - (count - 1) * 0.5) * spread;
+    for (const ox of multiShotOffsets(this._bulletCount, spread)) {
       this._spawnOneBullet(ox);
     }
   }
@@ -154,12 +160,9 @@ export class PlayerController extends Component {
     const loc = e.getUILocation();
     let dx = loc.x - this._lastUi.x;
     let dy = loc.y - this._lastUi.y;
-    const len = Math.sqrt(dx * dx + dy * dy);
-    if (len > GameConfig.MAX_DRAG_DELTA) {
-      const s = GameConfig.MAX_DRAG_DELTA / len;
-      dx *= s;
-      dy *= s;
-    }
+    const c = clampDeltaLength(dx, dy, GameConfig.MAX_DRAG_DELTA);
+    dx = c.dx;
+    dy = c.dy;
     this._lastUi.set(loc.x, loc.y);
     const p = this.node.position;
     this.node.setPosition(p.x + dx, p.y + dy, p.z);
