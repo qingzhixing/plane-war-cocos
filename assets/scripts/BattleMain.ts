@@ -57,6 +57,10 @@ export class BattleMain extends Component {
     mergeCurrentRunAndSave(this._run);
   }
 
+  getThreatTier(): number {
+    return this._run.threatTier;
+  }
+
   addExp(n: number) {
     this._run.addExp(n);
     this._refreshHud();

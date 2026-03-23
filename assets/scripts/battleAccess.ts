@@ -8,6 +8,8 @@ export interface IBattleRewards {
   onPlayerHit(): void;
   /** 本局数据写入本地最高成绩（返回主菜单前） */
   flushLocalRecords(): void;
+  /** 威胁等级（敌弹速度等） */
+  getThreatTier(): number;
 }
 
 let _battle: IBattleRewards | null = null;

@@ -19,6 +19,22 @@ export const BULLET_DAMAGE = 1;
 export const ENEMY_SPEED = 250;
 /** 敌弹下落速度（像素/秒），MVP 占位 */
 export const ENEMY_BULLET_SPEED = 420;
+/** 敌弹速度威胁乘区底数；倍率上限见 `enemyBulletSpeedMultiplier` */
+export const ENEMY_BULLET_SPEED_TIER_BASE = 1.04;
+export const ENEMY_BULLET_SPEED_TIER_CAP = 1.35;
+
+/** GDD「Boss 与威胁」：敌弹 `× min(1.35, 1.04^tier)` */
+export function enemyBulletSpeedMultiplier(tier: number): number {
+  const t = Math.max(0, tier);
+  return Math.min(
+    ENEMY_BULLET_SPEED_TIER_CAP,
+    Math.pow(ENEMY_BULLET_SPEED_TIER_BASE, t),
+  );
+}
+
+export function enemyBulletSpeedForTier(tier: number): number {
+  return ENEMY_BULLET_SPEED * enemyBulletSpeedMultiplier(tier);
+}
 /** 敌机发射敌弹间隔（秒），MVP 占位 */
 export const ENEMY_FIRE_INTERVAL = 2.5;
 /** 秒，MVP 定时刷怪间隔（完整波次见 EnemySpawner / main） */

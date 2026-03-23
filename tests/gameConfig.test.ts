@@ -3,12 +3,16 @@ import {
   BOSS_BASE_HP,
   BOSS_CONTINUATION_MULT,
   BOSS_HP_TIER_MULT,
+  ENEMY_BULLET_SPEED,
+  ENEMY_BULLET_SPEED_TIER_CAP,
   ENEMY_SPAWN_INTERVAL,
   bossMaxHpForSpawn,
   bossMaxHpForTier,
   continuationBlockEnemyCount,
   continuationBlockEquivalentHpWave,
   continuationBlockSpawnIntervalMult,
+  enemyBulletSpeedForTier,
+  enemyBulletSpeedMultiplier,
 } from '../assets/scripts/GameConfig';
 
 describe('GameConfig bossMaxHpForTier', () => {
@@ -70,5 +74,16 @@ describe('GameConfig 续战块刷怪（05b）', () => {
     expect(
       continuationBlockSpawnIntervalMult(1) * ENEMY_SPAWN_INTERVAL,
     ).toBeCloseTo(0.88);
+  });
+});
+
+describe('GameConfig enemyBulletSpeedForTier', () => {
+  it('tier 0 倍率为 1', () => {
+    expect(enemyBulletSpeedMultiplier(0)).toBe(1);
+    expect(enemyBulletSpeedForTier(0)).toBe(ENEMY_BULLET_SPEED);
+  });
+
+  it('高 tier 不超过 1.35', () => {
+    expect(enemyBulletSpeedMultiplier(99)).toBe(ENEMY_BULLET_SPEED_TIER_CAP);
   });
 });
