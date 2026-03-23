@@ -1,5 +1,6 @@
 import { Color, Label, Node, UITransform } from 'cc';
 import * as GameConfig from './GameConfig';
+import { applyUiFontsUnder } from './uiFonts';
 
 export type PostBossChoice = 'settle' | 'continue';
 
@@ -70,4 +71,5 @@ export function presentPostBossChoice(
 
   parent.addChild(root);
   root.setSiblingIndex(parent.children.length - 1);
+  applyUiFontsUnder(root);
 }

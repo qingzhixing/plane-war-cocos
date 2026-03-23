@@ -8,6 +8,7 @@ import {
   clearBattleSpriteCache,
   preloadBattleSpriteFrames,
 } from './battleSprites';
+import { applyUiFontsUnder, preloadUiFonts } from './uiFonts';
 
 const { ccclass, property } = _decorator;
 
@@ -20,7 +21,9 @@ export class GameRoot extends Component {
 
   onLoad() {
     preloadBattleSpriteFrames(() => {
-      this._setupBattle();
+      preloadUiFonts(() => {
+        this._setupBattle();
+      });
     });
   }
 
@@ -37,6 +40,7 @@ export class GameRoot extends Component {
 
     const battle = this.node.addComponent(BattleMain);
     battle.init(playField, this.upgradePickPrefab);
+    applyUiFontsUnder(this.node);
   }
 
   onDestroy() {

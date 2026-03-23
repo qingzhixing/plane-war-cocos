@@ -1,6 +1,7 @@
 import { Color, Graphics, Label, Node, UITransform } from 'cc';
 import * as GameConfig from './GameConfig';
 import { loadLocalRecords } from './localRecords';
+import { applyUiFontsUnder } from './uiFonts';
 
 /** 主菜单标题区：标题 + 本地最佳摘要（代码搭建） */
 export function createMainMenuHint(): Node {
@@ -143,4 +144,5 @@ export function presentRecordsQueryOverlay(parent: Node): void {
 
   parent.addChild(root);
   root.setSiblingIndex(parent.children.length - 1);
+  applyUiFontsUnder(root);
 }

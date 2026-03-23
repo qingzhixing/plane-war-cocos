@@ -2,6 +2,7 @@ import { Color, instantiate, Label, Node, Prefab, UITransform } from 'cc';
 import { pickRandomUpgrades } from './UpgradePool';
 import { UpgradeUI } from './UpgradeUI';
 import * as GameConfig from './GameConfig';
+import { applyUiFontsUnder } from './uiFonts';
 
 /**
  * 清场后三选一：优先实例化预制体上的 UpgradeUI；否则用简易文字 + 点击行。
@@ -101,4 +102,5 @@ function presentUpgradeFallback(
 
   parent.addChild(root);
   root.setSiblingIndex(parent.children.length - 1);
+  applyUiFontsUnder(root);
 }
