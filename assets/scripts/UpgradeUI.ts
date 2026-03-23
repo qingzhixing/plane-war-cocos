@@ -55,7 +55,7 @@ export class UpgradeUI extends Component {
     this._emitPick(2);
   }
 
-  showPick(onPick: (id: string) => void) {
+  showPick(onPick: (id: string) => void, titleOverride?: string) {
     this._onPick = onPick;
     this._choices = pickRandomUpgrades(3);
     const names = [this.optName0, this.optName1, this.optName2];
@@ -74,7 +74,7 @@ export class UpgradeUI extends Component {
       }
     }
     if (this.titleLabel) {
-      this.titleLabel.string = '升级！选一个强化';
+      this.titleLabel.string = titleOverride ?? '升级！选一个强化';
     }
     this.node.active = true;
   }

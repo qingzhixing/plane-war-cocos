@@ -6,7 +6,10 @@ import {
   presentPostBossChoice,
   type PostBossChoice,
 } from './postBossChoiceFlow';
-import { presentUpgradePick } from './UpgradePickFlow';
+import {
+  presentUpgradePick,
+  presentUpgradePickSequence,
+} from './UpgradePickFlow';
 import { BattleHud } from './BattleHud';
 import { BattleRunState } from './battleRunState';
 
@@ -111,8 +114,16 @@ export class BattleMain extends Component {
       return;
     }
     this._run.applyContinueChallenge();
-    this._startCurrentWave();
-    this._refreshHud();
+    presentUpgradePickSequence(
+      this.node,
+      this._upgradePrefab,
+      3,
+      (id) => this._applyUpgrade(id),
+      () => {
+        this._startCurrentWave();
+        this._refreshHud();
+      },
+    );
   }
 
   private _openUpgrade() {
