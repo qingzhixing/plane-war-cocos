@@ -26,7 +26,7 @@
   - 敌人：`EnemyBasic.ts`（对齐 Godot `enemy_basic.gd` / `EnemyBase.gd`：下落、`apply_damage`、HP 归零销毁；占位 Graphics）  
   - 刷怪：`EnemySpawner.ts`（对齐 `enemy_spawner.gd`：`startWave(wave)` 按波次数量刷怪、间隔定时；清场后通知 `BattleMain`）  
   - 战斗状态（MVP）：`BattleMain.ts`（对齐 `main.gd` 子集：波次递增、`onWaveCleared`、经验/得分累计、简易 HUD；清场后 **升级三选一**）  
-  - 升级三选一：**预制体 + 编辑器** — 预制体路径 `assets/prefabs/ui/UpgradePick.prefab`（根节点挂 `UpgradeUI.ts`）；**Game** 场景里 **Canvas → GameRoot** 的 **「升级三选一预制体」** 属性拖入该预制体。详见同目录 `EDITOR_SETUP.md`。数据池：`UpgradePool.ts`（与 Godot `upgrade_ui.gd` 的 `UPGRADES` 对齐子集）。  
+  - 升级三选一：**预制体 + 编辑器** — 预制体路径 `assets/prefabs/ui/UpgradePick.prefab`（根节点挂 `UpgradeUI.ts`）；**Game** 场景里 **Canvas → GameRoot** 的 **`upgradePickPrefab`** 拖入该预制体。详见同目录 `EDITOR_SETUP.md`。数据池：`UpgradePool.ts`；展示与兜底 UI：`UpgradePickFlow.ts`（`presentUpgradePick`，与 `BattleMain` 解耦）。  
   - 全局引用：`battleAccess.ts`（`getBattleMain()`，供 `EnemyBasic` 击杀上报经验/得分）  
   - 碰撞：`EnemyRegistry.ts` 登记敌机，`PlayerBullet` 用 **`UITransform.getBoundingBoxToWorld()` + `Rect.intersects`** 做 AABB 检测（与物理引擎解耦，便于与 Godot 判定口径对齐）  
   - 常量：`GameConfig.ts`（设计分辨率、射速/弹速、敌机速度与血量等）
@@ -45,6 +45,6 @@
 ## 第一阶段实现目标（本仓库）
 
 - 主菜单与战斗场景可切换，设计分辨率 **720×1280**。
-- **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后暂停并点「继续」进入下一波、经验/得分与简易 HUD**；下一里程碑为 **升级三选一 UI、Boss、连击与完整 `main.gd` 统计**。
+- **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后三选一升级再进入下一波、经验/得分与简易 HUD、预制体/代码兜底升级 UI**；下一里程碑为 **Boss、连击与完整 `main.gd` 统计**。
 
 > 若实现与 Godot 版有路径或 API 差异，优先更新本节与 `README`，再改代码。
