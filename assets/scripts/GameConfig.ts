@@ -18,6 +18,8 @@ export const PLAYER_INVULN_SEC = 1;
 export const PLAYER_INVULN_BLINK_HZ = 8;
 /** 连击中断提示显示时长（秒） */
 export const COMBO_BREAK_DISPLAY_SEC = 1.15;
+/** 连击档位「Combo!」提示显示时长（秒） */
+export const COMBO_MILESTONE_DISPLAY_SEC = 1.05;
 
 /** 敌机基础弹伤害（对齐 BulletBase damage 默认） */
 export const BULLET_DAMAGE = 1;

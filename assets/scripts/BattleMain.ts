@@ -11,6 +11,7 @@ import {
   presentUpgradePickSequence,
 } from './UpgradePickFlow';
 import { BattleHud } from './BattleHud';
+import { crossedComboMilestone } from './comboMilestone';
 import { BattleRunState } from './battleRunState';
 import { mergeCurrentRunAndSave } from './localRecords';
 
@@ -90,8 +91,13 @@ export class BattleMain extends Component {
   }
 
   onEnemyKill(expValue: number, baseScore: number) {
+    const prevCombo = this._run.combo;
     this._run.onEnemyKill(expValue, baseScore);
+    const crossed = crossedComboMilestone(prevCombo, this._run.combo);
     this._refreshHud();
+    if (crossed !== null) {
+      this._hud?.flashComboMilestone(crossed);
+    }
   }
 
   onPlayerHit(): boolean {

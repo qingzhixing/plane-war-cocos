@@ -7,6 +7,7 @@ import {
   Node,
   UITransform,
 } from 'cc';
+import { comboMilestoneBangCount } from './comboMilestone';
 import * as GameConfig from './GameConfig';
 
 const { ccclass } = _decorator;
@@ -20,6 +21,8 @@ export class BattleHud extends Component {
   private readonly _bossBarW = 400;
   private _comboBreakNode: Node | null = null;
   private _comboBreakRemain = 0;
+  private _comboMilestoneNode: Node | null = null;
+  private _comboMilestoneRemain = 0;
 
   onLoad() {
     const ut = this.node.addComponent(UITransform);
@@ -32,6 +35,7 @@ export class BattleHud extends Component {
 
     this._buildBossStrip();
     this._buildComboBreak();
+    this._buildComboMilestone();
   }
 
   private _buildComboBreak() {
@@ -46,11 +50,29 @@ export class BattleHud extends Component {
     this._comboBreakNode = n;
   }
 
+  private _buildComboMilestone() {
+    const n = new Node('ComboMilestone');
+    n.setPosition(0, -175, 0);
+    n.active = false;
+    const lab = n.addComponent(Label);
+    lab.string = '10 Combo!';
+    lab.fontSize = 24;
+    lab.color = new Color(255, 240, 160, 255);
+    this.node.addChild(n);
+    this._comboMilestoneNode = n;
+  }
+
   update(dt: number) {
     if (this._comboBreakRemain > 0) {
       this._comboBreakRemain -= dt;
       if (this._comboBreakRemain <= 0 && this._comboBreakNode) {
         this._comboBreakNode.active = false;
+      }
+    }
+    if (this._comboMilestoneRemain > 0) {
+      this._comboMilestoneRemain -= dt;
+      if (this._comboMilestoneRemain <= 0 && this._comboMilestoneNode) {
+        this._comboMilestoneNode.active = false;
       }
     }
   }
@@ -60,6 +82,19 @@ export class BattleHud extends Component {
     this._comboBreakRemain = GameConfig.COMBO_BREAK_DISPLAY_SEC;
     if (this._comboBreakNode) {
       this._comboBreakNode.active = true;
+    }
+  }
+
+  /** 跨越连击档位时由 `BattleMain.onEnemyKill` 调用 */
+  flashComboMilestone(m: number) {
+    this._comboMilestoneRemain = GameConfig.COMBO_MILESTONE_DISPLAY_SEC;
+    const lab = this._comboMilestoneNode?.getComponent(Label);
+    if (lab) {
+      const bangs = '!'.repeat(comboMilestoneBangCount(m));
+      lab.string = `${m} Combo${bangs}`;
+    }
+    if (this._comboMilestoneNode) {
+      this._comboMilestoneNode.active = true;
     }
   }
 

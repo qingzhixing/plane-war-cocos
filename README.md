@@ -26,14 +26,14 @@
 |------|------|
 | `docs/gdd/` | 游戏设计文档（与 Godot 版同步，技术栈说明见 `sections/12_technical_notes.md`） |
 | `assets/scenes/` | `MainMenu`（主菜单：开始游戏 / 成绩查询）、`Game`（战斗 MVP：波次、清场、三选一升级） |
-| `assets/scripts/` | `MainMenu.ts`、`mainMenuChromeFactory.ts`（`createMainMenuRoot`、`presentRecordsQueryOverlay`）、`GameRoot.ts`、`playFieldFactory.ts`、`gameChromeFactory.ts`、`BattleMain.ts`、`battleRunState.ts`（`threatTier`、`inContinuationBlock`、`comboGuardStacks`）、`localRecords.ts` / `localRecordsCore.ts`（本地最高得分/连击）、`comboScore.ts`、`BattleHud.ts`（Boss 血条、续战文案、护盾×N）、`postBossChoiceFlow.ts`（Boss 击破二选一）、`battleAccess.ts`、`playerPositionAccess.ts`（追踪弹目标）、`UpgradePool.ts`、`UpgradeUI.ts`、`UpgradePickFlow.ts`（`presentUpgradePickSequence`）、`PlayerController.ts`、`playerInput.ts`、`playerMotion.ts`、`playerEnemyCollision.ts`、`enemyBulletPlayerCollision.ts`、`playerBulletFactory.ts`、`aabbMath.ts`、`playerBulletHitscan.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`enemyBasicFactory.ts`、`EnemySummoner.ts`、`enemySummonerFactory.ts`、`EnemyTurret.ts`、`enemyTurretFactory.ts`、`EnemyElite.ts`、`enemyEliteFactory.ts`、`EnemyBoss.ts`、`enemyBossFactory.ts`、`EnemyBullet.ts`、`enemyBulletFactory.ts`、`EnemyBulletRegistry.ts`、`EnemySpawner.ts`（精英 → 炮台 → 召唤 → 冲锋）、`waveSpawnScheduler.ts`、`EnemyRegistry.ts`、`GameConfig.ts`（`bossMaxHpForSpawn`、`enemyBulletSpeedForTier`、`enemyMobilityTierMult`、`DPS_WINDOW_SEC`、`continuationBlockEnemyCount` 等） |
-| `tests/` | Vitest 单测（`aabbMath`、`comboScore`、`battleRunState`、`waveSpawnScheduler` 等） |
+| `assets/scripts/` | `MainMenu.ts`、`mainMenuChromeFactory.ts`（`createMainMenuRoot`、`presentRecordsQueryOverlay`）、`GameRoot.ts`、`playFieldFactory.ts`、`gameChromeFactory.ts`、`BattleMain.ts`、`battleRunState.ts`（`threatTier`、`inContinuationBlock`、`comboGuardStacks`）、`localRecords.ts` / `localRecordsCore.ts`（本地最高得分/连击）、`comboScore.ts`、`comboMilestone.ts`（连击档位跨越）、`BattleHud.ts`（Boss 血条、续战、护盾、连击中断/档位 Combo!）、`postBossChoiceFlow.ts`（Boss 击破二选一）、`battleAccess.ts`、`playerPositionAccess.ts`（追踪弹目标）、`UpgradePool.ts`、`UpgradeUI.ts`、`UpgradePickFlow.ts`（`presentUpgradePickSequence`）、`PlayerController.ts`、`playerInput.ts`、`playerMotion.ts`、`playerEnemyCollision.ts`、`enemyBulletPlayerCollision.ts`、`playerBulletFactory.ts`、`aabbMath.ts`、`playerBulletHitscan.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`enemyBasicFactory.ts`、`EnemySummoner.ts`、`enemySummonerFactory.ts`、`EnemyTurret.ts`、`enemyTurretFactory.ts`、`EnemyElite.ts`、`enemyEliteFactory.ts`、`EnemyBoss.ts`、`enemyBossFactory.ts`、`EnemyBullet.ts`、`enemyBulletFactory.ts`、`EnemyBulletRegistry.ts`、`EnemySpawner.ts`（精英 → 炮台 → 召唤 → 冲锋）、`waveSpawnScheduler.ts`、`EnemyRegistry.ts`、`GameConfig.ts`（`bossMaxHpForSpawn`、`enemyBulletSpeedForTier`、`enemyMobilityTierMult`、`DPS_WINDOW_SEC`、`continuationBlockEnemyCount` 等） |
+| `tests/` | Vitest 单测（`aabbMath`、`comboScore`、`comboMilestone`、`battleRunState`、`waveSpawnScheduler` 等） |
 | `assets/prefabs/ui/` | `EDITOR_SETUP.md`（`UpgradePick.prefab` 制作说明，预制体需在编辑器中创建） |
 
 ## 下一步（移植里程碑）
 
 - **美术与音频**：从 `plane-war/assets/` 复制到本仓库 `assets/`，按 GDD `11_art_and_assets.md` 命名。
-- **玩法扩展**：受击音效、档位 Combo! 浮现、New Record 提示等 GDD 余项；可选 `npm test` 持续覆盖纯逻辑模块。
+- **玩法扩展**：受击/里程碑音效、New Record 提示、Combo 字缩放动画等 GDD 余项；可选 `npm test` 持续覆盖纯逻辑模块。
 
 ## 许可
 
