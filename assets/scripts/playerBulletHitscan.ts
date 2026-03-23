@@ -1,4 +1,5 @@
-import { isValid, Rect, UITransform } from 'cc';
+import { isValid, type Rect, UITransform } from 'cc';
+import { aabbOverlap } from './aabbMath';
 import type { EnemyHitTarget } from './EnemyRegistry';
 
 /**
@@ -9,6 +10,7 @@ export function findFirstEnemyAabbHit(
   bulletWorldRect: Rect,
   enemies: readonly EnemyHitTarget[],
 ): EnemyHitTarget | null {
+  const b = bulletWorldRect;
   for (const e of enemies) {
     if (!isValid(e.node)) {
       continue;
@@ -18,7 +20,9 @@ export function findFirstEnemyAabbHit(
       continue;
     }
     const eb = eu.getBoundingBoxToWorld();
-    if (bulletWorldRect.intersects(eb)) {
+    if (
+      aabbOverlap(b.x, b.y, b.width, b.height, eb.x, eb.y, eb.width, eb.height)
+    ) {
       return e;
     }
   }
