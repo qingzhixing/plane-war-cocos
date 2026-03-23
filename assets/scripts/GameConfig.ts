@@ -28,6 +28,16 @@ export const ENEMY_MAX_HP = 4;
 /** 生成时 Y（PlayField 局部坐标，靠屏幕上沿） */
 export const ENEMY_SPAWN_Y = 580;
 
+/** 主线 Boss 所在波次（GDD：第 8 波） */
+export const BOSS_WAVE = 8;
+/** Boss 占位 HP（MVP 固定；续战乘区未接） */
+export const BOSS_BASE_HP = 300;
+export const BOSS_SPEED = 80;
+export const BOSS_EXP_VALUE = 50;
+export const BOSS_SCORE_VALUE = 200;
+/** Boss 发射敌弹间隔（秒），略快于小怪 */
+export const BOSS_FIRE_INTERVAL = 1;
+
 /** 与 enemy_spawner.gd enemies_per_wave_base / increment 一致 */
 export const ENEMIES_PER_WAVE_BASE = 7;
 export const ENEMIES_PER_WAVE_INCREMENT = 3;

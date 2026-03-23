@@ -1,6 +1,7 @@
 import { _decorator, Component } from 'cc';
 import { enemiesSnapshot } from './EnemyRegistry';
 import { spawnEnemyBasic } from './enemyBasicFactory';
+import { spawnEnemyBoss } from './enemyBossFactory';
 import type { BattleMain } from './BattleMain';
 import { WaveSpawnScheduler } from './waveSpawnScheduler';
 import * as GameConfig from './GameConfig';
@@ -11,6 +12,7 @@ const { ccclass } = _decorator;
 export class EnemySpawner extends Component {
   private readonly _sched = new WaveSpawnScheduler();
   private _battle: BattleMain | null = null;
+  private _bossWave = false;
 
   setBattleMain(b: BattleMain | null) {
     this._battle = b;
@@ -18,7 +20,12 @@ export class EnemySpawner extends Component {
 
   /** 对齐 enemy_spawner.gd start_wave */
   startWave(wave: number) {
-    this._sched.startWave(wave);
+    this._bossWave = wave === GameConfig.BOSS_WAVE;
+    if (this._bossWave) {
+      this._sched.startBossWave(wave);
+    } else {
+      this._sched.startWave(wave);
+    }
   }
 
   update(dt: number) {
@@ -37,6 +44,11 @@ export class EnemySpawner extends Component {
   }
 
   private _spawnOne() {
+    if (this._bossWave) {
+      this._bossWave = false;
+      spawnEnemyBoss(this.node, this._sched.spawnWaveForEnemies);
+      return;
+    }
     const span = GameConfig.DESIGN_W - 80;
     const x = (Math.random() - 0.5) * span;
     spawnEnemyBasic(

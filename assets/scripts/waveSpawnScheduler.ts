@@ -31,6 +31,14 @@ export class WaveSpawnScheduler {
     this._clearReported = false;
   }
 
+  /** 仅刷一架 Boss（首帧 tick 即触发一次 spawn） */
+  startBossWave(wave: number): void {
+    this.spawnWaveForEnemies = wave;
+    this._remaining = 1;
+    this._acc = this._interval;
+    this._clearReported = false;
+  }
+
   /**
    * 推进本帧计时；在仍有剩余配额时按间隔调用 `spawnOne`。
    */

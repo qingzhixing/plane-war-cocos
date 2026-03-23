@@ -38,4 +38,17 @@ describe('WaveSpawnScheduler', () => {
     s.markWaveClearNotified();
     expect(s.clearReported).toBe(true);
   });
+
+  it('startBossWave 仅一架且首 tick 可刷', () => {
+    const s = new WaveSpawnScheduler();
+    s.startBossWave(GameConfig.BOSS_WAVE);
+    expect(s.remaining).toBe(1);
+    expect(s.spawnWaveForEnemies).toBe(GameConfig.BOSS_WAVE);
+    let spawns = 0;
+    s.tick(0.1, () => {
+      spawns++;
+    });
+    expect(spawns).toBe(1);
+    expect(s.remaining).toBe(0);
+  });
 });
