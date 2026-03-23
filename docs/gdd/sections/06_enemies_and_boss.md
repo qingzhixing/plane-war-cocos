@@ -2,9 +2,11 @@
 
 ## 小怪原型（建议 3 种）
 
--- **冲锋机**：直线下冲，少量点射（首波默认只出现该类型，作为教学）。
+- **冲锋机**：直线下冲，少量点射（首波默认只出现该类型，作为教学）。
 - **炮台机**：移动慢，周期性点射（2–3 发）
 - **召唤机**：血少，偶尔发追踪弹（频率低）
+
+> **Cocos 移植（`plane-war-cocos`）**：**EnemyBasic03（召唤机）** 由 **`EnemySummoner.ts`** + **`enemySummonerFactory.ts`** 实现；**HP** 基数 **3** 再乘 **`waveHpFactor`**；**经验 4**、**基础分 8**；下移速度与冲锋接近略慢；**约 4.2s** 尝试发射 **1** 枚 **`EnemyBullet`（`homing: true`）**：弹速约为 **`enemyBulletSpeedForTier × 0.88`**，每帧向 **玩家机** 方向 **限速转向**（`playerPositionAccess` + `ENEMY_HOMING_TURN_RAD_PER_SEC`）。**刷怪**：未掷中精英 → 未掷中炮台 → 按 **`mainLineSummonerChance` / `continuationBlockSummonerRate`** 掷召唤机，否则 **`EnemyBasic`**。
 
 ## 当前实现优先级（第一批）
 
@@ -39,7 +41,7 @@
 
 > 精英实现时应优先保证“躲避教学感”，不要过分追求密度。
 
-> **Cocos 移植（`plane-war-cocos`）**：**Elite01** 由 **`EnemyElite.ts`** + **`enemyEliteFactory.ts`** 生成；**HP** 基数 **6** 再乘 **`waveHpFactor(spawnWave)`**；**经验 15**、**基础分 50**；移速约为 **`ENEMY_SPEED × 0.65 × enemyMobilityTierMult`**；约 **每 2 秒**一轮 **8 向圆环敌弹**（速度约为 **`enemyBulletSpeedForTier × 0.72`**，见 **`enemyBulletFactory` 可选速度向量**）。**刷怪**：`EnemySpawner` 在**非 Boss 小怪波**按 **`mainLineEliteChance` / `continuationBlockEliteRate`**（与 **`05b` 表**一致）掷骰，命中则刷精英否则刷 **`EnemyBasic`**。
+> **Cocos 移植（`plane-war-cocos`）**：**Elite01** 由 **`EnemyElite.ts`** + **`enemyEliteFactory.ts`** 生成；**HP** 基数 **6** 再乘 **`waveHpFactor(spawnWave)`**；**经验 15**、**基础分 50**；移速约为 **`ENEMY_SPEED × 0.65 × enemyMobilityTierMult`**；约 **每 2 秒**一轮 **8 向圆环敌弹**（速度约为 **`enemyBulletSpeedForTier × 0.72`**，见 **`enemyBulletFactory` 可选速度向量**）。**刷怪**：`EnemySpawner` 在**非 Boss 小怪波**先 **`mainLineEliteChance` / `continuationBlockEliteRate`** → 精英；否则 **`mainLineTurretChance` / `continuationBlockTurretRate`** → 炮台；否则 **`mainLineSummonerChance` / `continuationBlockSummonerRate`** → 召唤机；否则 **冲锋机**。
 
 ## Boss（1 个，符卡氛围但低密度，MVP 目标）
 
@@ -123,7 +125,7 @@
   - `本次击杀得分 = 基础击杀分 × 连击得分系数`  
   - 其中连击得分系数由当前连击数所属区间决定。
 
-> **Cocos 移植 MVP（`plane-war-cocos`）**：击杀时先 **`combo += 1 + combo_boost 叠层`**（升级 `combo_boost` 每选一次 +1 层额外连击增量），再按**本节区间表**取系数；**最终得分** `= 基础击杀分 × 连击系数 × 评分乘区（score_up 等）**。实现见 `comboScore.ts` + `BattleRunState.onEnemyKill`。当前 **仅击杀**累连击（未统计「单发子弹多次命中」）。**玩家与敌机世界 AABB 重叠**时：`combo` 清零、敌机直接销毁（**不计击杀分/经验**）。**敌弹**由 **`EnemyBasic` / `EnemyTurret` / `EnemyElite` / `EnemyBoss`** 发射（`enemyBulletFactory` + `EnemyBullet`；扇形/圆环为 **速度向量**），与玩家 AABB 重叠时清零连击并销毁该弹（与撞机共用 `onPlayerHit`）。
+> **Cocos 移植 MVP（`plane-war-cocos`）**：击杀时先 **`combo += 1 + combo_boost 叠层`**（升级 `combo_boost` 每选一次 +1 层额外连击增量），再按**本节区间表**取系数；**最终得分** `= 基础击杀分 × 连击系数 × 评分乘区（score_up 等）**。实现见 `comboScore.ts` + `BattleRunState.onEnemyKill`。当前 **仅击杀**累连击（未统计「单发子弹多次命中」）。**玩家与敌机世界 AABB 重叠**时：`combo` 清零、敌机直接销毁（**不计击杀分/经验**）。**敌弹**由 **`EnemyBasic` / `EnemySummoner` / `EnemyTurret` / `EnemyElite` / `EnemyBoss`** 发射（`enemyBulletFactory` + `EnemyBullet`；扇形/圆环为 **速度向量**；**追踪**为 **`EnemyBullet.homing`** + `playerPositionAccess`），与玩家 AABB 重叠时清零连击并销毁该弹（与撞机共用 `onPlayerHit`）。
 
 ### 爽感与反馈（与敌人行为/死亡相关）
 
