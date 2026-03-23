@@ -2,17 +2,14 @@ import { _decorator, Component } from 'cc';
 import { enemiesSnapshot } from './EnemyRegistry';
 import { spawnEnemyBasic } from './enemyBasicFactory';
 import type { BattleMain } from './BattleMain';
+import { WaveSpawnScheduler } from './waveSpawnScheduler';
 import * as GameConfig from './GameConfig';
 
 const { ccclass } = _decorator;
 
 @ccclass('EnemySpawner')
 export class EnemySpawner extends Component {
-  private _acc = 0;
-  private _interval = GameConfig.ENEMY_SPAWN_INTERVAL;
-  private _remaining = 0;
-  private _spawnWaveForEnemies = 1;
-  private _clearReported = false;
+  private readonly _sched = new WaveSpawnScheduler();
   private _battle: BattleMain | null = null;
 
   setBattleMain(b: BattleMain | null) {
@@ -21,27 +18,19 @@ export class EnemySpawner extends Component {
 
   /** 对齐 enemy_spawner.gd start_wave */
   startWave(wave: number) {
-    this._spawnWaveForEnemies = wave;
-    this._remaining =
-      GameConfig.ENEMIES_PER_WAVE_BASE +
-      GameConfig.ENEMIES_PER_WAVE_INCREMENT * Math.max(0, wave - 1);
-    this._acc = 0;
-    this._clearReported = false;
+    this._sched.startWave(wave);
   }
 
   update(dt: number) {
-    if (this._remaining > 0) {
-      this._acc += dt;
-      while (this._acc >= this._interval && this._remaining > 0) {
-        this._acc -= this._interval;
-        this._spawnOne();
-        this._remaining--;
-      }
-    }
+    this._sched.tick(dt, () => this._spawnOne());
 
-    if (this._remaining <= 0 && !this._clearReported && this._battle) {
+    if (
+      this._sched.remaining <= 0 &&
+      !this._sched.clearReported &&
+      this._battle
+    ) {
       if (enemiesSnapshot().length === 0) {
-        this._clearReported = true;
+        this._sched.markWaveClearNotified();
         this._battle.onWaveCleared();
       }
     }
@@ -52,7 +41,7 @@ export class EnemySpawner extends Component {
     const x = (Math.random() - 0.5) * span;
     spawnEnemyBasic(
       this.node,
-      this._spawnWaveForEnemies,
+      this._sched.spawnWaveForEnemies,
       x,
       GameConfig.ENEMY_SPAWN_Y,
     );
