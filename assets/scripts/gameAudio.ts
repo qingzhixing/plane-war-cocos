@@ -25,6 +25,7 @@ const SFX = {
   hurt: 'audio/SFX/player/hurt',
   powerUp: 'audio/SFX/player/power_up',
   enemyHit: 'audio/SFX/enemy/EnemyInjured',
+  settleLose: 'audio/SFX/game_state/Lose',
 } as const;
 
 const EXPLOSION_PATHS = [
@@ -162,4 +163,40 @@ export function playEnemyExplodeSfx() {
   const path =
     EXPLOSION_PATHS[Math.floor(Math.random() * EXPLOSION_PATHS.length)];
   playSfx(path, 0.62);
+}
+
+function playSettleLoseAndSchedule(
+  host: Component,
+  clip: AudioClip,
+  loadMainMenu: () => void,
+) {
+  if (!_sfx) {
+    loadMainMenu();
+    return;
+  }
+  _sfx.playOneShot(clip, 0.72);
+  const sec = Math.min(2.8, Math.max(0.45, clip.getDuration() + 0.06));
+  host.scheduleOnce(() => loadMainMenu(), sec);
+}
+
+/** Boss 击破选「结算」：播 `Lose` 并在 clip 时长后切主菜单（加载失败则立即切） */
+export function scheduleLoadMainMenuAfterSettleSfx(
+  host: Component,
+  loadMainMenu: () => void,
+): void {
+  const path = SFX.settleLose;
+  const cached = _clipCache.get(path);
+  if (cached) {
+    playSettleLoseAndSchedule(host, cached, loadMainMenu);
+    return;
+  }
+  resources.load(path, AudioClip, (err, clip) => {
+    if (err || !clip) {
+      console.warn('[gameAudio] settle Lose load failed', path, err);
+      loadMainMenu();
+      return;
+    }
+    _clipCache.set(path, clip);
+    playSettleLoseAndSchedule(host, clip, loadMainMenu);
+  });
 }

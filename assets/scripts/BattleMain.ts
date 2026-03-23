@@ -19,6 +19,7 @@ import {
   playComboMilestoneSfx,
   playHurtSfx,
   playPowerUpSfx,
+  scheduleLoadMainMenuAfterSettleSfx,
 } from './gameAudio';
 
 const { ccclass } = _decorator;
@@ -168,7 +169,9 @@ export class BattleMain extends Component {
   private _resolvePostBossChoice(c: PostBossChoice) {
     if (c === 'settle') {
       this.flushLocalRecords();
-      director.loadScene('MainMenu');
+      scheduleLoadMainMenuAfterSettleSfx(this, () =>
+        director.loadScene('MainMenu'),
+      );
       return;
     }
     this._run.applyContinueChallenge();

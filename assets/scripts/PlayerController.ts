@@ -31,7 +31,7 @@ import {
   playableHalfExtents,
 } from './playerMotion';
 import { spawnPlayerBullet } from './playerBulletFactory';
-import { playShootSfx } from './gameAudio';
+import { playEnemyExplodeSfx, playShootSfx } from './gameAudio';
 
 const { ccclass } = _decorator;
 
@@ -154,6 +154,7 @@ export class PlayerController extends Component {
     }
     for (const e of collectEnemiesTouchingPlayer(b, enemiesSnapshot())) {
       if (isValid(e.node)) {
+        playEnemyExplodeSfx();
         e.node.destroy();
         hit = true;
       }
