@@ -6,14 +6,17 @@ import {
   EventMouse,
   EventTouch,
   Graphics,
-  Input,
   KeyCode,
   Node,
   UITransform,
   Vec2,
-  input,
 } from 'cc';
 import * as GameConfig from './GameConfig';
+import {
+  bindPlayerInput,
+  type PlayerInputHandlers,
+  unbindPlayerInput,
+} from './playerInput';
 import { spawnPlayerBullet } from './playerBulletFactory';
 
 const { ccclass } = _decorator;
@@ -31,34 +34,29 @@ export class PlayerController extends Component {
   private _pressedKeys = new Set<number>();
   private _mouseHeld = false;
 
+  private _inputHandlers: PlayerInputHandlers | null = null;
+
   start() {
     this._playField = this.node.parent;
 
-    input.on(Input.EventType.TOUCH_START, this._onTouchStart, this);
-    input.on(Input.EventType.TOUCH_MOVE, this._onTouchMove, this);
-    input.on(Input.EventType.TOUCH_END, this._onTouchEnd, this);
-    input.on(Input.EventType.TOUCH_CANCEL, this._onTouchEnd, this);
-
-    input.on(Input.EventType.MOUSE_DOWN, this._onMouseDown, this);
-    input.on(Input.EventType.MOUSE_MOVE, this._onMouseMove, this);
-    input.on(Input.EventType.MOUSE_UP, this._onMouseUp, this);
-
-    input.on(Input.EventType.KEY_DOWN, this._onKeyDown, this);
-    input.on(Input.EventType.KEY_UP, this._onKeyUp, this);
+    this._inputHandlers = {
+      onTouchStart: this._onTouchStart,
+      onTouchMove: this._onTouchMove,
+      onTouchEnd: this._onTouchEnd,
+      onMouseDown: this._onMouseDown,
+      onMouseMove: this._onMouseMove,
+      onMouseUp: this._onMouseUp,
+      onKeyDown: this._onKeyDown,
+      onKeyUp: this._onKeyUp,
+    };
+    bindPlayerInput(this, this._inputHandlers);
   }
 
   onDestroy() {
-    input.off(Input.EventType.TOUCH_START, this._onTouchStart, this);
-    input.off(Input.EventType.TOUCH_MOVE, this._onTouchMove, this);
-    input.off(Input.EventType.TOUCH_END, this._onTouchEnd, this);
-    input.off(Input.EventType.TOUCH_CANCEL, this._onTouchEnd, this);
-
-    input.off(Input.EventType.MOUSE_DOWN, this._onMouseDown, this);
-    input.off(Input.EventType.MOUSE_MOVE, this._onMouseMove, this);
-    input.off(Input.EventType.MOUSE_UP, this._onMouseUp, this);
-
-    input.off(Input.EventType.KEY_DOWN, this._onKeyDown, this);
-    input.off(Input.EventType.KEY_UP, this._onKeyUp, this);
+    if (this._inputHandlers) {
+      unbindPlayerInput(this, this._inputHandlers);
+      this._inputHandlers = null;
+    }
   }
 
   update(dt: number) {
@@ -171,46 +169,46 @@ export class PlayerController extends Component {
     this._hasPointer = false;
   }
 
-  private _onTouchStart(e: EventTouch) {
+  private _onTouchStart = (e: EventTouch) => {
     this._beginPointer(e);
-  }
+  };
 
-  private _onTouchMove(e: EventTouch) {
+  private _onTouchMove = (e: EventTouch) => {
     this._movePointer(e);
-  }
+  };
 
-  private _onTouchEnd(e: EventTouch) {
+  private _onTouchEnd = (e: EventTouch) => {
     this._endPointer();
-  }
+  };
 
-  private _onMouseDown(e: EventMouse) {
+  private _onMouseDown = (e: EventMouse) => {
     if (e.getButton() !== EventMouse.BUTTON_LEFT) {
       return;
     }
     this._mouseHeld = true;
     this._beginPointer(e);
-  }
+  };
 
-  private _onMouseMove(e: EventMouse) {
+  private _onMouseMove = (e: EventMouse) => {
     if (!this._mouseHeld) {
       return;
     }
     this._movePointer(e);
-  }
+  };
 
-  private _onMouseUp(e: EventMouse) {
+  private _onMouseUp = (e: EventMouse) => {
     if (e.getButton() !== EventMouse.BUTTON_LEFT) {
       return;
     }
     this._mouseHeld = false;
     this._endPointer();
-  }
+  };
 
-  private _onKeyDown(e: EventKeyboard) {
+  private _onKeyDown = (e: EventKeyboard) => {
     this._pressedKeys.add(e.keyCode);
-  }
+  };
 
-  private _onKeyUp(e: EventKeyboard) {
+  private _onKeyUp = (e: EventKeyboard) => {
     this._pressedKeys.delete(e.keyCode);
-  }
+  };
 }
