@@ -13,8 +13,8 @@ import {
   Vec2,
   input,
 } from 'cc';
-import { PlayerBullet } from './PlayerBullet';
 import * as GameConfig from './GameConfig';
+import { spawnPlayerBullet } from './playerBulletFactory';
 
 const { ccclass } = _decorator;
 
@@ -137,22 +137,10 @@ export class PlayerController extends Component {
     if (!this._playField) {
       return;
     }
-    const n = new Node('PlayerBullet');
-    const ut = n.addComponent(UITransform);
-    ut.setContentSize(8, 16);
-    ut.setAnchorPoint(0.5, 0.5);
-    const g = n.addComponent(Graphics);
-    g.lineWidth = 0;
-    g.fillColor = new Color(255, 255, 120, 255);
-    g.rect(-4, -8, 8, 16);
-    g.fill();
-    const pb = n.addComponent(PlayerBullet);
-    pb.damage = Math.max(1, Math.round(GameConfig.BULLET_DAMAGE * this._damageMult));
-    pb.speed = GameConfig.BULLET_SPEED * this._bulletSpeedMult;
-
     const p = this.node.position;
-    n.setPosition(p.x + offsetX, p.y + 28, 0);
-    this._playField.addChild(n);
+    const dmg = Math.max(1, Math.round(GameConfig.BULLET_DAMAGE * this._damageMult));
+    const spd = GameConfig.BULLET_SPEED * this._bulletSpeedMult;
+    spawnPlayerBullet(this._playField, p.x + offsetX, p.y + 28, dmg, spd);
   }
 
   private _beginPointer(e: EventTouch | EventMouse) {
