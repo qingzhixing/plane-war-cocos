@@ -119,7 +119,7 @@
   - `本次击杀得分 = 基础击杀分 × 连击得分系数`  
   - 其中连击得分系数由当前连击数所属区间决定。
 
-> **Cocos 移植 MVP（`plane-war-cocos`）**：击杀时先 **`combo += 1 + combo_boost 叠层`**（升级 `combo_boost` 每选一次 +1 层额外连击增量），再按**本节区间表**取系数；**最终得分** `= 基础击杀分 × 连击系数 × 评分乘区（score_up 等）`。实现见 `comboScore.ts` + `BattleRunState.onEnemyKill`。当前 **仅击杀**累连击（未统计「单发子弹多次命中」）。**玩家与敌机世界 AABB 重叠**时：`combo` 清零、敌机直接销毁（**不计击杀分/经验**）；**敌弹命中玩家**仍待接。
+> **Cocos 移植 MVP（`plane-war-cocos`）**：击杀时先 **`combo += 1 + combo_boost 叠层`**（升级 `combo_boost` 每选一次 +1 层额外连击增量），再按**本节区间表**取系数；**最终得分** `= 基础击杀分 × 连击系数 × 评分乘区（score_up 等）**。实现见 `comboScore.ts` + `BattleRunState.onEnemyKill`。当前 **仅击杀**累连击（未统计「单发子弹多次命中」）。**玩家与敌机世界 AABB 重叠**时：`combo` 清零、敌机直接销毁（**不计击杀分/经验**）。**敌弹**由 `EnemyBasic` 定时向下发射（`enemyBulletFactory` + `EnemyBullet`），与玩家 AABB 重叠时清零连击并销毁该弹（与撞机共用 `onPlayerHit`）。
 
 ### 爽感与反馈（与敌人行为/死亡相关）
 
