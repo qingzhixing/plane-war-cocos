@@ -1,4 +1,5 @@
 import { _decorator, Component, director, Node, Prefab } from 'cc';
+import { getBattleMain } from './battleAccess';
 import { BattleMain } from './BattleMain';
 import { createPlayField } from './playFieldFactory';
 import { createBackButton, createHintBanner } from './gameChromeFactory';
@@ -31,6 +32,7 @@ export class GameRoot extends Component {
   }
 
   private _back() {
+    getBattleMain()?.flushLocalRecords();
     director.loadScene('MainMenu');
   }
 }

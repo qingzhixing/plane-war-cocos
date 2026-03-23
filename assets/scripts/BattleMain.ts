@@ -12,6 +12,7 @@ import {
 } from './UpgradePickFlow';
 import { BattleHud } from './BattleHud';
 import { BattleRunState } from './battleRunState';
+import { mergeCurrentRunAndSave } from './localRecords';
 
 const { ccclass } = _decorator;
 
@@ -49,6 +50,11 @@ export class BattleMain extends Component {
 
   onDestroy() {
     setBattleMain(null);
+  }
+
+  /** 将本局得分/最高连击合并进本地成绩（返回主菜单或 Boss 结算前调用） */
+  flushLocalRecords() {
+    mergeCurrentRunAndSave(this._run);
   }
 
   addExp(n: number) {
@@ -114,6 +120,7 @@ export class BattleMain extends Component {
 
   private _resolvePostBossChoice(c: PostBossChoice) {
     if (c === 'settle') {
+      this.flushLocalRecords();
       director.loadScene('MainMenu');
       return;
     }

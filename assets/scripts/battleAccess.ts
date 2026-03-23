@@ -6,6 +6,8 @@ export interface IBattleRewards {
   onEnemyKill(expValue: number, baseScore: number): void;
   /** 玩家与敌机相撞等待：清零连击（敌机由调用方销毁且不计分） */
   onPlayerHit(): void;
+  /** 本局数据写入本地最高成绩（返回主菜单前） */
+  flushLocalRecords(): void;
 }
 
 let _battle: IBattleRewards | null = null;
