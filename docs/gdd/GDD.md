@@ -6,7 +6,7 @@
 ## 文档结构
 
 - `docs/gdd/sections/01_overview.md`：概览与设计目标
-- `docs/gdd/sections/02_platform_and_ci.md`：跨平台目标与发布方式（手动/可选 CI）
+- `docs/gdd/sections/02_platform_and_ci.md`：跨平台目标与发布方式（本地构建导出）
 - `docs/gdd/sections/03_core_loop_and_controls.md`：核心循环、失败与继续、输入与手感
 - `docs/gdd/sections/04_numbers_and_combat_rules.md`：数值框架、受击/判定、战斗规则
 - `docs/gdd/sections/05_level_structure.md`：2–5 分钟波次制关卡结构与可读性原则
