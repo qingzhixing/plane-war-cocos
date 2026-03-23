@@ -19,7 +19,7 @@
 
 - 启动流程：**主菜单** `assets/scenes/MainMenu.scene` → **开始游戏** 进入 `assets/scenes/Game.scene`（后续在 `Game` 中挂载战斗与 HUD，与 Godot `Main.tscn` 对齐）。
 - 脚本：`assets/scripts/`  
-  - 主菜单：`MainMenu.ts`（提示文案由 `mainMenuChromeFactory.ts` 的 `createMainMenuHint`）  
+  - 主菜单：`MainMenu.ts`（`mainMenuChromeFactory.ts`：`createMainMenuRoot`、`createMainMenuHint`、`presentRecordsQueryOverlay`）  
   - 战斗场景根：`GameRoot.ts`（挂载 `PlayField`、`BattleMain`；提示条与返回按钮由 `gameChromeFactory.ts` 代码搭建；`PlayField` 由 `playFieldFactory.ts` 的 `createPlayField`）  
   - 玩家：`PlayerController.ts`（对齐 Godot `player.gd`：拖拽 / 键控移动、边界、自动射击）；**敌弹 / 敌机撞玩家**时断连（`onPlayerHit`），敌机重叠检测见 `playerEnemyCollision.ts`，敌弹见 `EnemyBulletRegistry` + AABB；全局 `input` 注册与注销见 `playerInput.ts`；**位移与边界纯数学**见 `playerMotion.ts`（键控方向、拖拽限幅、可玩区域夹取、多发偏移）  
   - 玩家基础弹：`PlayerBullet.ts`（对齐 Godot `PlayerBullet.gd` / `BulletBase.gd`：向上运动、出屏销毁；命中敌人后销毁）；**节点与占位图**由 `playerBulletFactory.ts` 的 `spawnPlayerBullet`（`PlayerController` 调用）  
@@ -47,6 +47,6 @@
 
 - 主菜单与战斗场景可切换，设计分辨率 **720×1280**。
 - **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后三选一升级再进入下一波、经验/得分与简易 HUD、预制体/代码兜底升级 UI**；脚本侧已模块化（工厂/状态/输入/命中等），仓库根目录 **`npm test`（Vitest）** 覆盖 **`aabbMath`、`BattleRunState`、`WaveSpawnScheduler`** 等无引擎逻辑。
-- **下一里程碑**：**精英率**、**成绩查询面板**（全屏只读）；美术资源按 `11_art_and_assets.md` 接入。（**局内 DPS / `bestDps`**、**敌弹/机体威胁乘区**、**本地成绩**、**续战块刷怪**、**Boss**、**护盾**、**Boss HUD** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
+- **下一里程碑**：**精英率**；美术资源按 `11_art_and_assets.md` 接入。（**主菜单成绩查询遮罩**、**局内 DPS / `bestDps`**、**敌弹/机体威胁乘区**、**本地成绩**、**续战块刷怪**、**Boss**、**护盾**、**Boss HUD** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
 
 > 若实现与 Godot 版有路径或 API 差异，优先更新本节与 `README`，再改代码。

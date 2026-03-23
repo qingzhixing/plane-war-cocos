@@ -8,6 +8,8 @@
   - **设置**：打开与局内相同的设置面板（`show_settings_from_menu()`，不关暂停，因主菜单未跑战斗）。
   - **退出**：`get_tree().quit()`（桌面；移动端无效果可接受）。
 - **成绩查询**：主菜单入口「成绩查询」打开全屏遮罩面板，只读展示本地 **`user://records.cfg`** 与局内写入一致的字段：**历史最高得分**、**历史最高连击**、**历史最高 DPS**；无记录时显示 0；关闭返回主菜单。
+
+> **Cocos（`plane-war-cocos`）**：`MainMenu.scene` 根节点挂 **`MainMenu.ts`**；`mainMenuChromeFactory.ts` 构建 **「开始游戏」/「成绩查询」** 入口；**`presentRecordsQueryOverlay`** 全屏遮罩 + 只读三项 + **「关闭」**（与 `localRecords` 字段一致）。
 - **关于（About）**：主菜单「关于」不再展示项目介绍，而是打开一页**精简版更新日志（Changelog）**：显示当前版本号（如 `v0.2.2`）以及最近 1–2 个版本的主要变更摘要；保留 **GitHub 仓库链接按钮**（调系统浏览器打开完整 README / Changelog）；文案在场景内预设，升级版本时同步更新。
 - **局内返回主菜单**：结算界面提供「主菜单」按钮，切回 `MainMenu.tscn`（与「重新开始」区分）。
 - 设置：
