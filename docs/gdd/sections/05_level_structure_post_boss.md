@@ -32,4 +32,4 @@
 - 续战 **7 波小怪**每波结束必弹升级；第 7 波升级后 **必出 Boss**；Boss 击破后 **必弹**「结算 / 接着玩」。
 - 续战块内 **允许** `_spawn_boss()`（仅第 8 波）；主线仍 **单场首 Boss** 在 wave 8。
 
-> **Cocos MVP 增量**：已实现 **主线 / 续战 Boss 击破二选一**（结算 / 继续）、**威胁 +1** 与 **评分 +8%/层**、**续战 Boss HP** 乘区、**稳态护盾 +1/续关**（与 **`combo_guard`** 升级叠层；受击消耗 1 层免断连）；**继续 / 接着玩** 后先 **`presentUpgradePickSequence`（3 连三选一）**，再开续战 **第 1/8 波**。**续战 1～7 波小怪**：`continuationBlockEnemyCount` / `continuationBlockSpawnIntervalMult`（相对 `ENEMY_SPAWN_INTERVAL`）、小怪 HP 用 **`continuationBlockEquivalentHpWave`（8～14）** 代入 `waveHpFactor`。**未实现**：精英率列、敌弹 speed 按 tier 缩放。
+> **Cocos MVP 增量**：已实现 **主线 / 续战 Boss 击破二选一**（结算 / 继续）、**威胁 +1** 与 **评分 +8%/层**、**续战 Boss HP** 乘区、**稳态护盾 +1/续关**（与 **`combo_guard`** 升级叠层；受击消耗 1 层免断连）；**继续 / 接着玩** 后先 **`presentUpgradePickSequence`（3 连三选一）**，再开续战 **第 1/8 波**。**续战 1～7 波小怪**：`continuationBlockEnemyCount` / `continuationBlockSpawnIntervalMult`（相对 `ENEMY_SPAWN_INTERVAL`）、小怪 HP 用 **`continuationBlockEquivalentHpWave`（8～14）** 代入 `waveHpFactor`；**精英率**列由 **`continuationBlockEliteRate(blockWave)`** 驱动（与上表一致）。**敌弹**速度按 **`enemyBulletSpeedForTier`** 缩放；**精英圆环**为可选速度向量（见 `enemyBulletFactory`）。

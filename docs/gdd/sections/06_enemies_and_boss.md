@@ -37,6 +37,8 @@
 
 > 精英实现时应优先保证“躲避教学感”，不要过分追求密度。
 
+> **Cocos 移植（`plane-war-cocos`）**：**Elite01** 由 **`EnemyElite.ts`** + **`enemyEliteFactory.ts`** 生成；**HP** 基数 **6** 再乘 **`waveHpFactor(spawnWave)`**；**经验 15**、**基础分 50**；移速约为 **`ENEMY_SPEED × 0.65 × enemyMobilityTierMult`**；约 **每 2 秒**一轮 **8 向圆环敌弹**（速度约为 **`enemyBulletSpeedForTier × 0.72`**，见 **`enemyBulletFactory` 可选速度向量**）。**刷怪**：`EnemySpawner` 在**非 Boss 小怪波**按 **`mainLineEliteChance` / `continuationBlockEliteRate`**（与 **`05b` 表**一致）掷骰，命中则刷精英否则刷 **`EnemyBasic`**。
+
 ## Boss（1 个，符卡氛围但低密度，MVP 目标）
 
 > Boss 只做 1 个，重点是“有阶段感的符卡演出”，而非高难度弹幕。
@@ -119,7 +121,7 @@
   - `本次击杀得分 = 基础击杀分 × 连击得分系数`  
   - 其中连击得分系数由当前连击数所属区间决定。
 
-> **Cocos 移植 MVP（`plane-war-cocos`）**：击杀时先 **`combo += 1 + combo_boost 叠层`**（升级 `combo_boost` 每选一次 +1 层额外连击增量），再按**本节区间表**取系数；**最终得分** `= 基础击杀分 × 连击系数 × 评分乘区（score_up 等）**。实现见 `comboScore.ts` + `BattleRunState.onEnemyKill`。当前 **仅击杀**累连击（未统计「单发子弹多次命中」）。**玩家与敌机世界 AABB 重叠**时：`combo` 清零、敌机直接销毁（**不计击杀分/经验**）。**敌弹**由 `EnemyBasic` 定时向下发射（`enemyBulletFactory` + `EnemyBullet`），与玩家 AABB 重叠时清零连击并销毁该弹（与撞机共用 `onPlayerHit`）。
+> **Cocos 移植 MVP（`plane-war-cocos`）**：击杀时先 **`combo += 1 + combo_boost 叠层`**（升级 `combo_boost` 每选一次 +1 层额外连击增量），再按**本节区间表**取系数；**最终得分** `= 基础击杀分 × 连击系数 × 评分乘区（score_up 等）**。实现见 `comboScore.ts` + `BattleRunState.onEnemyKill`。当前 **仅击杀**累连击（未统计「单发子弹多次命中」）。**玩家与敌机世界 AABB 重叠**时：`combo` 清零、敌机直接销毁（**不计击杀分/经验**）。**敌弹**由 **`EnemyBasic` / `EnemyElite` / `EnemyBoss`** 发射（`enemyBulletFactory` + `EnemyBullet`；精英圆环为 **速度向量**），与玩家 AABB 重叠时清零连击并销毁该弹（与撞机共用 `onPlayerHit`）。
 
 ### 爽感与反馈（与敌人行为/死亡相关）
 
@@ -133,5 +135,5 @@
 - **主线 Boss**：第 8 波；**续战块**内第 8 波再打 Boss（同场景，**血量显著高于主线**，避免「还不如小怪」）。
 - **Boss HP（实现）**：基数约 **300**；威胁乘区 **1.2^tier**；**续战 Boss** 再乘 **(3.2 + tier)**（tier≥1 时极明显）；弹幕 **speed** 仍 **min(1.35, 1.04^tier)**。小怪仍用 **1.12^tier**。
 
-> **Cocos 移植 MVP**：第 **`BOSS_WAVE`（默认 8）** 波由 `EnemySpawner` 走 **`WaveSpawnScheduler.startBossWave`**，仅生成 **一架** `EnemyBoss`；**最大 HP** 由 **`bossMaxHpForSpawn(tier, isContinuationBoss)`**：先 **`bossMaxHpForTier(tier)`**（`×1.2^tier`），续战第 8 波 Boss 再 **`×(3.2 + tier)`**（`inContinuationBlock &&` Boss 波）。**主线首次击破 Boss** 后弹 **`presentPostBossChoice`**：**本局结算**（回主菜单）/ **继续挑战**（`threatTier+1`、评分乘区 **+8%**、**`comboGuardStacks+1`**、**`presentUpgradePickSequence` 连续 3 次三选一**、再 `activeWave=1` 开波）；**续战 Boss 击破**后 **接着玩** 同样叠层并 **再 3 次三选一**。**局内** Boss 血条 + 波次文案；续战块显示 **「续战 n/8」**；**`BattleHud`** 显示 **护盾×N**（`N>0`）。**续战 1～7 波**小怪数量/刷怪间隔/等效 HP 波次见 **`GameConfig`（`05b` 表）**。**敌弹下落速度**：**`enemyBulletSpeedForTier(threatTier)`** `= ENEMY_BULLET_SPEED × min(1.35, 1.04^tier)`（见上节「Boss 与威胁」）。**机体下移速**：**`enemyMobilityTierMult(threatTier)`** `= 1.12^tier`，乘在 **`ENEMY_SPEED` / `BOSS_SPEED`** 上（`enemyBasicFactory` / `enemyBossFactory`）。**未接**：精英率。
+> **Cocos 移植 MVP**：第 **`BOSS_WAVE`（默认 8）** 波由 `EnemySpawner` 走 **`WaveSpawnScheduler.startBossWave`**，仅生成 **一架** `EnemyBoss`；**最大 HP** 由 **`bossMaxHpForSpawn(tier, isContinuationBoss)`**：先 **`bossMaxHpForTier(tier)`**（`×1.2^tier`），续战第 8 波 Boss 再 **`×(3.2 + tier)`**（`inContinuationBlock &&` Boss 波）。**主线首次击破 Boss** 后弹 **`presentPostBossChoice`**：**本局结算**（回主菜单）/ **继续挑战**（`threatTier+1`、评分乘区 **+8%**、**`comboGuardStacks+1`**、**`presentUpgradePickSequence` 连续 3 次三选一**、再 `activeWave=1` 开波）；**续战 Boss 击破**后 **接着玩** 同样叠层并 **再 3 次三选一**。**局内** Boss 血条 + 波次文案；续战块显示 **「续战 n/8」**；**`BattleHud`** 显示 **护盾×N**（`N>0`）。**续战 1～7 波**小怪数量/刷怪间隔/等效 HP 波次见 **`GameConfig`（`05b` 表）**。**敌弹下落速度**：**`enemyBulletSpeedForTier(threatTier)`** `= ENEMY_BULLET_SPEED × min(1.35, 1.04^tier)`（见上节「Boss 与威胁」）。**机体下移速**：**`enemyMobilityTierMult(threatTier)`** `= 1.12^tier`，乘在 **`ENEMY_SPEED` / `BOSS_SPEED`** 上（`enemyBasicFactory` / `enemyBossFactory` / `enemyEliteFactory`）。**精英率**：主线 **`mainLineEliteChance(wave)`**（第 1～2 波为 0，第 3～7 波约 **18%**）；续战块 **`continuationBlockEliteRate(blockWave)`** 与 **`05b` 表**一致；每次小怪生成掷骰，命中则 **`spawnEnemyElite`** 否则 **`spawnEnemyBasic`**。
 
