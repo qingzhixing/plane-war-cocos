@@ -21,12 +21,23 @@ export class EnemySpawner extends Component {
   }
 
   /** 对齐 enemy_spawner.gd start_wave */
-  startWave(wave: number, threatTier = 0, continuationBossSpawn = false) {
+  startWave(
+    wave: number,
+    threatTier = 0,
+    continuationBossSpawn = false,
+    inContinuationBlock = false,
+  ) {
     this._threatTier = threatTier;
     this._continuationBossSpawn = continuationBossSpawn;
     this._bossWave = wave === GameConfig.BOSS_WAVE;
     if (this._bossWave) {
       this._sched.startBossWave(wave);
+    } else if (
+      inContinuationBlock &&
+      wave >= 1 &&
+      wave < GameConfig.BOSS_WAVE
+    ) {
+      this._sched.startContinuationMobWave(wave, threatTier);
     } else {
       this._sched.startWave(wave);
     }
@@ -62,7 +73,7 @@ export class EnemySpawner extends Component {
     const x = (Math.random() - 0.5) * span;
     spawnEnemyBasic(
       this.node,
-      this._sched.spawnWaveForEnemies,
+      this._sched.mobSpawnWaveForHp,
       x,
       GameConfig.ENEMY_SPAWN_Y,
     );

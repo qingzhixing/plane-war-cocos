@@ -164,6 +164,7 @@ export class BattleMain extends Component {
       this._run.activeWave,
       this._run.threatTier,
       this._run.continuationBossForWave(this._run.activeWave),
+      this._run.inContinuationBlock,
     );
   }
 

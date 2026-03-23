@@ -72,3 +72,31 @@ export function waveHpFactor(wave: number): number {
   }
   return 1 + 0.25 * (wave - 1);
 }
+
+/** 续战块内第 1～7 波小怪数量（GDD `05b`：基数 + tier×系数） */
+export function continuationBlockEnemyCount(
+  blockWave: number,
+  threatTier: number,
+): number {
+  const t = Math.max(0, threatTier);
+  const bw = Math.max(1, Math.min(7, Math.floor(blockWave)));
+  const base = [8, 11, 13, 15, 17, 19, 22];
+  const tierCoeff = bw >= 6 ? 3 : 2;
+  return base[bw - 1] + t * tierCoeff;
+}
+
+/** 相对 `ENEMY_SPAWN_INTERVAL` 的间隔倍率（越小刷得越快） */
+export function continuationBlockSpawnIntervalMult(blockWave: number): number {
+  const mults = [0.88, 0.72, 0.64, 0.56, 0.5, 0.46, 0.42];
+  const bw = Math.max(1, Math.min(7, Math.floor(blockWave)));
+  return mults[bw - 1];
+}
+
+/**
+ * 续战小怪 HP 用「等效波次」代入 `waveHpFactor`（GDD 表末列 8～14）。
+ * 块内波 1→7 对应 8→14。
+ */
+export function continuationBlockEquivalentHpWave(blockWave: number): number {
+  const bw = Math.max(1, Math.min(7, Math.floor(blockWave)));
+  return 7 + bw;
+}

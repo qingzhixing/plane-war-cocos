@@ -51,4 +51,17 @@ describe('WaveSpawnScheduler', () => {
     expect(spawns).toBe(1);
     expect(s.remaining).toBe(0);
   });
+
+  it('startContinuationMobWave tier0 波1 与 05b 表一致', () => {
+    const s = new WaveSpawnScheduler();
+    s.startContinuationMobWave(1, 0);
+    expect(s.remaining).toBe(8);
+    expect(s.mobSpawnWaveForHp).toBe(8);
+    let spawns = 0;
+    s.tick(999, () => {
+      spawns++;
+    });
+    expect(spawns).toBe(8);
+    expect(s.remaining).toBe(0);
+  });
 });

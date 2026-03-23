@@ -3,8 +3,12 @@ import {
   BOSS_BASE_HP,
   BOSS_CONTINUATION_MULT,
   BOSS_HP_TIER_MULT,
+  ENEMY_SPAWN_INTERVAL,
   bossMaxHpForSpawn,
   bossMaxHpForTier,
+  continuationBlockEnemyCount,
+  continuationBlockEquivalentHpWave,
+  continuationBlockSpawnIntervalMult,
 } from '../assets/scripts/GameConfig';
 
 describe('GameConfig bossMaxHpForTier', () => {
@@ -40,5 +44,31 @@ describe('GameConfig bossMaxHpForSpawn', () => {
     expect(bossMaxHpForSpawn(0, true)).toBe(
       Math.round(BOSS_BASE_HP * BOSS_CONTINUATION_MULT),
     );
+  });
+});
+
+describe('GameConfig 续战块刷怪（05b）', () => {
+  it('continuationBlockEnemyCount 波1 tier0 为 8', () => {
+    expect(continuationBlockEnemyCount(1, 0)).toBe(8);
+  });
+
+  it('continuationBlockEnemyCount 波1 tier1 为 8+2', () => {
+    expect(continuationBlockEnemyCount(1, 1)).toBe(10);
+  });
+
+  it('continuationBlockEnemyCount 波7 tier1 为 22+3', () => {
+    expect(continuationBlockEnemyCount(7, 1)).toBe(25);
+  });
+
+  it('continuationBlockEquivalentHpWave 1～7 为 8～14', () => {
+    expect(continuationBlockEquivalentHpWave(1)).toBe(8);
+    expect(continuationBlockEquivalentHpWave(7)).toBe(14);
+  });
+
+  it('continuationBlockSpawnIntervalMult 与表一致', () => {
+    expect(continuationBlockSpawnIntervalMult(1)).toBeCloseTo(0.88);
+    expect(
+      continuationBlockSpawnIntervalMult(1) * ENEMY_SPAWN_INTERVAL,
+    ).toBeCloseTo(0.88);
   });
 });
