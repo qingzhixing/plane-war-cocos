@@ -28,7 +28,7 @@
   - 战斗状态（MVP）：`BattleMain.ts`（对齐 `main.gd` 子集：编排 `EnemySpawner`、升级与 HUD）；**单场数值与流程门闩**见 `battleRunState.ts` 的 `BattleRunState`（经验/得分/波次/升级中/评分乘区）；HUD 展示由 `BattleHud.ts`；清场后 **升级三选一**  
   - 升级三选一：**预制体 + 编辑器** — 预制体路径 `assets/prefabs/ui/UpgradePick.prefab`（根节点挂 `UpgradeUI.ts`）；**Game** 场景里 **Canvas → GameRoot** 的 **`upgradePickPrefab`** 拖入该预制体。详见同目录 `EDITOR_SETUP.md`。数据池：`UpgradePool.ts`；展示与兜底 UI：`UpgradePickFlow.ts`（`presentUpgradePick`，与 `BattleMain` 解耦）。  
   - 全局引用：`battleAccess.ts`（`getBattleMain()`，供 `EnemyBasic` 击杀上报经验/得分）  
-  - 碰撞：`EnemyRegistry.ts` 登记敌机，`PlayerBullet` 用 **`UITransform.getBoundingBoxToWorld()` + `Rect.intersects`** 做 AABB 检测（与物理引擎解耦，便于与 Godot 判定口径对齐）  
+  - 碰撞：`EnemyRegistry.ts` 登记敌机；`PlayerBullet` 取世界 **`Rect`** 后由 **`playerBulletHitscan.ts`** 的 `findFirstEnemyAabbHit` 做首次 AABB 命中（与物理引擎解耦，便于与 Godot 判定口径对齐）  
   - 常量：`GameConfig.ts`（设计分辨率、射速/弹速、敌机速度与血量等）
 - 美术与音频：由 `plane-war/assets/` 复制到本仓库 `assets/`（勿提交 Godot 的 `.import`），命名保持与 `docs/gdd/sections/11_art_and_assets.md` 一致。
 - 本地成绩：与 Godot 的 `user://records.cfg` 类似，实现阶段使用 **本地存储**（如 `sys.localStorage` 或原生文件 API），键名与字段见 GDD 与 Godot `Main` 读写逻辑。
