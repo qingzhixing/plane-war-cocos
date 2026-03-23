@@ -22,6 +22,25 @@ export const COMBO_BREAK_DISPLAY_SEC = 1.15;
 export const COMBO_MILESTONE_DISPLAY_SEC = 1.05;
 /** 本局得分首次超过历史最高时的「新纪录？」提示（秒） */
 export const NEW_RECORD_HINT_SEC = 2.2;
+/** 接近历史最高分：得分达到 `best×` 该比例且仍 `< best` 时可触发接近纪录 */
+export const NEAR_RECORD_SCORE_RATIO = 0.9;
+/** 「接近纪录！」显示时长（秒） */
+export const NEAR_RECORD_HINT_SEC = 1.8;
+
+/**
+ * 本局「接近纪录」得分下限（含）；`historicBest` &lt; 2 时无提示区间。
+ */
+export function nearRecordScoreThreshold(historicBest: number): number | null {
+  if (historicBest < 2) {
+    return null;
+  }
+  const raw = Math.floor(historicBest * NEAR_RECORD_SCORE_RATIO);
+  const t = Math.max(1, Math.min(raw, historicBest - 1));
+  if (t >= historicBest) {
+    return null;
+  }
+  return t;
+}
 
 /** 敌机基础弹伤害（对齐 BulletBase damage 默认） */
 export const BULLET_DAMAGE = 1;

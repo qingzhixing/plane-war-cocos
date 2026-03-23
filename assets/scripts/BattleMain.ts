@@ -12,6 +12,7 @@ import {
 } from './UpgradePickFlow';
 import { BattleHud } from './BattleHud';
 import { crossedComboMilestone } from './comboMilestone';
+import * as GameConfig from './GameConfig';
 import { BattleRunState } from './battleRunState';
 import { loadLocalRecords, mergeCurrentRunAndSave } from './localRecords';
 
@@ -37,6 +38,8 @@ export class BattleMain extends Component {
   private _historicBestScore = 0;
   /** 本局是否已弹出过「新纪录？」 */
   private _newRecordScoreHintShown = false;
+  /** 本局是否已弹出过「接近纪录！」 */
+  private _nearRecordHintShown = false;
 
   init(playField: Node, upgradePickPrefab: Prefab | null) {
     this._playField = playField;
@@ -234,6 +237,7 @@ export class BattleMain extends Component {
         : null,
     );
     this._maybeFlashNewRecordScore();
+    this._maybeFlashNearRecordScore();
   }
 
   private _maybeFlashNewRecordScore() {
@@ -243,6 +247,26 @@ export class BattleMain extends Component {
     if (this._run.score > this._historicBestScore) {
       this._newRecordScoreHintShown = true;
       this._hud?.flashNewRecordHint();
+    }
+  }
+
+  private _maybeFlashNearRecordScore() {
+    if (this._nearRecordHintShown) {
+      return;
+    }
+    if (this._newRecordScoreHintShown) {
+      return;
+    }
+    const t = GameConfig.nearRecordScoreThreshold(this._historicBestScore);
+    if (t === null) {
+      return;
+    }
+    if (
+      this._run.score >= t &&
+      this._run.score < this._historicBestScore
+    ) {
+      this._nearRecordHintShown = true;
+      this._hud?.flashNearRecordHint();
     }
   }
 }

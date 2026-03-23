@@ -25,6 +25,8 @@ export class BattleHud extends Component {
   private _comboMilestoneRemain = 0;
   private _newRecordNode: Node | null = null;
   private _newRecordRemain = 0;
+  private _nearRecordNode: Node | null = null;
+  private _nearRecordRemain = 0;
 
   onLoad() {
     const ut = this.node.addComponent(UITransform);
@@ -39,6 +41,7 @@ export class BattleHud extends Component {
     this._buildComboBreak();
     this._buildComboMilestone();
     this._buildNewRecordHint();
+    this._buildNearRecordHint();
   }
 
   private _buildComboBreak() {
@@ -96,6 +99,12 @@ export class BattleHud extends Component {
         this._newRecordNode.active = false;
       }
     }
+    if (this._nearRecordRemain > 0) {
+      this._nearRecordRemain -= dt;
+      if (this._nearRecordRemain <= 0 && this._nearRecordNode) {
+        this._nearRecordNode.active = false;
+      }
+    }
   }
 
   /** 实际断连时由 `BattleMain.onPlayerHit` 调用 */
@@ -111,6 +120,14 @@ export class BattleHud extends Component {
     this._newRecordRemain = GameConfig.NEW_RECORD_HINT_SEC;
     if (this._newRecordNode) {
       this._newRecordNode.active = true;
+    }
+  }
+
+  /** 接近开局时的历史最高但尚未超过时由 `BattleMain` 调用 */
+  flashNearRecordHint() {
+    this._nearRecordRemain = GameConfig.NEAR_RECORD_HINT_SEC;
+    if (this._nearRecordNode) {
+      this._nearRecordNode.active = true;
     }
   }
 

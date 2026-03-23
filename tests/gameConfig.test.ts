@@ -13,6 +13,7 @@ import {
   COMBO_BREAK_DISPLAY_SEC,
   COMBO_MILESTONE_DISPLAY_SEC,
   NEW_RECORD_HINT_SEC,
+  NEAR_RECORD_HINT_SEC,
   bossMaxHpForSpawn,
   bossMaxHpForTier,
   continuationBlockEliteRate,
@@ -178,6 +179,10 @@ describe('GameConfig 玩家无敌帧', () => {
 
   it('NEW_RECORD_HINT_SEC 为正', () => {
     expect(NEW_RECORD_HINT_SEC).toBeGreaterThan(0);
+  });
+
+  it('NEAR_RECORD_HINT_SEC 为正', () => {
+    expect(NEAR_RECORD_HINT_SEC).toBeGreaterThan(0);
   });
 });
 
