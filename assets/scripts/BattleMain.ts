@@ -4,6 +4,7 @@ import { EnemySpawner } from './EnemySpawner';
 import { setBattleMain } from './battleAccess';
 import { presentUpgradePick } from './UpgradePickFlow';
 import { BattleHud } from './BattleHud';
+import { BattleRunState } from './battleRunState';
 
 const { ccclass } = _decorator;
 
@@ -15,13 +16,7 @@ export class BattleMain extends Component {
 
   private _upgradePrefab: Prefab | null = null;
 
-  private _exp = 0;
-  private _score = 0;
-  private _activeWave = 0;
-  private _waitingContinue = false;
-
-  /** 未接 BattleMain 乘区时，score_up 的占位累计 */
-  private _scoreMultiplier = 1;
+  private readonly _run = new BattleRunState();
 
   init(playField: Node, upgradePickPrefab: Prefab | null) {
     this._playField = playField;
@@ -32,7 +27,7 @@ export class BattleMain extends Component {
 
     this._buildHud();
 
-    this._activeWave = 1;
+    this._run.activeWave = 1;
     this._spawner.startWave(1);
     this._refreshHud();
   }
@@ -46,20 +41,19 @@ export class BattleMain extends Component {
   }
 
   addExp(n: number) {
-    this._exp += n;
+    this._run.addExp(n);
     this._refreshHud();
   }
 
   addScore(n: number) {
-    this._score += Math.round(n * this._scoreMultiplier);
+    this._run.addScoreFromKill(n);
     this._refreshHud();
   }
 
   onWaveCleared() {
-    if (this._waitingContinue) {
+    if (!this._run.tryEnterUpgradeFlow()) {
       return;
     }
-    this._waitingContinue = true;
     this._openUpgrade();
   }
 
@@ -76,14 +70,13 @@ export class BattleMain extends Component {
     pc?.applyUpgrade(id);
 
     if (id === 'score_up') {
-      this._scoreMultiplier += 0.15;
+      this._run.applyScoreUpUpgrade();
     }
   }
 
   private _finishAfterUpgrade() {
-    this._waitingContinue = false;
-    this._activeWave += 1;
-    this._spawner?.startWave(this._activeWave);
+    this._run.finishUpgradeAdvanceWave();
+    this._spawner?.startWave(this._run.activeWave);
     this._refreshHud();
   }
 
@@ -95,10 +88,10 @@ export class BattleMain extends Component {
 
   private _refreshHud() {
     this._hud?.refresh(
-      this._activeWave,
-      this._score,
-      this._exp,
-      this._scoreMultiplier,
+      this._run.activeWave,
+      this._run.score,
+      this._run.exp,
+      this._run.scoreMultiplier,
     );
   }
 }
