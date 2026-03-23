@@ -1,8 +1,9 @@
-import { _decorator, Color, Component, Label, Node, Prefab, UITransform } from 'cc';
+import { _decorator, Component, Node, Prefab } from 'cc';
 import { PlayerController } from './PlayerController';
 import { EnemySpawner } from './EnemySpawner';
 import { setBattleMain } from './battleAccess';
 import { presentUpgradePick } from './UpgradePickFlow';
+import { BattleHud } from './BattleHud';
 
 const { ccclass } = _decorator;
 
@@ -10,7 +11,7 @@ const { ccclass } = _decorator;
 export class BattleMain extends Component {
   private _playField: Node | null = null;
   private _spawner: EnemySpawner | null = null;
-  private _hudLabel: Label | null = null;
+  private _hud: BattleHud | null = null;
 
   private _upgradePrefab: Prefab | null = null;
 
@@ -33,6 +34,10 @@ export class BattleMain extends Component {
 
     this._activeWave = 1;
     this._spawner.startWave(1);
+    this._refreshHud();
+  }
+
+  start() {
     this._refreshHud();
   }
 
@@ -84,21 +89,16 @@ export class BattleMain extends Component {
 
   private _buildHud() {
     const n = new Node('BattleHud');
-    const ut = n.addComponent(UITransform);
-    ut.setContentSize(680, 100);
-    n.setPosition(0, 560, 0);
-    const lab = n.addComponent(Label);
-    lab.fontSize = 20;
-    lab.color = Color.WHITE;
-    this._hudLabel = lab;
     this.node.addChild(n);
+    this._hud = n.addComponent(BattleHud);
   }
 
   private _refreshHud() {
-    if (!this._hudLabel) {
-      return;
-    }
-    const sm = Math.round(this._scoreMultiplier * 100) / 100;
-    this._hudLabel.string = `波次 ${this._activeWave}  得分 ${this._score}  经验 ${this._exp}  评分×${sm}`;
+    this._hud?.refresh(
+      this._activeWave,
+      this._score,
+      this._exp,
+      this._scoreMultiplier,
+    );
   }
 }
