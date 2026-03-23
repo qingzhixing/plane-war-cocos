@@ -1,6 +1,7 @@
-import { _decorator, Component, isValid, UITransform } from 'cc';
+import { _decorator, Component, UITransform } from 'cc';
 import * as GameConfig from './GameConfig';
 import { enemiesSnapshot } from './EnemyRegistry';
+import { findFirstEnemyAabbHit } from './playerBulletHitscan';
 
 const { ccclass } = _decorator;
 
@@ -31,20 +32,11 @@ export class PlayerBullet extends Component {
       return false;
     }
     const b = selfUt.getBoundingBoxToWorld();
-    for (const e of enemiesSnapshot()) {
-      if (!isValid(e.node)) {
-        continue;
-      }
-      const eu = e.node.getComponent(UITransform);
-      if (!eu) {
-        continue;
-      }
-      const eb = eu.getBoundingBoxToWorld();
-      if (b.intersects(eb)) {
-        e.applyDamage(this.damage);
-        this.node.destroy();
-        return true;
-      }
+    const hit = findFirstEnemyAabbHit(b, enemiesSnapshot());
+    if (hit) {
+      hit.applyDamage(this.damage);
+      this.node.destroy();
+      return true;
     }
     return false;
   }
