@@ -27,3 +27,23 @@ export function mergeRunIntoRecords(
     bestDps: Math.max(prev.bestDps, maxDps),
   };
 }
+
+/** 本局结算后相对合并前是否刷新了任一项本地纪录（用于主菜单一次性提示） */
+export type ReturnHint = {
+  newBestScore: boolean;
+  newBestCombo: boolean;
+  newBestDps: boolean;
+};
+
+export function computeReturnHint(
+  prev: LocalRecords,
+  next: LocalRecords,
+): ReturnHint | null {
+  const newBestScore = next.bestScore > prev.bestScore;
+  const newBestCombo = next.bestCombo > prev.bestCombo;
+  const newBestDps = next.bestDps > prev.bestDps;
+  if (!newBestScore && !newBestCombo && !newBestDps) {
+    return null;
+  }
+  return { newBestScore, newBestCombo, newBestDps };
+}

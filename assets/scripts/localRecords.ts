@@ -1,12 +1,16 @@
 import { sys } from 'cc';
 import {
+  computeReturnHint,
   DEFAULT_LOCAL_RECORDS,
   LOCAL_RECORDS_STORAGE_KEY,
   mergeRunIntoRecords,
   type LocalRecords,
+  type ReturnHint,
 } from './localRecordsCore';
 
-export type { LocalRecords } from './localRecordsCore';
+export type { LocalRecords, ReturnHint } from './localRecordsCore';
+
+const RETURN_HINT_KEY = 'plane_war_cocos_return_hint_v1';
 
 export function loadLocalRecords(): LocalRecords {
   try {
@@ -33,6 +37,42 @@ export function saveLocalRecords(r: LocalRecords): void {
   }
 }
 
+function persistReturnHint(h: ReturnHint): void {
+  try {
+    sys.localStorage.setItem(RETURN_HINT_KEY, JSON.stringify(h));
+  } catch {
+    // ignore
+  }
+}
+
+function clearReturnHintStorage(): void {
+  try {
+    sys.localStorage.removeItem(RETURN_HINT_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+/** 读取并清除一次性「刷新纪录」提示（进入主菜单时调用） */
+export function consumeReturnHint(): ReturnHint | null {
+  try {
+    const raw = sys.localStorage.getItem(RETURN_HINT_KEY);
+    if (!raw) {
+      return null;
+    }
+    clearReturnHintStorage();
+    const o = JSON.parse(raw) as Partial<ReturnHint>;
+    return {
+      newBestScore: !!o.newBestScore,
+      newBestCombo: !!o.newBestCombo,
+      newBestDps: !!o.newBestDps,
+    };
+  } catch {
+    clearReturnHintStorage();
+    return null;
+  }
+}
+
 /** 与本局 `BattleRunState` 合并后写入 */
 export function mergeCurrentRunAndSave(run: {
   score: number;
@@ -47,5 +87,11 @@ export function mergeCurrentRunAndSave(run: {
     run.maxDps,
   );
   saveLocalRecords(next);
+  const hint = computeReturnHint(prev, next);
+  if (hint) {
+    persistReturnHint(hint);
+  } else {
+    clearReturnHintStorage();
+  }
   return next;
 }

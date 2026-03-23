@@ -1,24 +1,72 @@
 import { Color, Graphics, Label, Node, UITransform } from 'cc';
 import * as GameConfig from './GameConfig';
-import { loadLocalRecords } from './localRecords';
+import { loadLocalRecords, type ReturnHint } from './localRecords';
 import { applyUiFontsUnder } from './uiFonts';
 
-/** 主菜单标题区：标题 + 本地最佳摘要（代码搭建） */
-export function createMainMenuHint(): Node {
+function addCenteredLabel(
+  parent: Node,
+  name: string,
+  layer: number,
+  text: string,
+  y: number,
+  fontSize: number,
+  color: Color,
+): void {
+  const n = new Node(name);
+  n.layer = layer;
+  n.setPosition(0, y, 0);
+  const lab = n.addComponent(Label);
+  lab.string = text;
+  lab.fontSize = fontSize;
+  lab.color = color;
+  parent.addChild(n);
+}
+
+/** 主菜单标题区：标题 + 可选「刷新纪录」提示 + 本地最佳摘要（代码搭建） */
+export function createMainMenuHint(
+  layer: number,
+  returnHint: ReturnHint | null,
+): Node {
   const rec = loadLocalRecords();
-  const lines = ['飞机大战'];
-  if (rec.bestScore > 0 || rec.bestCombo > 0 || rec.bestDps > 0) {
-    lines.push(
-      `最高得分 ${rec.bestScore}  最高连击 ${rec.bestCombo}  最高DPS ${Math.round(rec.bestDps)}`,
+  const hasStats =
+    rec.bestScore > 0 || rec.bestCombo > 0 || rec.bestDps > 0;
+  const hintH = returnHint ? 280 : hasStats ? 220 : 140;
+  const hint = new Node('Hint');
+  hint.layer = layer;
+  const ut = hint.addComponent(UITransform);
+  ut.setContentSize(620, hintH);
+
+  addCenteredLabel(hint, 'Title', layer, '飞机大战', 105, 30, Color.WHITE);
+
+  if (returnHint) {
+    const parts: string[] = [];
+    if (returnHint.newBestScore) parts.push('得分');
+    if (returnHint.newBestCombo) parts.push('连击');
+    if (returnHint.newBestDps) parts.push('DPS');
+    addCenteredLabel(
+      hint,
+      'ReturnBanner',
+      layer,
+      `★ 本次刷新本地纪录：${parts.join('、')}`,
+      45,
+      26,
+      new Color(255, 220, 100, 255),
     );
   }
-  const hint = new Node('Hint');
-  const ut = hint.addComponent(UITransform);
-  ut.setContentSize(620, 200);
-  const lab = hint.addComponent(Label);
-  lab.string = lines.join('\n');
-  lab.fontSize = 30;
-  lab.color = Color.WHITE;
+
+  if (hasStats) {
+    const statsY = returnHint ? -55 : -35;
+    addCenteredLabel(
+      hint,
+      'Stats',
+      layer,
+      `最高得分 ${rec.bestScore}  最高连击 ${rec.bestCombo}  最高DPS ${Math.round(rec.bestDps)}`,
+      statsY,
+      24,
+      Color.WHITE,
+    );
+  }
+
   return hint;
 }
 
@@ -49,6 +97,7 @@ export function createMainMenuRoot(
   parent: Node,
   onStartGame: () => void,
   onRecords: () => void,
+  returnHint: ReturnHint | null = null,
 ): Node {
   const layer = parent.layer;
   const root = new Node('MainMenuRoot');
@@ -56,7 +105,7 @@ export function createMainMenuRoot(
   const ut = root.addComponent(UITransform);
   ut.setContentSize(GameConfig.DESIGN_W, GameConfig.DESIGN_H);
 
-  const hint = createMainMenuHint();
+  const hint = createMainMenuHint(layer, returnHint);
   hint.setPosition(0, 200, 0);
   root.addChild(hint);
 

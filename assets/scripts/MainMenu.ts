@@ -3,6 +3,7 @@ import {
   createMainMenuRoot,
   presentRecordsQueryOverlay,
 } from './mainMenuChromeFactory';
+import { consumeReturnHint } from './localRecords';
 import { applyUiFontsUnder, preloadUiFonts } from './uiFonts';
 
 const { ccclass } = _decorator;
@@ -11,6 +12,7 @@ const { ccclass } = _decorator;
 export class MainMenu extends Component {
   onLoad() {
     preloadUiFonts(() => {
+      const returnHint = consumeReturnHint();
       const root = createMainMenuRoot(
         this.node,
         () => {
@@ -19,6 +21,7 @@ export class MainMenu extends Component {
         () => {
           presentRecordsQueryOverlay(this.node);
         },
+        returnHint,
       );
       this.node.addChild(root);
       applyUiFontsUnder(root);
