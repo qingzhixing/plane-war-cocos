@@ -235,6 +235,7 @@ export class BattleMain extends Component {
       this._bossHudVisible
         ? { hp: this._bossHudHp, maxHp: this._bossHudMax }
         : null,
+      this._battleTimeSec,
     );
     this._maybeFlashNewRecordScore();
     this._maybeFlashNearRecordScore();

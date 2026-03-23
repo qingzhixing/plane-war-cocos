@@ -27,6 +27,8 @@ export class BattleHud extends Component {
   private _newRecordRemain = 0;
   private _nearRecordNode: Node | null = null;
   private _nearRecordRemain = 0;
+  private _lastDpsHudRefreshSec = -1;
+  private _dpsLineCache = '';
 
   onLoad() {
     const ut = this.node.addComponent(UITransform);
@@ -202,6 +204,7 @@ export class BattleHud extends Component {
     currentDps: number,
     maxDps: number,
     bossBar: { hp: number; maxHp: number } | null,
+    battleTimeSec: number,
   ): void {
     if (!this._label) {
       return;
@@ -221,8 +224,15 @@ export class BattleHud extends Component {
     }
     const guardStr =
       comboGuardStacks > 0 ? `  护盾×${comboGuardStacks}` : '';
-    const dpsLine = `DPS ${Math.round(currentDps)}  本局最高 ${Math.round(maxDps)}`;
-    this._label.string = `${waveStr}  得分 ${score}  连击 ${combo}  经验 ${exp}  评分×${sm}${guardStr}\n${dpsLine}`;
+    const needDps =
+      this._lastDpsHudRefreshSec < 0 ||
+      battleTimeSec - this._lastDpsHudRefreshSec >=
+        GameConfig.DPS_HUD_REFRESH_SEC;
+    if (needDps) {
+      this._lastDpsHudRefreshSec = battleTimeSec;
+      this._dpsLineCache = `DPS ${Math.round(currentDps)}  本局最高 ${Math.round(maxDps)}`;
+    }
+    this._label.string = `${waveStr}  得分 ${score}  连击 ${combo}  经验 ${exp}  评分×${sm}${guardStr}\n${this._dpsLineCache}`;
 
     if (this._bossStrip) {
       const show = bossBar !== null && bossBar.maxHp > 0;

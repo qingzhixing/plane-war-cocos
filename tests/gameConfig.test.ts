@@ -26,6 +26,7 @@ import {
   enemyBulletSpeedMultiplier,
   enemyMobilityTierMult,
   ENEMY_MOBILITY_TIER_BASE,
+  DPS_HUD_REFRESH_SEC,
   mainLineEliteChance,
   mainLineTurretChance,
   mainLineSummonerChance,
@@ -101,6 +102,13 @@ describe('GameConfig enemyBulletSpeedForTier', () => {
 
   it('高 tier 不超过 1.35', () => {
     expect(enemyBulletSpeedMultiplier(99)).toBe(ENEMY_BULLET_SPEED_TIER_CAP);
+  });
+});
+
+describe('GameConfig DPS HUD', () => {
+  it('DPS_HUD_REFRESH_SEC 在合理区间', () => {
+    expect(DPS_HUD_REFRESH_SEC).toBeGreaterThan(0);
+    expect(DPS_HUD_REFRESH_SEC).toBeLessThanOrEqual(1);
   });
 });
 
