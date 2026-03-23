@@ -20,6 +20,8 @@
   - 血量：略高于 EnemyBasic01，鼓励玩家主动处理
   - 碰撞：与玩家发生碰撞时，对玩家造成 1 点伤害，并同时销毁自身
 
+> **Cocos 移植（`plane-war-cocos`）**：**EnemyBasic02** 由 **`EnemyTurret.ts`** + **`enemyTurretFactory.ts`** 实现；**HP** 基数 **5** 再乘 **`waveHpFactor(spawnWave)`**；**经验 8**、**基础分 15**；先**下移**至 **`ENEMY_TURRET_ANCHOR_Y`** 后**左右漂移**并进入射击循环：**约 1.8s 间隔**后 **0.7s 前摇**，再 **2～3 发**小扇形向下敌弹（`enemyBulletFactory` 速度向量）。**刷怪**：在**未掷中精英**时按 **`mainLineTurretChance` / `continuationBlockTurretChance`** 掷炮台；**主线第 1 波炮台率为 0**（与「首波以冲锋教学为主」一致）；第 2 波起递增。
+
 ## 精英（建议 1 种，MVP 目标）
 
 > 精英用于在普通波次之间制造一次明显的“压强提升”，训练基础躲避。
@@ -121,7 +123,7 @@
   - `本次击杀得分 = 基础击杀分 × 连击得分系数`  
   - 其中连击得分系数由当前连击数所属区间决定。
 
-> **Cocos 移植 MVP（`plane-war-cocos`）**：击杀时先 **`combo += 1 + combo_boost 叠层`**（升级 `combo_boost` 每选一次 +1 层额外连击增量），再按**本节区间表**取系数；**最终得分** `= 基础击杀分 × 连击系数 × 评分乘区（score_up 等）**。实现见 `comboScore.ts` + `BattleRunState.onEnemyKill`。当前 **仅击杀**累连击（未统计「单发子弹多次命中」）。**玩家与敌机世界 AABB 重叠**时：`combo` 清零、敌机直接销毁（**不计击杀分/经验**）。**敌弹**由 **`EnemyBasic` / `EnemyElite` / `EnemyBoss`** 发射（`enemyBulletFactory` + `EnemyBullet`；精英圆环为 **速度向量**），与玩家 AABB 重叠时清零连击并销毁该弹（与撞机共用 `onPlayerHit`）。
+> **Cocos 移植 MVP（`plane-war-cocos`）**：击杀时先 **`combo += 1 + combo_boost 叠层`**（升级 `combo_boost` 每选一次 +1 层额外连击增量），再按**本节区间表**取系数；**最终得分** `= 基础击杀分 × 连击系数 × 评分乘区（score_up 等）**。实现见 `comboScore.ts` + `BattleRunState.onEnemyKill`。当前 **仅击杀**累连击（未统计「单发子弹多次命中」）。**玩家与敌机世界 AABB 重叠**时：`combo` 清零、敌机直接销毁（**不计击杀分/经验**）。**敌弹**由 **`EnemyBasic` / `EnemyTurret` / `EnemyElite` / `EnemyBoss`** 发射（`enemyBulletFactory` + `EnemyBullet`；扇形/圆环为 **速度向量**），与玩家 AABB 重叠时清零连击并销毁该弹（与撞机共用 `onPlayerHit`）。
 
 ### 爽感与反馈（与敌人行为/死亡相关）
 
