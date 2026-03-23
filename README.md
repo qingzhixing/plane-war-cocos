@@ -6,7 +6,6 @@
 
 - [Cocos Creator 3.8.8](https://www.cocos.com/creator-download)（与根目录 `package.json` 中 `creator.version` 对齐）
 - **可选**：根目录执行 `npm install` 后运行 **`npm test`**，用 Vitest 跑 `tests/` 下与引擎无关的纯逻辑单测（`aabbMath`、`battleRunState`、`waveSpawnScheduler` 等）。
-- **CI**：推送到 **`main` / `master`** 或向这两支发 PR 时，GitHub Actions 会 **`npm install` + `npm test`**（见 `.github/workflows/ci.yml`）。
 
 ## 打开与运行
 
@@ -29,7 +28,6 @@
 | `assets/scenes/` | `MainMenu`（主菜单）、`Game`（战斗占位，后续接入玩法） |
 | `assets/scripts/` | `MainMenu.ts`、`mainMenuChromeFactory.ts`、`GameRoot.ts`、`playFieldFactory.ts`、`gameChromeFactory.ts`、`BattleMain.ts`、`battleRunState.ts`、`BattleHud.ts`、`battleAccess.ts`、`UpgradePool.ts`、`UpgradeUI.ts`、`UpgradePickFlow.ts`、`PlayerController.ts`、`playerInput.ts`、`playerMotion.ts`、`playerBulletFactory.ts`、`aabbMath.ts`、`playerBulletHitscan.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`enemyBasicFactory.ts`、`EnemySpawner.ts`、`waveSpawnScheduler.ts`、`EnemyRegistry.ts`、`GameConfig.ts` |
 | `tests/` | Vitest 单测（`aabbMath`、`battleRunState`、`waveSpawnScheduler` 等） |
-| `.github/workflows/` | GitHub Actions（`ci.yml`：单元测试） |
 | `assets/prefabs/ui/` | `EDITOR_SETUP.md`（`UpgradePick.prefab` 制作说明，预制体需在编辑器中创建） |
 
 ## 下一步（移植里程碑）
