@@ -116,4 +116,5 @@
 - **运行时加载**：`assets/resources/` 下资源使用引擎 **`resources.load`**（无扩展名路径，如 `audio/SFX/player/Shoot`）；脚本 **`gameAudio.ts`** 内聚 **`AudioSource`**（BGM 一路 + SFX `playOneShot`）。
 - **BGM**：进入 **`Game` 战斗场景**时启动；与 Godot「主菜单 AutoLoad 不销毁」不同，本阶段 **随 `Game` 场景卸载而停止**（返回主菜单无战斗 BGM）；池内 4 首与 Godot 一致，**洗牌后顺序播放，播完一轮再洗牌**。
 - **SFX（本批）**：`Shoot` 随自动射击；`hurt` 在 **连击被中断且进入无敌**时；`power_up` 在 **三选一确认**与 **连击档位跨越（Combo!）** 时（档位可略压低音量以区分）。
-- **未接**：敌弹擦弹、敌受伤/爆炸、失败 `Lose` 等仍按上表资源保留在 Godot 目录，Cocos 侧后续再接。
+- **SFX（第二批）**：`EnemyInjured.ogg` 在 **玩家子弹命中敌人且未致死**时；`Explosion1–5.ogg` 在 **`applyDamage` 导致敌人/Boss 死亡**时 **随机其一**（与 Godot 爆炸池一致）。资源路径：`audio/SFX/enemy/EnemyInjured`、`audio/SFX/explode/Explosion1` … `Explosion5`。
+- **未接**：敌弹擦弹 `Graze.wav`、失败 `Lose.ogg` 等仍可在后续接入；撞机/出屏销毁敌人 **不经** `applyDamage` 时当前 **不** 播爆炸音（与「被弹击杀」区分，后续若要统一可再改）。

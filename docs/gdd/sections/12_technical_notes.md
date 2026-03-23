@@ -30,7 +30,7 @@
   - 全局引用：`battleAccess.ts`（`getBattleMain()`，供 `EnemyBasic` **`onEnemyKill`**、`PlayerController` **`onPlayerHit`**）  
   - 碰撞：`EnemyRegistry.ts` 登记敌机；`PlayerBullet` 取世界 **`Rect`** 后由 **`playerBulletHitscan.ts`** 的 `findFirstEnemyAabbHit` 做首次 AABB 命中；相交判定数值见 **`aabbMath.ts`** 的 `aabbOverlap`（与物理引擎解耦，便于与 Godot 判定口径对齐）。仓库根目录 **`npm test`**（Vitest）：`aabbOverlap`、`BattleRunState`、`WaveSpawnScheduler` 等无引擎依赖逻辑。  
   - 常量：`GameConfig.ts`（设计分辨率、射速/弹速、敌机速度与血量、`bossMaxHpForTier(tier)` 等）
-  - 音频（首批）：`gameAudio.ts`（`initGameAudio` / `destroyGameAudio` 由 **`GameRoot`** 生命周期驱动；**BGM** 四首洗牌链式播放；**SFX** `Shoot` / `hurt` / `power_up`）；音轨文件置于 **`assets/resources/audio/`**（与 `09_audio_and_feedback.md`「Cocos 移植」一致）。
+  - 音频：`gameAudio.ts`（`initGameAudio` / `destroyGameAudio` 由 **`GameRoot`** 生命周期驱动；**BGM** 四首洗牌链式播放；**SFX** 含玩家 `Shoot` / `hurt` / `power_up`，以及 **敌受伤 `EnemyInjured`、死亡爆炸 `Explosion1–5` 随机**）；音轨文件置于 **`assets/resources/audio/`**（与 `09_audio_and_feedback.md`「Cocos 移植」一致）。
 - 美术与音频：由 `plane-war/assets/` 复制到本仓库 `assets/`（勿提交 Godot 的 `.import`）；**可被 `resources.load` 引用的音频**放在 **`assets/resources/audio/`**，命名保持与 `docs/gdd/sections/11_art_and_assets.md` / `09_audio_and_feedback.md` 一致。
 - 本地成绩：与 Godot 的 `user://records.cfg` 类似，实现阶段使用 **本地存储**（如 `sys.localStorage` 或原生文件 API），键名与字段见 GDD 与 Godot `Main` 读写逻辑。
   - **Cocos（本仓库）**：`localRecords.ts` / `localRecordsCore.ts`；**`sys.localStorage`** 键 **`plane_war_cocos_records_v1`**，JSON 字段 **`bestScore`**、**`bestCombo`**、**`bestDps`**；**`bestDps`** 与本局 **`BattleRunState.maxDps`**（对敌有效伤害、**`DPS_WINDOW_SEC` 秒滑动窗口**）取大合并；**本局结算**与 **返回主菜单** 时写入；**主菜单**展示三项最佳（有则显示）。
