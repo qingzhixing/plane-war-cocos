@@ -6,6 +6,7 @@ export function spawnEnemyBoss(
   playField: Node,
   wave: number,
   threatTier: number,
+  isContinuationBoss: boolean,
 ): void {
   const n = new Node('EnemyBoss');
   const ut = n.addComponent(UITransform);
@@ -18,7 +19,7 @@ export function spawnEnemyBoss(
   g.fill();
   const eb = n.addComponent(EnemyBoss);
   eb.spawnWave = wave;
-  eb.maxHp = GameConfig.bossMaxHpForTier(threatTier);
+  eb.maxHp = GameConfig.bossMaxHpForSpawn(threatTier, isContinuationBoss);
   n.setPosition(0, GameConfig.ENEMY_SPAWN_Y, 0);
   playField.addChild(n);
 }

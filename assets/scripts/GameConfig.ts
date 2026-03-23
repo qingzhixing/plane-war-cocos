@@ -34,11 +34,26 @@ export const BOSS_WAVE = 8;
 export const BOSS_BASE_HP = 300;
 /** 威胁乘区：与 GDD「Boss 与威胁」一致 */
 export const BOSS_HP_TIER_MULT = 1.2;
+/** 续战 Boss 在 `bossMaxHpForTier` 之后再乘 `(3.2 + tier)` */
+export const BOSS_CONTINUATION_MULT = 3.2;
 
 /** 主线 / 续战块威胁等级（≥0）；主线开局为 0。 */
 export function bossMaxHpForTier(tier: number): number {
   const t = Math.max(0, tier);
   return Math.round(BOSS_BASE_HP * Math.pow(BOSS_HP_TIER_MULT, t));
+}
+
+/** Boss 生成用最大 HP：续战第 8 波 Boss 额外乘区。 */
+export function bossMaxHpForSpawn(
+  tier: number,
+  isContinuationBoss: boolean,
+): number {
+  const base = bossMaxHpForTier(tier);
+  if (!isContinuationBoss) {
+    return base;
+  }
+  const t = Math.max(0, tier);
+  return Math.round(base * (BOSS_CONTINUATION_MULT + t));
 }
 export const BOSS_SPEED = 80;
 export const BOSS_EXP_VALUE = 50;

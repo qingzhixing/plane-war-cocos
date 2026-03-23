@@ -1,4 +1,5 @@
 import { comboScoreCoefficient } from './comboScore';
+import * as GameConfig from './GameConfig';
 
 /**
  * 单场战斗运行态（不含节点 / HUD），供 `BattleMain` 持有。
@@ -20,8 +21,10 @@ export class BattleRunState {
   waitingForUpgrade = false;
   /** `score_up` 等叠加的评分乘区 */
   scoreMultiplier = 1;
-  /** 威胁等级（Boss HP 等）；主线开局 0，续战递增待接 */
+  /** 威胁等级（Boss HP 等）；主线开局 0 */
   threatTier = 0;
+  /** 已进入续战块（继续挑战后；波次 1～8 循环，第 8 波为续战 Boss） */
+  inContinuationBlock = false;
 
   addExp(n: number): void {
     this.exp += n;
@@ -54,6 +57,21 @@ export class BattleRunState {
 
   applyScoreUpUpgrade(): void {
     this.scoreMultiplier += 0.15;
+  }
+
+  /** 续战第 8 波 Boss 生成时传 `spawnEnemyBoss` */
+  continuationBossForWave(wave: number): boolean {
+    return this.inContinuationBlock && wave === GameConfig.BOSS_WAVE;
+  }
+
+  /**
+   * 击破 Boss 后选「继续挑战 / 接着玩」：威胁 +1、评分乘区 +8%、回到续战第 1 波。
+   */
+  applyContinueChallenge(): void {
+    this.threatTier += 1;
+    this.scoreMultiplier += 0.08;
+    this.inContinuationBlock = true;
+    this.activeWave = 1;
   }
 
   /**

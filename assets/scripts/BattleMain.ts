@@ -1,7 +1,11 @@
-import { _decorator, Component, Node, Prefab } from 'cc';
+import { _decorator, Component, director, Node, Prefab } from 'cc';
 import { PlayerController } from './PlayerController';
 import { EnemySpawner } from './EnemySpawner';
 import { setBattleMain } from './battleAccess';
+import {
+  presentPostBossChoice,
+  type PostBossChoice,
+} from './postBossChoiceFlow';
 import { presentUpgradePick } from './UpgradePickFlow';
 import { BattleHud } from './BattleHud';
 import { BattleRunState } from './battleRunState';
@@ -32,7 +36,7 @@ export class BattleMain extends Component {
     this._buildHud();
 
     this._run.activeWave = 1;
-    this._spawner.startWave(1, this._run.threatTier);
+    this._startCurrentWave();
     this._refreshHud();
   }
 
@@ -83,10 +87,32 @@ export class BattleMain extends Component {
   }
 
   onWaveCleared() {
+    if (this._run.activeWave === 8 && !this._run.inContinuationBlock) {
+      presentPostBossChoice(this.node, 'main', (c) =>
+        this._resolvePostBossChoice(c),
+      );
+      return;
+    }
+    if (this._run.activeWave === 8 && this._run.inContinuationBlock) {
+      presentPostBossChoice(this.node, 'continuation', (c) =>
+        this._resolvePostBossChoice(c),
+      );
+      return;
+    }
     if (!this._run.tryEnterUpgradeFlow()) {
       return;
     }
     this._openUpgrade();
+  }
+
+  private _resolvePostBossChoice(c: PostBossChoice) {
+    if (c === 'settle') {
+      director.loadScene('MainMenu');
+      return;
+    }
+    this._run.applyContinueChallenge();
+    this._startCurrentWave();
+    this._refreshHud();
   }
 
   private _openUpgrade() {
@@ -111,8 +137,16 @@ export class BattleMain extends Component {
 
   private _finishAfterUpgrade() {
     this._run.finishUpgradeAdvanceWave();
-    this._spawner?.startWave(this._run.activeWave, this._run.threatTier);
+    this._startCurrentWave();
     this._refreshHud();
+  }
+
+  private _startCurrentWave() {
+    this._spawner?.startWave(
+      this._run.activeWave,
+      this._run.threatTier,
+      this._run.continuationBossForWave(this._run.activeWave),
+    );
   }
 
   private _buildHud() {
@@ -128,6 +162,7 @@ export class BattleMain extends Component {
       this._run.combo,
       this._run.exp,
       this._run.scoreMultiplier,
+      this._run.inContinuationBlock,
       this._bossHudVisible
         ? { hp: this._bossHudHp, maxHp: this._bossHudMax }
         : null,

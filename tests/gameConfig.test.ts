@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   BOSS_BASE_HP,
+  BOSS_CONTINUATION_MULT,
   BOSS_HP_TIER_MULT,
+  bossMaxHpForSpawn,
   bossMaxHpForTier,
 } from '../assets/scripts/GameConfig';
 
@@ -18,5 +20,25 @@ describe('GameConfig bossMaxHpForTier', () => {
 
   it('负 tier 视为 0', () => {
     expect(bossMaxHpForTier(-3)).toBe(BOSS_BASE_HP);
+  });
+});
+
+describe('GameConfig bossMaxHpForSpawn', () => {
+  it('非续战 Boss 同 bossMaxHpForTier', () => {
+    expect(bossMaxHpForSpawn(1, false)).toBe(bossMaxHpForTier(1));
+  });
+
+  it('续战 Boss 再乘 (3.2 + tier)', () => {
+    const tier = 1;
+    const base = bossMaxHpForTier(tier);
+    expect(bossMaxHpForSpawn(tier, true)).toBe(
+      Math.round(base * (BOSS_CONTINUATION_MULT + tier)),
+    );
+  });
+
+  it('续战 tier 0 仍乘 3.2', () => {
+    expect(bossMaxHpForSpawn(0, true)).toBe(
+      Math.round(BOSS_BASE_HP * BOSS_CONTINUATION_MULT),
+    );
   });
 });

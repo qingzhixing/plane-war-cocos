@@ -84,16 +84,25 @@ export class BattleHud extends Component {
     combo: number,
     exp: number,
     scoreMultiplier: number,
+    inContinuationBlock: boolean,
     bossBar: { hp: number; maxHp: number } | null,
   ): void {
     if (!this._label) {
       return;
     }
     const sm = Math.round(scoreMultiplier * 100) / 100;
-    const waveStr =
-      bossBar && wave === GameConfig.BOSS_WAVE
-        ? `波次 ${wave} - Boss`
-        : `波次 ${wave}`;
+    let waveStr: string;
+    if (inContinuationBlock) {
+      waveStr =
+        bossBar && wave === GameConfig.BOSS_WAVE
+          ? `续战 ${wave}/8 - Boss`
+          : `续战 ${wave}/8`;
+    } else {
+      waveStr =
+        bossBar && wave === GameConfig.BOSS_WAVE
+          ? `波次 ${wave} - Boss`
+          : `波次 ${wave}`;
+    }
     this._label.string = `${waveStr}  得分 ${score}  连击 ${combo}  经验 ${exp}  评分×${sm}`;
 
     if (this._bossStrip) {
