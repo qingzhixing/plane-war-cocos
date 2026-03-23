@@ -1,6 +1,6 @@
-import { _decorator, Color, Component, Graphics, Node, UITransform } from 'cc';
+import { _decorator, Component } from 'cc';
 import { enemiesSnapshot } from './EnemyRegistry';
-import { EnemyBasic } from './EnemyBasic';
+import { spawnEnemyBasic } from './enemyBasicFactory';
 import type { BattleMain } from './BattleMain';
 import * as GameConfig from './GameConfig';
 
@@ -48,20 +48,13 @@ export class EnemySpawner extends Component {
   }
 
   private _spawnOne() {
-    const n = new Node('Enemy');
-    const ut = n.addComponent(UITransform);
-    ut.setContentSize(40, 40);
-    ut.setAnchorPoint(0.5, 0.5);
-    const g = n.addComponent(Graphics);
-    g.lineWidth = 0;
-    g.fillColor = new Color(255, 120, 80, 255);
-    g.rect(-20, -20, 40, 40);
-    g.fill();
-    const eb = n.addComponent(EnemyBasic);
-    eb.spawnWave = this._spawnWaveForEnemies;
     const span = GameConfig.DESIGN_W - 80;
     const x = (Math.random() - 0.5) * span;
-    n.setPosition(x, GameConfig.ENEMY_SPAWN_Y, 0);
-    this.node.addChild(n);
+    spawnEnemyBasic(
+      this.node,
+      this._spawnWaveForEnemies,
+      x,
+      GameConfig.ENEMY_SPAWN_Y,
+    );
   }
 }
