@@ -52,6 +52,19 @@ export const ENEMY_FIRE_INTERVAL = 2.5;
 export const ENEMY_SPAWN_INTERVAL = 1;
 /** 与 EnemyBase max_hp 默认一致 */
 export const ENEMY_MAX_HP = 4;
+/** Elite01 基数 HP（再乘 `waveHpFactor(spawnWave)`，见 GDD 06） */
+export const ENEMY_ELITE_BASE_HP = 6;
+/** 相对 ENEMY_SPEED 的精英下移速 */
+export const ENEMY_ELITE_SPEED_MULT = 0.65;
+export const ENEMY_ELITE_EXP_VALUE = 15;
+export const ENEMY_ELITE_SCORE_VALUE = 50;
+/** 秒；圆环弹幕间隔（GDD：约 2s） */
+export const ENEMY_ELITE_FIRE_INTERVAL = 2;
+export const ENEMY_ELITE_RING_BULLETS = 8;
+/** 相对 `enemyBulletSpeedForTier` 的圆环弹速（GDD 约 260–320 vs 基数 420） */
+export const ENEMY_ELITE_RING_BULLET_SPEED_MULT = 0.72;
+/** 主线第 3～7 波小怪每次生成掷为精英的概率（第 1～2 波为 0） */
+export const MAIN_LINE_ELITE_CHANCE = 0.18;
 /** 生成时 Y（PlayField 局部坐标，靠屏幕上沿） */
 export const ENEMY_SPAWN_Y = 580;
 
@@ -126,4 +139,23 @@ export function continuationBlockSpawnIntervalMult(blockWave: number): number {
 export function continuationBlockEquivalentHpWave(blockWave: number): number {
   const bw = Math.max(1, Math.min(7, Math.floor(blockWave)));
   return 7 + bw;
+}
+
+/** 主线小怪精英率：第 1～2 波不出精英；第 3～`BOSS_WAVE-1` 波为 `MAIN_LINE_ELITE_CHANCE` */
+export function mainLineEliteChance(wave: number): number {
+  const w = Math.max(1, Math.floor(wave));
+  if (w < 3) {
+    return 0;
+  }
+  if (w >= BOSS_WAVE) {
+    return 0;
+  }
+  return MAIN_LINE_ELITE_CHANCE;
+}
+
+/** 续战块 1～7 波小怪精英率（与 GDD `05b` 表一致） */
+export function continuationBlockEliteRate(blockWave: number): number {
+  const rates = [0.22, 0.28, 0.34, 0.4, 0.46, 0.5, 0.54];
+  const bw = Math.max(1, Math.min(7, Math.floor(blockWave)));
+  return rates[bw - 1];
 }

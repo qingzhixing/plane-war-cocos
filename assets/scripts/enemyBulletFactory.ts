@@ -3,8 +3,19 @@ import { getBattleMain } from './battleAccess';
 import { EnemyBullet } from './EnemyBullet';
 import * as GameConfig from './GameConfig';
 
-/** 在 PlayField 下生成一枚敌弹（占位 Graphics；速度随当前 `threatTier`） */
-export function spawnEnemyBullet(playField: Node, x: number, y: number): void {
+export type SpawnEnemyBulletOpts = {
+  /** 不传则仅竖直向下，`-enemyBulletSpeedForTier(tier)` */
+  velX?: number;
+  velY?: number;
+};
+
+/** 在 PlayField 下生成一枚敌弹（占位 Graphics；默认速度随当前 `threatTier`） */
+export function spawnEnemyBullet(
+  playField: Node,
+  x: number,
+  y: number,
+  opts?: SpawnEnemyBulletOpts,
+): void {
   const n = new Node('EnemyBullet');
   const ut = n.addComponent(UITransform);
   ut.setContentSize(8, 16);
@@ -15,8 +26,15 @@ export function spawnEnemyBullet(playField: Node, x: number, y: number): void {
   g.rect(-4, -8, 8, 16);
   g.fill();
   const tier = getBattleMain()?.getThreatTier() ?? 0;
+  const mag = GameConfig.enemyBulletSpeedForTier(tier);
   const bullet = n.addComponent(EnemyBullet);
-  bullet.speed = GameConfig.enemyBulletSpeedForTier(tier);
+  if (opts !== undefined && (opts.velX !== undefined || opts.velY !== undefined)) {
+    bullet.velX = opts.velX ?? 0;
+    bullet.velY = opts.velY ?? -mag;
+  } else {
+    bullet.velX = 0;
+    bullet.velY = -mag;
+  }
   n.setPosition(x, y, 0);
   playField.addChild(n);
 }

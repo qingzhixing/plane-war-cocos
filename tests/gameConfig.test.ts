@@ -3,11 +3,14 @@ import {
   BOSS_BASE_HP,
   BOSS_CONTINUATION_MULT,
   BOSS_HP_TIER_MULT,
+  BOSS_WAVE,
   ENEMY_BULLET_SPEED,
   ENEMY_BULLET_SPEED_TIER_CAP,
   ENEMY_SPAWN_INTERVAL,
+  MAIN_LINE_ELITE_CHANCE,
   bossMaxHpForSpawn,
   bossMaxHpForTier,
+  continuationBlockEliteRate,
   continuationBlockEnemyCount,
   continuationBlockEquivalentHpWave,
   continuationBlockSpawnIntervalMult,
@@ -15,6 +18,7 @@ import {
   enemyBulletSpeedMultiplier,
   enemyMobilityTierMult,
   ENEMY_MOBILITY_TIER_BASE,
+  mainLineEliteChance,
 } from '../assets/scripts/GameConfig';
 
 describe('GameConfig bossMaxHpForTier', () => {
@@ -97,5 +101,27 @@ describe('GameConfig enemyMobilityTierMult', () => {
 
   it('tier 1 为 1.12', () => {
     expect(enemyMobilityTierMult(1)).toBeCloseTo(ENEMY_MOBILITY_TIER_BASE);
+  });
+});
+
+describe('GameConfig 精英率', () => {
+  it('mainLineEliteChance 第 1～2 波为 0', () => {
+    expect(mainLineEliteChance(1)).toBe(0);
+    expect(mainLineEliteChance(2)).toBe(0);
+  });
+
+  it('mainLineEliteChance 第 3～7 波为 MAIN_LINE_ELITE_CHANCE', () => {
+    expect(mainLineEliteChance(3)).toBe(MAIN_LINE_ELITE_CHANCE);
+    expect(mainLineEliteChance(7)).toBe(MAIN_LINE_ELITE_CHANCE);
+  });
+
+  it('mainLineEliteChance Boss 波为 0', () => {
+    expect(mainLineEliteChance(BOSS_WAVE)).toBe(0);
+  });
+
+  it('continuationBlockEliteRate 与 05b 表一致', () => {
+    expect(continuationBlockEliteRate(1)).toBe(0.22);
+    expect(continuationBlockEliteRate(4)).toBe(0.4);
+    expect(continuationBlockEliteRate(7)).toBe(0.54);
   });
 });

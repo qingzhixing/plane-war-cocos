@@ -2,6 +2,7 @@ import { _decorator, Component } from 'cc';
 import { enemiesSnapshot } from './EnemyRegistry';
 import { spawnEnemyBasic } from './enemyBasicFactory';
 import { spawnEnemyBoss } from './enemyBossFactory';
+import { spawnEnemyElite } from './enemyEliteFactory';
 import type { BattleMain } from './BattleMain';
 import { WaveSpawnScheduler } from './waveSpawnScheduler';
 import * as GameConfig from './GameConfig';
@@ -15,6 +16,7 @@ export class EnemySpawner extends Component {
   private _bossWave = false;
   private _threatTier = 0;
   private _continuationBossSpawn = false;
+  private _inContinuationBlock = false;
 
   setBattleMain(b: BattleMain | null) {
     this._battle = b;
@@ -71,11 +73,24 @@ export class EnemySpawner extends Component {
     }
     const span = GameConfig.DESIGN_W - 80;
     const x = (Math.random() - 0.5) * span;
-    spawnEnemyBasic(
-      this.node,
-      this._sched.mobSpawnWaveForHp,
-      x,
-      GameConfig.ENEMY_SPAWN_Y,
-    );
+    const eliteRoll = Math.random();
+    const eliteChance = this._inContinuationBlock
+      ? GameConfig.continuationBlockEliteRate(this._sched.spawnWaveForEnemies)
+      : GameConfig.mainLineEliteChance(this._sched.spawnWaveForEnemies);
+    if (eliteRoll < eliteChance) {
+      spawnEnemyElite(
+        this.node,
+        this._sched.mobSpawnWaveForHp,
+        x,
+        GameConfig.ENEMY_SPAWN_Y,
+      );
+    } else {
+      spawnEnemyBasic(
+        this.node,
+        this._sched.mobSpawnWaveForHp,
+        x,
+        GameConfig.ENEMY_SPAWN_Y,
+      );
+    }
   }
 }
