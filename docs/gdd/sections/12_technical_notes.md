@@ -30,7 +30,8 @@
   - 全局引用：`battleAccess.ts`（`getBattleMain()`，供 `EnemyBasic` **`onEnemyKill`**、`PlayerController` **`onPlayerHit`**）  
   - 碰撞：`EnemyRegistry.ts` 登记敌机；`PlayerBullet` 取世界 **`Rect`** 后由 **`playerBulletHitscan.ts`** 的 `findFirstEnemyAabbHit` 做首次 AABB 命中；相交判定数值见 **`aabbMath.ts`** 的 `aabbOverlap`（与物理引擎解耦，便于与 Godot 判定口径对齐）。仓库根目录 **`npm test`**（Vitest）：`aabbOverlap`、`BattleRunState`、`WaveSpawnScheduler` 等无引擎依赖逻辑。  
   - 常量：`GameConfig.ts`（设计分辨率、射速/弹速、敌机速度与血量、`bossMaxHpForTier(tier)` 等）
-- 美术与音频：由 `plane-war/assets/` 复制到本仓库 `assets/`（勿提交 Godot 的 `.import`），命名保持与 `docs/gdd/sections/11_art_and_assets.md` 一致。
+  - 音频（首批）：`gameAudio.ts`（`initGameAudio` / `destroyGameAudio` 由 **`GameRoot`** 生命周期驱动；**BGM** 四首洗牌链式播放；**SFX** `Shoot` / `hurt` / `power_up`）；音轨文件置于 **`assets/resources/audio/`**（与 `09_audio_and_feedback.md`「Cocos 移植」一致）。
+- 美术与音频：由 `plane-war/assets/` 复制到本仓库 `assets/`（勿提交 Godot 的 `.import`）；**可被 `resources.load` 引用的音频**放在 **`assets/resources/audio/`**，命名保持与 `docs/gdd/sections/11_art_and_assets.md` / `09_audio_and_feedback.md` 一致。
 - 本地成绩：与 Godot 的 `user://records.cfg` 类似，实现阶段使用 **本地存储**（如 `sys.localStorage` 或原生文件 API），键名与字段见 GDD 与 Godot `Main` 读写逻辑。
   - **Cocos（本仓库）**：`localRecords.ts` / `localRecordsCore.ts`；**`sys.localStorage`** 键 **`plane_war_cocos_records_v1`**，JSON 字段 **`bestScore`**、**`bestCombo`**、**`bestDps`**；**`bestDps`** 与本局 **`BattleRunState.maxDps`**（对敌有效伤害、**`DPS_WINDOW_SEC` 秒滑动窗口**）取大合并；**本局结算**与 **返回主菜单** 时写入；**主菜单**展示三项最佳（有则显示）。
 
@@ -47,6 +48,6 @@
 
 - 主菜单与战斗场景可切换，设计分辨率 **720×1280**。
 - **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后三选一升级再进入下一波、经验/得分与简易 HUD、预制体/代码兜底升级 UI**；脚本侧已模块化（工厂/状态/输入/命中等），仓库根目录 **`npm test`（Vitest）** 覆盖 **`aabbMath`、`BattleRunState`、`WaveSpawnScheduler`** 等无引擎逻辑。
-- **下一里程碑**：美术资源按 `11_art_and_assets.md` 接入。（**档位 Combo! 字**、**判定点 / 连击中断**、**三种小怪原型**、**受击无敌帧**、**精英 / Boss / 护盾 / HUD** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
+- **下一里程碑**：像素美术按 `11_art_and_assets.md` 接入；**敌受伤/爆炸/擦弹/失败音**等按 `09_audio_and_feedback.md` 扩展。（**档位 Combo! 字**、**判定点 / 连击中断**、**三种小怪原型**、**受击无敌帧**、**精英 / Boss / 护盾 / HUD**、**首批 BGM/SFX** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
 
 > 若实现与 Godot 版有路径或 API 差异，优先更新本节与 `README`，再改代码。

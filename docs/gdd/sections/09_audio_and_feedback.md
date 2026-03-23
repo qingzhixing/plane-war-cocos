@@ -109,3 +109,11 @@
     - `Shoot.wav`：玩家自动射击时按节奏播放，强化输出反馈
     - `hurt.wav`：玩家受击或连击中断时播放，提示失误
     - `power_up.wav`：升级三选一确认后播放，强化成长反馈
+
+## Cocos 移植（`plane-war-cocos`）首批接入
+
+- **资源来源**：与 Godot 版相同文件，从 `plane-war/assets/` 复制到本仓库 **`assets/resources/audio/`**（保留 `BGM/`、`SFX/player/` 等子目录名；**不要**复制 Godot 的 `.import`）。
+- **运行时加载**：`assets/resources/` 下资源使用引擎 **`resources.load`**（无扩展名路径，如 `audio/SFX/player/Shoot`）；脚本 **`gameAudio.ts`** 内聚 **`AudioSource`**（BGM 一路 + SFX `playOneShot`）。
+- **BGM**：进入 **`Game` 战斗场景**时启动；与 Godot「主菜单 AutoLoad 不销毁」不同，本阶段 **随 `Game` 场景卸载而停止**（返回主菜单无战斗 BGM）；池内 4 首与 Godot 一致，**洗牌后顺序播放，播完一轮再洗牌**。
+- **SFX（本批）**：`Shoot` 随自动射击；`hurt` 在 **连击被中断且进入无敌**时；`power_up` 在 **三选一确认**与 **连击档位跨越（Combo!）** 时（档位可略压低音量以区分）。
+- **未接**：敌弹擦弹、敌受伤/爆炸、失败 `Lose` 等仍按上表资源保留在 Godot 目录，Cocos 侧后续再接。
