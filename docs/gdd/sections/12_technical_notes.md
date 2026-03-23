@@ -25,7 +25,7 @@
   - 玩家基础弹：`PlayerBullet.ts`（对齐 Godot `PlayerBullet.gd` / `BulletBase.gd`：向上运动、出屏销毁；命中敌人后销毁）；**节点与占位图**由 `playerBulletFactory.ts` 的 `spawnPlayerBullet`（`PlayerController` 调用）  
   - 敌人：`EnemyBasic.ts`（小怪）；`EnemyBoss.ts`（第 `BOSS_WAVE` 波占位 Boss，高 HP、慢速、发敌弹）；**敌弹**见 `EnemyBullet.ts`、`enemyBulletFactory.ts`、`EnemyBulletRegistry.ts`；**节点生成**见 `enemyBasicFactory.ts` / `enemyBossFactory.ts`（`EnemySpawner` 调用）  
   - 刷怪：`EnemySpawner.ts`（对齐 `enemy_spawner.gd`：实例化敌机、第 `BOSS_WAVE` 波仅刷 Boss、清场后通知 `BattleMain`）；**波次内定时与剩余配额**见 `waveSpawnScheduler.ts` 的 `WaveSpawnScheduler`（含 **`startBossWave`**）  
-  - 战斗状态（MVP）：`BattleMain.ts`（对齐 `main.gd` 子集：编排 `EnemySpawner`、升级与 HUD）；**单场数值与流程门闩**见 `battleRunState.ts` 的 `BattleRunState`（经验/得分/波次/连击/升级中/评分乘区、**`threatTier`**、**`inContinuationBlock`**）；**连击得分区间系数**见 `comboScore.ts`（与 GDD `06` 表一致）；HUD 展示由 `BattleHud.ts`（**Boss 名称条与血条**、续战文案）；**Boss 击破二选一**见 `postBossChoiceFlow.ts`；清场后 **升级三选一**  
+  - 战斗状态（MVP）：`BattleMain.ts`（对齐 `main.gd` 子集：编排 `EnemySpawner`、升级与 HUD）；**单场数值与流程门闩**见 `battleRunState.ts` 的 `BattleRunState`（经验/得分/波次/连击/升级中/评分乘区、**`threatTier`**、**`inContinuationBlock`**、**`comboGuardStacks`** 稳态护盾）；**连击得分区间系数**见 `comboScore.ts`（与 GDD `06` 表一致）；HUD 展示由 `BattleHud.ts`（**Boss 名称条与血条**、续战文案、护盾×N）；**Boss 击破二选一**见 `postBossChoiceFlow.ts`；清场后 **升级三选一**  
   - 升级三选一：**预制体 + 编辑器** — 预制体路径 `assets/prefabs/ui/UpgradePick.prefab`（根节点挂 `UpgradeUI.ts`）；**Game** 场景里 **Canvas → GameRoot** 的 **`upgradePickPrefab`** 拖入该预制体。详见同目录 `EDITOR_SETUP.md`。数据池：`UpgradePool.ts`；展示与兜底 UI：`UpgradePickFlow.ts`（`presentUpgradePick`、`presentUpgradePickSequence` 续关 3 连，与 `BattleMain` 解耦）。  
   - 全局引用：`battleAccess.ts`（`getBattleMain()`，供 `EnemyBasic` **`onEnemyKill`**、`PlayerController` **`onPlayerHit`**）  
   - 碰撞：`EnemyRegistry.ts` 登记敌机；`PlayerBullet` 取世界 **`Rect`** 后由 **`playerBulletHitscan.ts`** 的 `findFirstEnemyAabbHit` 做首次 AABB 命中；相交判定数值见 **`aabbMath.ts`** 的 `aabbOverlap`（与物理引擎解耦，便于与 Godot 判定口径对齐）。仓库根目录 **`npm test`**（Vitest）：`aabbOverlap`、`BattleRunState`、`WaveSpawnScheduler` 等无引擎依赖逻辑。  
@@ -46,6 +46,6 @@
 
 - 主菜单与战斗场景可切换，设计分辨率 **720×1280**。
 - **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后三选一升级再进入下一波、经验/得分与简易 HUD、预制体/代码兜底升级 UI**；脚本侧已模块化（工厂/状态/输入/命中等），仓库根目录 **`npm test`（Vitest）** 覆盖 **`aabbMath`、`BattleRunState`、`WaveSpawnScheduler`** 等无引擎逻辑。
-- **下一里程碑**：**`05b` 护盾层、块内递进刷怪表**、**完整 `main.gd` 统计/本地成绩**；美术资源按 `11_art_and_assets.md` 接入。（**主线/续战 Boss**、**`bossMaxHpForSpawn`**、**Boss 击破二选一**、**续关 3 连三选一**（`presentUpgradePickSequence`）、**Boss HUD** 已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
+- **下一里程碑**：**块内递进刷怪表**、**完整 `main.gd` 统计/本地成绩**；美术资源按 `11_art_and_assets.md` 接入。（**主线/续战 Boss**、**`bossMaxHpForSpawn`**、**Boss 击破二选一**、**续关 3 连三选一**、**稳态护盾**、**Boss HUD** 已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
 
 > 若实现与 Godot 版有路径或 API 差异，优先更新本节与 `README`，再改代码。
