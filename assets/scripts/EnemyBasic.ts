@@ -42,8 +42,7 @@ export class EnemyBasic extends Component implements EnemyHitTarget {
   applyDamage(amount: number) {
     this._hp -= amount;
     if (this._hp <= 0) {
-      getBattleMain()?.addExp(this.expValue);
-      getBattleMain()?.addScore(this.scoreValue);
+      getBattleMain()?.onEnemyKill(this.expValue, this.scoreValue);
       this.node.destroy();
     }
   }

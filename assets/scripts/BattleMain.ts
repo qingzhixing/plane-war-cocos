@@ -46,7 +46,12 @@ export class BattleMain extends Component {
   }
 
   addScore(n: number) {
-    this._run.addScoreFromKill(n);
+    this._run.addScoreRaw(n);
+    this._refreshHud();
+  }
+
+  onEnemyKill(expValue: number, baseScore: number) {
+    this._run.onEnemyKill(expValue, baseScore);
     this._refreshHud();
   }
 
@@ -72,6 +77,9 @@ export class BattleMain extends Component {
     if (id === 'score_up') {
       this._run.applyScoreUpUpgrade();
     }
+    if (id === 'combo_boost') {
+      this._run.applyComboBoostUpgrade();
+    }
   }
 
   private _finishAfterUpgrade() {
@@ -90,6 +98,7 @@ export class BattleMain extends Component {
     this._hud?.refresh(
       this._run.activeWave,
       this._run.score,
+      this._run.combo,
       this._run.exp,
       this._run.scoreMultiplier,
     );

@@ -9,10 +9,22 @@ describe('BattleRunState', () => {
     expect(r.tryEnterUpgradeFlow()).toBe(false);
   });
 
-  it('addScoreFromKill 按 scoreMultiplier 累计', () => {
+  it('onEnemyKill 累连击并按区间计分（无评分乘区）', () => {
+    const r = new BattleRunState();
+    for (let i = 0; i < 9; i++) {
+      r.onEnemyKill(0, 10);
+    }
+    expect(r.combo).toBe(9);
+    expect(r.score).toBe(90);
+    r.onEnemyKill(0, 10);
+    expect(r.combo).toBe(10);
+    expect(r.score).toBe(102);
+  });
+
+  it('addScoreRaw 仍走评分乘区', () => {
     const r = new BattleRunState();
     r.scoreMultiplier = 2;
-    r.addScoreFromKill(10);
+    r.addScoreRaw(10);
     expect(r.score).toBe(20);
   });
 
@@ -28,5 +40,19 @@ describe('BattleRunState', () => {
     const r = new BattleRunState();
     r.applyScoreUpUpgrade();
     expect(r.scoreMultiplier).toBeCloseTo(1.15);
+  });
+
+  it('applyComboBoostUpgrade 增加击杀连击增量', () => {
+    const r = new BattleRunState();
+    r.applyComboBoostUpgrade();
+    r.onEnemyKill(0, 10);
+    expect(r.combo).toBe(2);
+  });
+
+  it('resetCombo 清零', () => {
+    const r = new BattleRunState();
+    r.onEnemyKill(0, 10);
+    r.resetCombo();
+    expect(r.combo).toBe(0);
   });
 });

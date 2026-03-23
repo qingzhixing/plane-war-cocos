@@ -2,6 +2,8 @@
 export interface IBattleRewards {
   addExp(n: number): void;
   addScore(n: number): void;
+  /** 敌机击杀：连击 + 经验 + 得分（含连击区间系数 × 评分乘区） */
+  onEnemyKill(expValue: number, baseScore: number): void;
 }
 
 let _battle: IBattleRewards | null = null;

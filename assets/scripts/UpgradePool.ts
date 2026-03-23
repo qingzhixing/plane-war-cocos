@@ -29,7 +29,7 @@ export const MVP_UPGRADES: UpgradeDef[] = [
   {
     id: 'combo_boost',
     name: '节奏推进',
-    desc: '每次命中连击 +1（连击系统待接）',
+    desc: '每次击杀额外 +1 连击（叠层可累加）',
   },
   {
     id: 'score_up',
