@@ -24,7 +24,7 @@
   - 玩家：`PlayerController.ts`（对齐 Godot `player.gd`：拖拽 / 键控移动、边界、自动射击）；全局 `input` 注册与注销见 `playerInput.ts`；**位移与边界纯数学**见 `playerMotion.ts`（键控方向、拖拽限幅、可玩区域夹取、多发偏移）  
   - 玩家基础弹：`PlayerBullet.ts`（对齐 Godot `PlayerBullet.gd` / `BulletBase.gd`：向上运动、出屏销毁；命中敌人后销毁）；**节点与占位图**由 `playerBulletFactory.ts` 的 `spawnPlayerBullet`（`PlayerController` 调用）  
   - 敌人：`EnemyBasic.ts`（对齐 Godot `enemy_basic.gd` / `EnemyBase.gd`：下落、`apply_damage`、HP 归零销毁；占位 Graphics）；**节点生成**见 `enemyBasicFactory.ts` 的 `spawnEnemyBasic`（`EnemySpawner` 调用）  
-  - 刷怪：`EnemySpawner.ts`（对齐 `enemy_spawner.gd`：`startWave(wave)` 按波次数量刷怪、间隔定时；清场后通知 `BattleMain`）  
+  - 刷怪：`EnemySpawner.ts`（对齐 `enemy_spawner.gd`：实例化敌机、清场后通知 `BattleMain`）；**波次内定时与剩余配额**见 `waveSpawnScheduler.ts` 的 `WaveSpawnScheduler`  
   - 战斗状态（MVP）：`BattleMain.ts`（对齐 `main.gd` 子集：编排 `EnemySpawner`、升级与 HUD）；**单场数值与流程门闩**见 `battleRunState.ts` 的 `BattleRunState`（经验/得分/波次/升级中/评分乘区）；HUD 展示由 `BattleHud.ts`；清场后 **升级三选一**  
   - 升级三选一：**预制体 + 编辑器** — 预制体路径 `assets/prefabs/ui/UpgradePick.prefab`（根节点挂 `UpgradeUI.ts`）；**Game** 场景里 **Canvas → GameRoot** 的 **`upgradePickPrefab`** 拖入该预制体。详见同目录 `EDITOR_SETUP.md`。数据池：`UpgradePool.ts`；展示与兜底 UI：`UpgradePickFlow.ts`（`presentUpgradePick`，与 `BattleMain` 解耦）。  
   - 全局引用：`battleAccess.ts`（`getBattleMain()`，供 `EnemyBasic` 击杀上报经验/得分）  
