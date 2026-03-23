@@ -25,7 +25,7 @@
 |------|------|
 | `docs/gdd/` | 游戏设计文档（与 Godot 版同步，技术栈说明见 `sections/12_technical_notes.md`） |
 | `assets/scenes/` | `MainMenu`（主菜单）、`Game`（战斗占位，后续接入玩法） |
-| `assets/scripts/` | `MainMenu.ts`、`GameRoot.ts`、`BattleMain.ts`、`battleAccess.ts`、`UpgradePool.ts`、`UpgradeUI.ts`、`UpgradePickFlow.ts`、`PlayerController.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`EnemySpawner.ts`、`EnemyRegistry.ts`、`GameConfig.ts` |
+| `assets/scripts/` | `MainMenu.ts`、`GameRoot.ts`、`playFieldFactory.ts`、`BattleMain.ts`、`BattleHud.ts`、`battleAccess.ts`、`UpgradePool.ts`、`UpgradeUI.ts`、`UpgradePickFlow.ts`、`PlayerController.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`EnemySpawner.ts`、`EnemyRegistry.ts`、`GameConfig.ts` |
 | `assets/prefabs/ui/` | `EDITOR_SETUP.md`（`UpgradePick.prefab` 制作说明，预制体需在编辑器中创建） |
 
 ## 下一步（移植里程碑）
