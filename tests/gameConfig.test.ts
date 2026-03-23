@@ -11,9 +11,18 @@ import {
   PLAYER_INVULN_BLINK_HZ,
   PLAYER_INVULN_SEC,
   COMBO_BREAK_DISPLAY_SEC,
+  COMBO_BREAK_SCALE_IN_SEC,
+  COMBO_BREAK_SCALE_OUT_SEC,
+  COMBO_BREAK_SCALE_PEAK,
   COMBO_MILESTONE_DISPLAY_SEC,
+  COMBO_MILESTONE_SCALE_IN_SEC,
+  COMBO_MILESTONE_SCALE_OUT_SEC,
+  COMBO_MILESTONE_SCALE_PEAK,
   NEW_RECORD_HINT_SEC,
   NEAR_RECORD_HINT_SEC,
+  RECORD_HINT_SCALE_IN_SEC,
+  RECORD_HINT_SCALE_OUT_SEC,
+  RECORD_HINT_SCALE_PEAK,
   bossMaxHpForSpawn,
   bossMaxHpForTier,
   continuationBlockEliteRate,
@@ -220,6 +229,16 @@ describe('GameConfig 召唤机混入率', () => {
   it('continuationBlockSummonerRate 递增', () => {
     expect(continuationBlockSummonerRate(1)).toBe(0.12);
     expect(continuationBlockSummonerRate(7)).toBe(0.24);
+  });
+});
+
+describe('GameConfig hud flash scale', () => {
+  it('Combo 字缩放常量', () => {
+    expect(COMBO_MILESTONE_SCALE_PEAK).toBe(1.22);
+    expect(COMBO_MILESTONE_SCALE_IN_SEC).toBe(0.08);
+    expect(COMBO_MILESTONE_SCALE_OUT_SEC).toBe(0.12);
+    expect(COMBO_BREAK_SCALE_PEAK).toBe(1.14);
+    expect(RECORD_HINT_SCALE_PEAK).toBe(1.1);
   });
 });
 

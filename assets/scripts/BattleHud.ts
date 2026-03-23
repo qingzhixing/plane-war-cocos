@@ -5,7 +5,10 @@ import {
   Graphics,
   Label,
   Node,
+  Tween,
   UITransform,
+  Vec3,
+  tween,
 } from 'cc';
 import { comboMilestoneBangCount } from './comboMilestone';
 import * as GameConfig from './GameConfig';
@@ -29,6 +32,32 @@ export class BattleHud extends Component {
   private _nearRecordRemain = 0;
   private _lastDpsHudRefreshSec = -1;
   private _dpsLineCache = '';
+
+  private _resetHudFlashNode(n: Node | null) {
+    if (!n) {
+      return;
+    }
+    Tween.stopAllByTarget(n);
+    n.setScale(1, 1, 1);
+  }
+
+  /** 连击提示字：弹出再收回（与 GDD「微缩放」一致，可配 `GameConfig`） */
+  private _pulseHudFlash(
+    n: Node | null,
+    peak: number,
+    inSec: number,
+    outSec: number,
+  ) {
+    if (!n) {
+      return;
+    }
+    Tween.stopAllByTarget(n);
+    n.setScale(1, 1, 1);
+    tween(n)
+      .to(inSec, { scale: new Vec3(peak, peak, 1) })
+      .to(outSec, { scale: new Vec3(1, 1, 1) })
+      .start();
+  }
 
   onLoad() {
     const ut = this.node.addComponent(UITransform);
@@ -86,24 +115,28 @@ export class BattleHud extends Component {
     if (this._comboBreakRemain > 0) {
       this._comboBreakRemain -= dt;
       if (this._comboBreakRemain <= 0 && this._comboBreakNode) {
+        this._resetHudFlashNode(this._comboBreakNode);
         this._comboBreakNode.active = false;
       }
     }
     if (this._comboMilestoneRemain > 0) {
       this._comboMilestoneRemain -= dt;
       if (this._comboMilestoneRemain <= 0 && this._comboMilestoneNode) {
+        this._resetHudFlashNode(this._comboMilestoneNode);
         this._comboMilestoneNode.active = false;
       }
     }
     if (this._newRecordRemain > 0) {
       this._newRecordRemain -= dt;
       if (this._newRecordRemain <= 0 && this._newRecordNode) {
+        this._resetHudFlashNode(this._newRecordNode);
         this._newRecordNode.active = false;
       }
     }
     if (this._nearRecordRemain > 0) {
       this._nearRecordRemain -= dt;
       if (this._nearRecordRemain <= 0 && this._nearRecordNode) {
+        this._resetHudFlashNode(this._nearRecordNode);
         this._nearRecordNode.active = false;
       }
     }
@@ -114,6 +147,12 @@ export class BattleHud extends Component {
     this._comboBreakRemain = GameConfig.COMBO_BREAK_DISPLAY_SEC;
     if (this._comboBreakNode) {
       this._comboBreakNode.active = true;
+      this._pulseHudFlash(
+        this._comboBreakNode,
+        GameConfig.COMBO_BREAK_SCALE_PEAK,
+        GameConfig.COMBO_BREAK_SCALE_IN_SEC,
+        GameConfig.COMBO_BREAK_SCALE_OUT_SEC,
+      );
     }
   }
 
@@ -122,6 +161,12 @@ export class BattleHud extends Component {
     this._newRecordRemain = GameConfig.NEW_RECORD_HINT_SEC;
     if (this._newRecordNode) {
       this._newRecordNode.active = true;
+      this._pulseHudFlash(
+        this._newRecordNode,
+        GameConfig.RECORD_HINT_SCALE_PEAK,
+        GameConfig.RECORD_HINT_SCALE_IN_SEC,
+        GameConfig.RECORD_HINT_SCALE_OUT_SEC,
+      );
     }
   }
 
@@ -143,6 +188,12 @@ export class BattleHud extends Component {
     }
     if (this._comboMilestoneNode) {
       this._comboMilestoneNode.active = true;
+      this._pulseHudFlash(
+        this._comboMilestoneNode,
+        GameConfig.COMBO_MILESTONE_SCALE_PEAK,
+        GameConfig.COMBO_MILESTONE_SCALE_IN_SEC,
+        GameConfig.COMBO_MILESTONE_SCALE_OUT_SEC,
+      );
     }
   }
 

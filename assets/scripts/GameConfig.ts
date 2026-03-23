@@ -20,6 +20,19 @@ export const PLAYER_INVULN_BLINK_HZ = 8;
 export const COMBO_BREAK_DISPLAY_SEC = 1.15;
 /** 连击档位「Combo!」提示显示时长（秒） */
 export const COMBO_MILESTONE_DISPLAY_SEC = 1.05;
+/** 档位 `N Combo!` 字弹出峰值缩放（相对 1） */
+export const COMBO_MILESTONE_SCALE_PEAK = 1.22;
+export const COMBO_MILESTONE_SCALE_IN_SEC = 0.08;
+export const COMBO_MILESTONE_SCALE_OUT_SEC = 0.12;
+/** 「连击中断」字弹出峰值缩放 */
+export const COMBO_BREAK_SCALE_PEAK = 1.14;
+export const COMBO_BREAK_SCALE_IN_SEC = 0.06;
+export const COMBO_BREAK_SCALE_OUT_SEC = 0.1;
+/** 「新纪录？」「接近纪录！」提示峰值缩放 */
+export const RECORD_HINT_SCALE_PEAK = 1.1;
+export const RECORD_HINT_SCALE_IN_SEC = 0.05;
+export const RECORD_HINT_SCALE_OUT_SEC = 0.09;
+
 /** 本局得分首次超过历史最高时的「新纪录？」提示（秒） */
 export const NEW_RECORD_HINT_SEC = 2.2;
 /** 接近历史最高分：得分达到 `best×` 该比例且仍 `< best` 时可触发接近纪录 */
