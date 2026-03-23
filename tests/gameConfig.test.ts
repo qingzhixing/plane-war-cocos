@@ -30,6 +30,7 @@ import {
   GRAZE_PER_COMBO_TICKS,
   GRAZE_RADIUS,
   GRAZE_SCORE,
+  GRAZE_SPARK_LIFE_SEC,
   GRAZE_THROTTLE_SEC,
   mainLineEliteChance,
   mainLineTurretChance,
@@ -228,5 +229,6 @@ describe('GameConfig graze', () => {
     expect(GRAZE_THROTTLE_SEC).toBe(0.05);
     expect(GRAZE_SCORE).toBe(9);
     expect(GRAZE_PER_COMBO_TICKS).toBe(3);
+    expect(GRAZE_SPARK_LIFE_SEC).toBe(0.12);
   });
 });

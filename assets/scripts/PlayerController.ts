@@ -37,6 +37,7 @@ import {
   collectGrazeableEnemies,
 } from './grazeResolve';
 import { tryGrazeNow } from './grazeThrottle';
+import { spawnGrazeSpark } from './grazeVfx';
 
 const { ccclass } = _decorator;
 
@@ -170,6 +171,14 @@ export class PlayerController extends Component {
         )
       ) {
         bm.onGrazeTick();
+        if (this._playField) {
+          spawnGrazeSpark(
+            this._playField,
+            this.node.position.x,
+            this.node.position.y,
+            this.node,
+          );
+        }
       }
     }
     const enemies = collectGrazeableEnemies(
@@ -188,6 +197,14 @@ export class PlayerController extends Component {
         )
       ) {
         bm.onGrazeTick();
+        if (this._playField) {
+          spawnGrazeSpark(
+            this._playField,
+            this.node.position.x,
+            this.node.position.y,
+            this.node,
+          );
+        }
       }
     }
   }

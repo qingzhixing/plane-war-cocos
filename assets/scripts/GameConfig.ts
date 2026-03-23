@@ -86,6 +86,8 @@ export const GRAZE_THROTTLE_SEC = 0.05;
 export const GRAZE_SCORE = 9;
 /** 每累计多少次有效擦弹 +1 连击 */
 export const GRAZE_PER_COMBO_TICKS = 3;
+/** 擦弹 `GrazeSpark` MVP 淡出时长（秒） */
+export const GRAZE_SPARK_LIFE_SEC = 0.12;
 
 /** 敌机发射敌弹间隔（秒），MVP 占位 */
 export const ENEMY_FIRE_INTERVAL = 2.5;
