@@ -21,8 +21,8 @@ export class BattleHud extends Component {
 
   onLoad() {
     const ut = this.node.addComponent(UITransform);
-    ut.setContentSize(700, 120);
-    this.node.setPosition(0, 550, 0);
+    ut.setContentSize(700, 160);
+    this.node.setPosition(0, 520, 0);
     const lab = this.node.addComponent(Label);
     lab.fontSize = 18;
     lab.color = Color.WHITE;
@@ -86,6 +86,8 @@ export class BattleHud extends Component {
     scoreMultiplier: number,
     inContinuationBlock: boolean,
     comboGuardStacks: number,
+    currentDps: number,
+    maxDps: number,
     bossBar: { hp: number; maxHp: number } | null,
   ): void {
     if (!this._label) {
@@ -106,7 +108,8 @@ export class BattleHud extends Component {
     }
     const guardStr =
       comboGuardStacks > 0 ? `  护盾×${comboGuardStacks}` : '';
-    this._label.string = `${waveStr}  得分 ${score}  连击 ${combo}  经验 ${exp}  评分×${sm}${guardStr}`;
+    const dpsLine = `DPS ${Math.round(currentDps)}  本局最高 ${Math.round(maxDps)}`;
+    this._label.string = `${waveStr}  得分 ${score}  连击 ${combo}  经验 ${exp}  评分×${sm}${guardStr}\n${dpsLine}`;
 
     if (this._bossStrip) {
       const show = bossBar !== null && bossBar.maxHp > 0;

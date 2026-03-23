@@ -28,6 +28,13 @@ export class BattleRunState {
   /** 稳态护盾（combo_guard）：受击消耗 1 层可免断连；续关与词条叠加 */
   comboGuardStacks = 0;
 
+  /** 近 `DPS_WINDOW_SEC` 秒对敌有效伤害之和 / 窗口秒数 */
+  currentDps = 0;
+  /** 本局内 `currentDps` 峰值（写入本地 `bestDps`） */
+  maxDps = 0;
+
+  private _dpsSamples: { t: number; amt: number }[] = [];
+
   addExp(n: number): void {
     this.exp += n;
   }
@@ -106,5 +113,28 @@ export class BattleRunState {
   finishUpgradeAdvanceWave(): void {
     this.waitingForUpgrade = false;
     this.activeWave += 1;
+  }
+
+  /** 玩家子弹对敌造成伤害（`nowSec` 为局内累计秒） */
+  recordPlayerDamageToEnemies(amount: number, nowSec: number): void {
+    if (amount <= 0) {
+      return;
+    }
+    this._dpsSamples.push({ t: nowSec, amt: amount });
+    this._updateDpsWindow(nowSec);
+  }
+
+  /** 每帧推进：剔除过期样本并衰减 DPS 显示 */
+  tickDpsWindow(nowSec: number): void {
+    this._updateDpsWindow(nowSec);
+  }
+
+  private _updateDpsWindow(nowSec: number): void {
+    const w = GameConfig.DPS_WINDOW_SEC;
+    const cutoff = nowSec - w;
+    this._dpsSamples = this._dpsSamples.filter((s) => s.t >= cutoff);
+    const sum = this._dpsSamples.reduce((a, s) => a + s.amt, 0);
+    this.currentDps = sum / w;
+    this.maxDps = Math.max(this.maxDps, this.currentDps);
   }
 }

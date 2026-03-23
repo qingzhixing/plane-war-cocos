@@ -3,7 +3,7 @@
 export type LocalRecords = {
   bestScore: number;
   bestCombo: number;
-  /** 占位；局内 DPS 统计接入后再写入 */
+  /** 历史最高对敌 DPS（与局内 `maxDps` 合并；局内为约 5 秒滑动窗口） */
   bestDps: number;
 };
 
@@ -19,10 +19,11 @@ export function mergeRunIntoRecords(
   prev: LocalRecords,
   score: number,
   maxCombo: number,
+  maxDps: number,
 ): LocalRecords {
   return {
     bestScore: Math.max(prev.bestScore, score),
     bestCombo: Math.max(prev.bestCombo, maxCombo),
-    bestDps: prev.bestDps,
+    bestDps: Math.max(prev.bestDps, maxDps),
   };
 }

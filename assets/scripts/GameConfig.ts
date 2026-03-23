@@ -43,6 +43,9 @@ export function enemyMobilityTierMult(tier: number): number {
   const t = Math.max(0, tier);
   return Math.pow(ENEMY_MOBILITY_TIER_BASE, t);
 }
+
+/** 对敌 DPS 滑动窗口（秒），与 GDD「约 5 秒」一致 */
+export const DPS_WINDOW_SEC = 5;
 /** 敌机发射敌弹间隔（秒），MVP 占位 */
 export const ENEMY_FIRE_INTERVAL = 2.5;
 /** 秒，MVP 定时刷怪间隔（完整波次见 EnemySpawner / main） */

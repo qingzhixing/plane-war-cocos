@@ -30,6 +30,9 @@ export class BattleMain extends Component {
   private _bossHudHp = 0;
   private _bossHudMax = 0;
 
+  /** 局内时间（秒），供 DPS 窗口与命中时刻共用 */
+  private _battleTimeSec = 0;
+
   init(playField: Node, upgradePickPrefab: Prefab | null) {
     this._playField = playField;
     this._upgradePrefab = upgradePickPrefab;
@@ -48,17 +51,32 @@ export class BattleMain extends Component {
     this._refreshHud();
   }
 
+  update(dt: number) {
+    this._battleTimeSec += dt;
+    this._run.tickDpsWindow(this._battleTimeSec);
+    this._refreshHud();
+  }
+
   onDestroy() {
     setBattleMain(null);
   }
 
   /** 将本局得分/最高连击合并进本地成绩（返回主菜单或 Boss 结算前调用） */
   flushLocalRecords() {
-    mergeCurrentRunAndSave(this._run);
+    mergeCurrentRunAndSave({
+      score: this._run.score,
+      maxCombo: this._run.maxCombo,
+      maxDps: this._run.maxDps,
+    });
   }
 
   getThreatTier(): number {
     return this._run.threatTier;
+  }
+
+  onPlayerDamageDealt(amount: number) {
+    this._run.recordPlayerDamageToEnemies(amount, this._battleTimeSec);
+    this._refreshHud();
   }
 
   addExp(n: number) {
@@ -194,6 +212,8 @@ export class BattleMain extends Component {
       this._run.scoreMultiplier,
       this._run.inContinuationBlock,
       this._run.comboGuardStacks,
+      this._run.currentDps,
+      this._run.maxDps,
       this._bossHudVisible
         ? { hp: this._bossHudHp, maxHp: this._bossHudMax }
         : null,

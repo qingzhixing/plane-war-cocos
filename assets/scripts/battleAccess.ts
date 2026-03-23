@@ -10,6 +10,8 @@ export interface IBattleRewards {
   flushLocalRecords(): void;
   /** 威胁等级（敌弹速度等） */
   getThreatTier(): number;
+  /** 对敌机/Boss 造成有效伤害（用于 DPS） */
+  onPlayerDamageDealt(amount: number): void;
 }
 
 let _battle: IBattleRewards | null = null;

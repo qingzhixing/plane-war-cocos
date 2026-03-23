@@ -1,5 +1,6 @@
 import { _decorator, Component, UITransform } from 'cc';
 import * as GameConfig from './GameConfig';
+import { getBattleMain } from './battleAccess';
 import { enemiesSnapshot } from './EnemyRegistry';
 import { findFirstEnemyAabbHit } from './playerBulletHitscan';
 
@@ -35,6 +36,7 @@ export class PlayerBullet extends Component {
     const hit = findFirstEnemyAabbHit(b, enemiesSnapshot());
     if (hit) {
       hit.applyDamage(this.damage);
+      getBattleMain()?.onPlayerDamageDealt(this.damage);
       this.node.destroy();
       return true;
     }

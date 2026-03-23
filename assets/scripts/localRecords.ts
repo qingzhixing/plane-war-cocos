@@ -37,9 +37,15 @@ export function saveLocalRecords(r: LocalRecords): void {
 export function mergeCurrentRunAndSave(run: {
   score: number;
   maxCombo: number;
+  maxDps: number;
 }): LocalRecords {
   const prev = loadLocalRecords();
-  const next = mergeRunIntoRecords(prev, run.score, run.maxCombo);
+  const next = mergeRunIntoRecords(
+    prev,
+    run.score,
+    run.maxCombo,
+    run.maxDps,
+  );
   saveLocalRecords(next);
   return next;
 }

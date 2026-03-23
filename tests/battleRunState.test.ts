@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { DPS_WINDOW_SEC } from '../assets/scripts/GameConfig';
 import { BattleRunState } from '../assets/scripts/battleRunState';
 
 describe('BattleRunState', () => {
@@ -74,5 +75,14 @@ describe('BattleRunState', () => {
     const r = new BattleRunState();
     r.applyContinueChallenge();
     expect(r.comboGuardStacks).toBe(1);
+  });
+
+  it('DPS 滑动窗口：持续伤害提高 currentDps 与 maxDps', () => {
+    const r = new BattleRunState();
+    for (let i = 0; i < 5; i++) {
+      r.recordPlayerDamageToEnemies(10, i * 0.1);
+    }
+    expect(r.currentDps).toBeCloseTo(50 / DPS_WINDOW_SEC);
+    expect(r.maxDps).toBe(r.currentDps);
   });
 });
