@@ -12,7 +12,7 @@ export class WaveSpawnScheduler {
   /** 本波敌机用于 HP 缩放等的逻辑波次 */
   spawnWaveForEnemies = 1;
   /**
-   * 写入 `EnemyBasic` / `EnemyTurret` / `EnemyElite.spawnWave` 的波次（主线同 `spawnWaveForEnemies`；
+   * 写入 `EnemyBasic` / `EnemySummoner` / `EnemyTurret` / `EnemyElite.spawnWave` 的波次（主线同 `spawnWaveForEnemies`；
    * 续战小怪为 GDD 等效 HP 波次 8～14）。
    */
   mobSpawnWaveForHp = 1;

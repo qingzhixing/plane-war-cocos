@@ -10,6 +10,7 @@ import {
   Vec2,
 } from 'cc';
 import { getBattleMain } from './battleAccess';
+import { setPlayerTargetNode } from './playerPositionAccess';
 import * as GameConfig from './GameConfig';
 import { enemyBulletsSnapshot } from './EnemyBulletRegistry';
 import { collectEnemyBulletsTouchingPlayer } from './enemyBulletPlayerCollision';
@@ -72,9 +73,11 @@ export class PlayerController extends Component {
       onKeyUp: this._onKeyUp,
     };
     bindPlayerInput(this, this._inputHandlers);
+    setPlayerTargetNode(this.node);
   }
 
   onDestroy() {
+    setPlayerTargetNode(null);
     if (this._inputHandlers) {
       unbindPlayerInput(this, this._inputHandlers);
       this._inputHandlers = null;

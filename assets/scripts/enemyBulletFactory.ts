@@ -7,6 +7,8 @@ export type SpawnEnemyBulletOpts = {
   /** 不传则仅竖直向下，`-enemyBulletSpeedForTier(tier)` */
   velX?: number;
   velY?: number;
+  /** 追踪玩家机（需 `playerPositionAccess` 已注册） */
+  homing?: boolean;
 };
 
 /** 在 PlayField 下生成一枚敌弹（占位 Graphics；默认速度随当前 `threatTier`） */
@@ -20,17 +22,28 @@ export function spawnEnemyBullet(
   const ut = n.addComponent(UITransform);
   ut.setContentSize(8, 16);
   ut.setAnchorPoint(0.5, 0.5);
-  const g = n.addComponent(Graphics);
-  g.lineWidth = 0;
-  g.fillColor = new Color(255, 180, 100, 255);
-  g.rect(-4, -8, 8, 16);
-  g.fill();
   const tier = getBattleMain()?.getThreatTier() ?? 0;
   const mag = GameConfig.enemyBulletSpeedForTier(tier);
+  const g = n.addComponent(Graphics);
+  g.lineWidth = 0;
+  const homing = opts?.homing === true;
+  g.fillColor = homing
+    ? new Color(255, 130, 210, 255)
+    : new Color(255, 180, 100, 255);
+  g.rect(-4, -8, 8, 16);
+  g.fill();
   const bullet = n.addComponent(EnemyBullet);
-  if (opts !== undefined && (opts.velX !== undefined || opts.velY !== undefined)) {
-    bullet.velX = opts.velX ?? 0;
-    bullet.velY = opts.velY ?? -mag;
+  const hasCustomVel =
+    opts !== undefined &&
+    (opts.velX !== undefined || opts.velY !== undefined);
+  if (homing) {
+    bullet.homing = true;
+    const hm = mag * GameConfig.ENEMY_HOMING_BULLET_SPEED_MULT;
+    bullet.velX = hasCustomVel ? (opts.velX ?? 0) : 0;
+    bullet.velY = hasCustomVel ? (opts.velY ?? -hm) : -hm;
+  } else if (hasCustomVel) {
+    bullet.velX = opts!.velX ?? 0;
+    bullet.velY = opts!.velY ?? -mag;
   } else {
     bullet.velX = 0;
     bullet.velY = -mag;

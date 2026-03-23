@@ -5,6 +5,7 @@ import {
   enemyBulletUnregister,
   type EnemyBulletTarget,
 } from './EnemyBulletRegistry';
+import { getPlayerTargetPosition } from './playerPositionAccess';
 
 const { ccclass } = _decorator;
 
@@ -15,9 +16,13 @@ export class EnemyBullet extends Component implements EnemyBulletTarget {
   velX = 0;
   /** 像素/秒；正数表示沿 +y，负数表示沿 -y（屏幕下） */
   velY = -GameConfig.ENEMY_BULLET_SPEED;
+  /** 向玩家机方向限速转向（`spawnEnemyBullet` 可开启） */
+  homing = false;
+  private _speedMag = GameConfig.ENEMY_BULLET_SPEED;
 
   onLoad() {
     enemyBulletRegister(this);
+    this._speedMag = Math.max(1, Math.hypot(this.velX, this.velY));
   }
 
   onDestroy() {
@@ -26,6 +31,28 @@ export class EnemyBullet extends Component implements EnemyBulletTarget {
 
   update(dt: number) {
     const p = this.node.position;
+    if (this.homing) {
+      const target = getPlayerTargetPosition();
+      if (target) {
+        const dx = target.x - p.x;
+        const dy = target.y - p.y;
+        const desired = Math.atan2(dy, dx);
+        const cur = Math.atan2(this.velY, this.velX);
+        let diff = desired - cur;
+        while (diff > Math.PI) {
+          diff -= 2 * Math.PI;
+        }
+        while (diff < -Math.PI) {
+          diff += 2 * Math.PI;
+        }
+        const w = GameConfig.ENEMY_HOMING_TURN_RAD_PER_SEC * dt;
+        const next =
+          cur + Math.sign(diff) * Math.min(Math.abs(diff), w);
+        const spd = this._speedMag;
+        this.velX = Math.cos(next) * spd;
+        this.velY = Math.sin(next) * spd;
+      }
+    }
     const nx = p.x + this.velX * dt;
     const ny = p.y + this.velY * dt;
     this.node.setPosition(nx, ny, p.z);

@@ -3,6 +3,7 @@ import { enemiesSnapshot } from './EnemyRegistry';
 import { spawnEnemyBasic } from './enemyBasicFactory';
 import { spawnEnemyBoss } from './enemyBossFactory';
 import { spawnEnemyElite } from './enemyEliteFactory';
+import { spawnEnemySummoner } from './enemySummonerFactory';
 import { spawnEnemyTurret } from './enemyTurretFactory';
 import type { BattleMain } from './BattleMain';
 import { WaveSpawnScheduler } from './waveSpawnScheduler';
@@ -92,6 +93,20 @@ export class EnemySpawner extends Component {
       : GameConfig.mainLineTurretChance(this._sched.spawnWaveForEnemies);
     if (Math.random() < turretChance) {
       spawnEnemyTurret(
+        this.node,
+        this._sched.mobSpawnWaveForHp,
+        x,
+        GameConfig.ENEMY_SPAWN_Y,
+      );
+      return;
+    }
+    const summonerChance = this._inContinuationBlock
+      ? GameConfig.continuationBlockSummonerRate(
+          this._sched.spawnWaveForEnemies,
+        )
+      : GameConfig.mainLineSummonerChance(this._sched.spawnWaveForEnemies);
+    if (Math.random() < summonerChance) {
+      spawnEnemySummoner(
         this.node,
         this._sched.mobSpawnWaveForHp,
         x,

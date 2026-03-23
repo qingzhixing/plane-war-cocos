@@ -196,3 +196,38 @@ export function continuationBlockTurretRate(blockWave: number): number {
   const bw = Math.max(1, Math.min(7, Math.floor(blockWave)));
   return rates[bw - 1];
 }
+
+/** Basic03 召唤机：基数 HP（低于冲锋机基数 4） */
+export const ENEMY_SUMMONER_BASE_HP = 3;
+export const ENEMY_SUMMONER_EXP_VALUE = 4;
+export const ENEMY_SUMMONER_SCORE_VALUE = 8;
+/** 相对 `ENEMY_SPEED` 的下移倍率 */
+export const ENEMY_SUMMONER_SPEED_MULT = 0.92;
+/** 秒；低频追踪弹 */
+export const ENEMY_SUMMONER_FIRE_INTERVAL = 4.2;
+/** 追踪弹相对 `enemyBulletSpeedForTier` 的倍率 */
+export const ENEMY_HOMING_BULLET_SPEED_MULT = 0.88;
+/** 追踪弹每秒最大转角（弧度），数值越小越「笨」 */
+export const ENEMY_HOMING_TURN_RAD_PER_SEC = 1.65;
+
+/** 主线召唤机率：第 1 波为 0；第 2 波起混入 */
+export function mainLineSummonerChance(wave: number): number {
+  const w = Math.max(1, Math.floor(wave));
+  if (w <= 1) {
+    return 0;
+  }
+  if (w >= BOSS_WAVE) {
+    return 0;
+  }
+  if (w === 2) {
+    return 0.14;
+  }
+  return 0.2;
+}
+
+/** 续战块 1～7 波召唤机混入率 */
+export function continuationBlockSummonerRate(blockWave: number): number {
+  const rates = [0.12, 0.14, 0.16, 0.18, 0.2, 0.22, 0.24];
+  const bw = Math.max(1, Math.min(7, Math.floor(blockWave)));
+  return rates[bw - 1];
+}
