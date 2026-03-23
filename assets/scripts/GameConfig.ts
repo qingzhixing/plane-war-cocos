@@ -35,6 +35,14 @@ export function enemyBulletSpeedMultiplier(tier: number): number {
 export function enemyBulletSpeedForTier(tier: number): number {
   return ENEMY_BULLET_SPEED * enemyBulletSpeedMultiplier(tier);
 }
+
+/** GDD「Boss 与威胁」：小怪/Boss 机体移速 × 1.12^tier */
+export const ENEMY_MOBILITY_TIER_BASE = 1.12;
+
+export function enemyMobilityTierMult(tier: number): number {
+  const t = Math.max(0, tier);
+  return Math.pow(ENEMY_MOBILITY_TIER_BASE, t);
+}
 /** 敌机发射敌弹间隔（秒），MVP 占位 */
 export const ENEMY_FIRE_INTERVAL = 2.5;
 /** 秒，MVP 定时刷怪间隔（完整波次见 EnemySpawner / main） */

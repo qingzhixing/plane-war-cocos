@@ -13,6 +13,8 @@ import {
   continuationBlockSpawnIntervalMult,
   enemyBulletSpeedForTier,
   enemyBulletSpeedMultiplier,
+  enemyMobilityTierMult,
+  ENEMY_MOBILITY_TIER_BASE,
 } from '../assets/scripts/GameConfig';
 
 describe('GameConfig bossMaxHpForTier', () => {
@@ -85,5 +87,15 @@ describe('GameConfig enemyBulletSpeedForTier', () => {
 
   it('高 tier 不超过 1.35', () => {
     expect(enemyBulletSpeedMultiplier(99)).toBe(ENEMY_BULLET_SPEED_TIER_CAP);
+  });
+});
+
+describe('GameConfig enemyMobilityTierMult', () => {
+  it('tier 0 为 1', () => {
+    expect(enemyMobilityTierMult(0)).toBe(1);
+  });
+
+  it('tier 1 为 1.12', () => {
+    expect(enemyMobilityTierMult(1)).toBeCloseTo(ENEMY_MOBILITY_TIER_BASE);
   });
 });

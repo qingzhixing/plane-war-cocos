@@ -20,6 +20,8 @@ export function spawnEnemyBoss(
   const eb = n.addComponent(EnemyBoss);
   eb.spawnWave = wave;
   eb.maxHp = GameConfig.bossMaxHpForSpawn(threatTier, isContinuationBoss);
+  eb.speed =
+    GameConfig.BOSS_SPEED * GameConfig.enemyMobilityTierMult(threatTier);
   n.setPosition(0, GameConfig.ENEMY_SPAWN_Y, 0);
   playField.addChild(n);
 }
