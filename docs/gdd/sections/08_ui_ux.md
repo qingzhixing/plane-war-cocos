@@ -96,6 +96,8 @@
 - 高分反馈：
   - 当本局分数超过历史最高分或接近某个高分阈值时，可在屏幕一角显示“New Record?” 提示，鼓励玩家继续坚持到关卡结束。
 
+> **Cocos 移植（`plane-war-cocos`）**：开局读取 **`loadLocalRecords().bestScore`** 为**本局对照**；当 **`BattleRunState.score` 首次超过**该值时 **`BattleHud.flashNewRecordHint()`** 显示 **「新纪录？」** 约 **`NEW_RECORD_HINT_SEC` 秒**（每局至多 **1** 次）；接近阈值等扩展可后续加。
+
 ## 升级界面
 
 - 3 张卡片：图标 + 名称 + 一句话效果
