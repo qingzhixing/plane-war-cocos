@@ -29,12 +29,12 @@ export const MVP_UPGRADES: UpgradeDef[] = [
   {
     id: 'combo_boost',
     name: '节奏推进',
-    desc: '每次命中连击 +1（后续接连击系统）',
+    desc: '每次命中连击 +1（连击系统待接）',
   },
   {
     id: 'score_up',
     name: '评分增幅',
-    desc: '评分乘区 +15%（后续接 BattleMain 乘区）',
+    desc: '评分乘区 +15%（已接 BattleMain 累计得分）',
   },
 ];
 
