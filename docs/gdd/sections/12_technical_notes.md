@@ -48,6 +48,6 @@
 
 - 主菜单与战斗场景可切换，设计分辨率 **720×1280**。
 - **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后三选一升级再进入下一波、经验/得分与简易 HUD、预制体/代码兜底升级 UI**；**擦弹（`grazeResolve` + 节流 + `Graze.wav` + `grazeVfx`）**；脚本侧已模块化（工厂/状态/输入/命中等），仓库根目录 **`npm test`（Vitest）** 覆盖 **`aabbMath`、`BattleRunState`、`WaveSpawnScheduler`、`grazeMath`/`grazeThrottle`** 等无引擎逻辑。
-- **下一里程碑**：像素美术按 `11_art_and_assets.md` 接入；**符卡冷却随擦弹** 等按 `09_audio_and_feedback.md` 扩展；擦弹 VFX 可再换 **粒子系统 / 贴图** 强化。（**档位 Combo! 字**、**判定点 / 连击中断**、**三种小怪原型**、**受击无敌帧**、**精英 / Boss / 护盾 / HUD**、**BGM/SFX 批次** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
+- **下一里程碑**：像素美术按 `11_art_and_assets.md` 接入；**符卡冷却随擦弹** 等按 `09_audio_and_feedback.md` 扩展；擦弹 VFX 可再换 **粒子系统 / 贴图** 强化。（**判定点 / 连击中断**、**三种小怪原型**、**受击无敌帧**、**精英 / Boss / 护盾 / HUD**、**BGM/SFX 批次**、**Combo 提示 tween 缩放** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
 
 > 若实现与 Godot 版有路径或 API 差异，优先更新本节与 `README`，再改代码。
