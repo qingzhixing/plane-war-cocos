@@ -12,7 +12,7 @@
 1. 用 Cocos Creator 打开本仓库根目录。
 2. 首次打开若未识别启动场景：菜单 **项目 → 项目设置 → 通用**，将 **设计分辨率** 设为 **720 × 1280**，并勾选 **适配高度 / 适配宽度**（与 Godot 版一致）。
 3. 在 **资源管理器** 中双击 **`assets/scenes/MainMenu.scene`**，或到 **项目设置** 里将 **启动场景** 设为 `MainMenu.scene`。
-4. 点击编辑器 **预览** 运行：主菜单点击屏幕进入 **Game**；战斗中 **拖拽 / WASD** 移动，**自动射击**；**清场**后出现 **三选一升级**（未配置预制体时用简易文字版），选完后进入下一波；点 **菜单** 返回主菜单。
+4. 点击编辑器 **预览** 运行：主菜单 **开始游戏** 进入 **Game**；战斗中 **拖拽 / WASD** 移动，**自动射击**；**清场**后出现 **三选一升级**（未配置预制体时用简易文字版），选完后进入下一波；点 **菜单** 返回主菜单。
 
 **升级 UI 预制体（推荐）**：在编辑器中按 `assets/prefabs/ui/EDITOR_SETUP.md` 制作 `UpgradePick.prefab` 并挂到 **Game** 场景 **Canvas** 上 **GameRoot** 的 **Upgrade Pick Prefab** 槽位。
 
@@ -26,14 +26,14 @@
 |------|------|
 | `docs/gdd/` | 游戏设计文档（与 Godot 版同步，技术栈说明见 `sections/12_technical_notes.md`） |
 | `assets/scenes/` | `MainMenu`（主菜单：开始游戏 / 成绩查询）、`Game`（战斗 MVP：波次、清场、三选一升级） |
-| `assets/scripts/` | `MainMenu.ts`、`mainMenuChromeFactory.ts`（`createMainMenuRoot`、`presentRecordsQueryOverlay`）、`GameRoot.ts`、`playFieldFactory.ts`、`gameChromeFactory.ts`、`BattleMain.ts`、`battleRunState.ts`（`threatTier`、`inContinuationBlock`、`comboGuardStacks`）、`localRecords.ts` / `localRecordsCore.ts`（本地最高得分/连击）、`comboScore.ts`、`BattleHud.ts`（Boss 血条、续战文案、护盾×N）、`postBossChoiceFlow.ts`（Boss 击破二选一）、`battleAccess.ts`、`UpgradePool.ts`、`UpgradeUI.ts`、`UpgradePickFlow.ts`（`presentUpgradePickSequence`）、`PlayerController.ts`、`playerInput.ts`、`playerMotion.ts`、`playerEnemyCollision.ts`、`enemyBulletPlayerCollision.ts`、`playerBulletFactory.ts`、`aabbMath.ts`、`playerBulletHitscan.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`enemyBasicFactory.ts`、`EnemyElite.ts`、`enemyEliteFactory.ts`、`EnemyBoss.ts`、`enemyBossFactory.ts`、`EnemyBullet.ts`、`enemyBulletFactory.ts`、`EnemyBulletRegistry.ts`、`EnemySpawner.ts`（`mainLineEliteChance` / `continuationBlockEliteRate`）、`waveSpawnScheduler.ts`、`EnemyRegistry.ts`、`GameConfig.ts`（`bossMaxHpForSpawn`、`enemyBulletSpeedForTier`、`enemyMobilityTierMult`、`DPS_WINDOW_SEC`、`continuationBlockEnemyCount` 等） |
+| `assets/scripts/` | `MainMenu.ts`、`mainMenuChromeFactory.ts`（`createMainMenuRoot`、`presentRecordsQueryOverlay`）、`GameRoot.ts`、`playFieldFactory.ts`、`gameChromeFactory.ts`、`BattleMain.ts`、`battleRunState.ts`（`threatTier`、`inContinuationBlock`、`comboGuardStacks`）、`localRecords.ts` / `localRecordsCore.ts`（本地最高得分/连击）、`comboScore.ts`、`BattleHud.ts`（Boss 血条、续战文案、护盾×N）、`postBossChoiceFlow.ts`（Boss 击破二选一）、`battleAccess.ts`、`UpgradePool.ts`、`UpgradeUI.ts`、`UpgradePickFlow.ts`（`presentUpgradePickSequence`）、`PlayerController.ts`、`playerInput.ts`、`playerMotion.ts`、`playerEnemyCollision.ts`、`enemyBulletPlayerCollision.ts`、`playerBulletFactory.ts`、`aabbMath.ts`、`playerBulletHitscan.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`enemyBasicFactory.ts`、`EnemyTurret.ts`、`enemyTurretFactory.ts`、`EnemyElite.ts`、`enemyEliteFactory.ts`、`EnemyBoss.ts`、`enemyBossFactory.ts`、`EnemyBullet.ts`、`enemyBulletFactory.ts`、`EnemyBulletRegistry.ts`、`EnemySpawner.ts`（精英率 / 炮台率）、`waveSpawnScheduler.ts`、`EnemyRegistry.ts`、`GameConfig.ts`（`bossMaxHpForSpawn`、`enemyBulletSpeedForTier`、`enemyMobilityTierMult`、`DPS_WINDOW_SEC`、`continuationBlockEnemyCount` 等） |
 | `tests/` | Vitest 单测（`aabbMath`、`comboScore`、`battleRunState`、`waveSpawnScheduler` 等） |
 | `assets/prefabs/ui/` | `EDITOR_SETUP.md`（`UpgradePick.prefab` 制作说明，预制体需在编辑器中创建） |
 
 ## 下一步（移植里程碑）
 
 - **美术与音频**：从 `plane-war/assets/` 复制到本仓库 `assets/`，按 GDD `11_art_and_assets.md` 命名。
-- **玩法扩展**：炮台机类型、蓄力前摇等 GDD 余项；可选 `npm test` 持续覆盖纯逻辑模块。
+- **玩法扩展**：召唤机（追踪弹）、受击反馈等 GDD 余项；可选 `npm test` 持续覆盖纯逻辑模块。
 
 ## 许可
 

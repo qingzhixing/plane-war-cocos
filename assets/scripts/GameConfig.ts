@@ -65,6 +65,21 @@ export const ENEMY_ELITE_RING_BULLETS = 8;
 export const ENEMY_ELITE_RING_BULLET_SPEED_MULT = 0.72;
 /** 主线第 3～7 波小怪每次生成掷为精英的概率（第 1～2 波为 0） */
 export const MAIN_LINE_ELITE_CHANCE = 0.18;
+/** Basic02 炮台：基数 HP（略高于 `ENEMY_MAX_HP`） */
+export const ENEMY_TURRET_BASE_HP = 5;
+export const ENEMY_TURRET_EXP_VALUE = 8;
+export const ENEMY_TURRET_SCORE_VALUE = 15;
+/** 下移到锚点前相对 `ENEMY_SPEED` 的倍率 */
+export const ENEMY_TURRET_DESCENT_MULT = 0.52;
+/** PlayField 局部 Y，到达后左右漂移并开火（须小于 `ENEMY_SPAWN_Y`） */
+export const ENEMY_TURRET_ANCHOR_Y = 220;
+export const ENEMY_TURRET_DRIFT_SPEED = 52;
+/** 一轮射毕到下一轮前摇开始（秒） */
+export const ENEMY_TURRET_VOLLEY_IDLE = 1.8;
+/** GDD：约 0.7s 前摇 */
+export const ENEMY_TURRET_WINDUP = 0.7;
+/** 2～3 发扇形的半角（弧度） */
+export const ENEMY_TURRET_FAN_HALF_RAD = 0.22;
 /** 生成时 Y（PlayField 局部坐标，靠屏幕上沿） */
 export const ENEMY_SPAWN_Y = 580;
 
@@ -156,6 +171,28 @@ export function mainLineEliteChance(wave: number): number {
 /** 续战块 1～7 波小怪精英率（与 GDD `05b` 表一致） */
 export function continuationBlockEliteRate(blockWave: number): number {
   const rates = [0.22, 0.28, 0.34, 0.4, 0.46, 0.5, 0.54];
+  const bw = Math.max(1, Math.min(7, Math.floor(blockWave)));
+  return rates[bw - 1];
+}
+
+/** 主线炮台率：第 1 波为 0；第 2 波起有概率（与 GDD「首波以冲锋为主」一致） */
+export function mainLineTurretChance(wave: number): number {
+  const w = Math.max(1, Math.floor(wave));
+  if (w <= 1) {
+    return 0;
+  }
+  if (w >= BOSS_WAVE) {
+    return 0;
+  }
+  if (w === 2) {
+    return 0.28;
+  }
+  return 0.34;
+}
+
+/** 续战块 1～7 波炮台混入率（与精英率表同向递增，数值独立） */
+export function continuationBlockTurretRate(blockWave: number): number {
+  const rates = [0.18, 0.22, 0.26, 0.3, 0.34, 0.38, 0.42];
   const bw = Math.max(1, Math.min(7, Math.floor(blockWave)));
   return rates[bw - 1];
 }

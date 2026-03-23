@@ -11,6 +11,7 @@ import {
   bossMaxHpForSpawn,
   bossMaxHpForTier,
   continuationBlockEliteRate,
+  continuationBlockTurretRate,
   continuationBlockEnemyCount,
   continuationBlockEquivalentHpWave,
   continuationBlockSpawnIntervalMult,
@@ -19,6 +20,7 @@ import {
   enemyMobilityTierMult,
   ENEMY_MOBILITY_TIER_BASE,
   mainLineEliteChance,
+  mainLineTurretChance,
 } from '../assets/scripts/GameConfig';
 
 describe('GameConfig bossMaxHpForTier', () => {
@@ -123,5 +125,29 @@ describe('GameConfig 精英率', () => {
     expect(continuationBlockEliteRate(1)).toBe(0.22);
     expect(continuationBlockEliteRate(4)).toBe(0.4);
     expect(continuationBlockEliteRate(7)).toBe(0.54);
+  });
+});
+
+describe('GameConfig 炮台混入率', () => {
+  it('mainLineTurretChance 第 1 波为 0', () => {
+    expect(mainLineTurretChance(1)).toBe(0);
+  });
+
+  it('mainLineTurretChance 第 2 波为 0.28', () => {
+    expect(mainLineTurretChance(2)).toBe(0.28);
+  });
+
+  it('mainLineTurretChance 第 3～7 波为 0.34', () => {
+    expect(mainLineTurretChance(3)).toBe(0.34);
+    expect(mainLineTurretChance(7)).toBe(0.34);
+  });
+
+  it('mainLineTurretChance Boss 波为 0', () => {
+    expect(mainLineTurretChance(BOSS_WAVE)).toBe(0);
+  });
+
+  it('continuationBlockTurretRate 递增', () => {
+    expect(continuationBlockTurretRate(1)).toBe(0.18);
+    expect(continuationBlockTurretRate(7)).toBe(0.42);
   });
 });
