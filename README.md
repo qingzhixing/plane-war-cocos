@@ -6,6 +6,7 @@
 
 - [Cocos Creator 3.8.8](https://www.cocos.com/creator-download)（与根目录 `package.json` 中 `creator.version` 对齐）
 - **可选**：根目录执行 `npm install` 后运行 **`npm test`**，用 Vitest 跑 `tests/` 下与引擎无关的纯逻辑单测（`aabbMath`、`battleRunState`、`waveSpawnScheduler` 等）。
+- **CI**：推送到 **`master` / `main`** 或对其开 PR 时，**GitHub Actions**（`.github/workflows/ci.yml`）会执行同样的 `npm install` + `npm test`（无需本地 Cocos 编辑器）。
 
 ## 打开与运行
 
