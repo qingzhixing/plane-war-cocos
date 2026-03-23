@@ -11,6 +11,8 @@ import {
 } from 'cc';
 import { getBattleMain } from './battleAccess';
 import * as GameConfig from './GameConfig';
+import { enemyBulletsSnapshot } from './EnemyBulletRegistry';
+import { collectEnemyBulletsTouchingPlayer } from './enemyBulletPlayerCollision';
 import { enemiesSnapshot } from './EnemyRegistry';
 import { collectEnemiesTouchingPlayer } from './playerEnemyCollision';
 import {
@@ -82,7 +84,7 @@ export class PlayerController extends Component {
   update(dt: number) {
     this._applyKeyboardMove(dt);
     this._clampToBounds();
-    this._resolveEnemyRamming();
+    this._resolvePlayerHazards();
 
     this._fireTimer -= dt;
     if (this._fireTimer <= 0) {
@@ -91,23 +93,32 @@ export class PlayerController extends Component {
     }
   }
 
-  /** 与敌机重叠：撞毁敌机（不计分）、清空连击 */
-  private _resolveEnemyRamming() {
+  /** 敌弹命中或撞机：销毁相关节点（不计击杀分）、每帧最多一次 onPlayerHit */
+  private _resolvePlayerHazards() {
     const selfUt = this.node.getComponent(UITransform);
     if (!selfUt) {
       return;
     }
     const b = selfUt.getBoundingBoxToWorld();
-    const hits = collectEnemiesTouchingPlayer(b, enemiesSnapshot());
-    if (hits.length === 0) {
-      return;
-    }
-    for (const e of hits) {
-      if (isValid(e.node)) {
-        e.node.destroy();
+    let hit = false;
+    for (const eb of collectEnemyBulletsTouchingPlayer(
+      b,
+      enemyBulletsSnapshot(),
+    )) {
+      if (isValid(eb.node)) {
+        eb.node.destroy();
+        hit = true;
       }
     }
-    getBattleMain()?.onPlayerHit();
+    for (const e of collectEnemiesTouchingPlayer(b, enemiesSnapshot())) {
+      if (isValid(e.node)) {
+        e.node.destroy();
+        hit = true;
+      }
+    }
+    if (hit) {
+      getBattleMain()?.onPlayerHit();
+    }
   }
 
   applyUpgrade(id: string) {

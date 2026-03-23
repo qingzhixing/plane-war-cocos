@@ -17,6 +17,10 @@ export const MAX_DRAG_DELTA = 120;
 export const BULLET_DAMAGE = 1;
 /** 与 enemy_basic.gd speed 默认一致 */
 export const ENEMY_SPEED = 250;
+/** 敌弹下落速度（像素/秒），MVP 占位 */
+export const ENEMY_BULLET_SPEED = 420;
+/** 敌机发射敌弹间隔（秒），MVP 占位 */
+export const ENEMY_FIRE_INTERVAL = 2.5;
 /** 秒，MVP 定时刷怪间隔（完整波次见 EnemySpawner / main） */
 export const ENEMY_SPAWN_INTERVAL = 1;
 /** 与 EnemyBase max_hp 默认一致 */

@@ -26,7 +26,7 @@
 |------|------|
 | `docs/gdd/` | 游戏设计文档（与 Godot 版同步，技术栈说明见 `sections/12_technical_notes.md`） |
 | `assets/scenes/` | `MainMenu`（主菜单）、`Game`（战斗 MVP：波次、清场、三选一升级） |
-| `assets/scripts/` | `MainMenu.ts`、`mainMenuChromeFactory.ts`、`GameRoot.ts`、`playFieldFactory.ts`、`gameChromeFactory.ts`、`BattleMain.ts`、`battleRunState.ts`、`comboScore.ts`、`BattleHud.ts`、`battleAccess.ts`、`UpgradePool.ts`、`UpgradeUI.ts`、`UpgradePickFlow.ts`、`PlayerController.ts`、`playerInput.ts`、`playerMotion.ts`、`playerEnemyCollision.ts`、`playerBulletFactory.ts`、`aabbMath.ts`、`playerBulletHitscan.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`enemyBasicFactory.ts`、`EnemySpawner.ts`、`waveSpawnScheduler.ts`、`EnemyRegistry.ts`、`GameConfig.ts` |
+| `assets/scripts/` | `MainMenu.ts`、`mainMenuChromeFactory.ts`、`GameRoot.ts`、`playFieldFactory.ts`、`gameChromeFactory.ts`、`BattleMain.ts`、`battleRunState.ts`、`comboScore.ts`、`BattleHud.ts`、`battleAccess.ts`、`UpgradePool.ts`、`UpgradeUI.ts`、`UpgradePickFlow.ts`、`PlayerController.ts`、`playerInput.ts`、`playerMotion.ts`、`playerEnemyCollision.ts`、`enemyBulletPlayerCollision.ts`、`playerBulletFactory.ts`、`aabbMath.ts`、`playerBulletHitscan.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`enemyBasicFactory.ts`、`EnemyBullet.ts`、`enemyBulletFactory.ts`、`EnemyBulletRegistry.ts`、`EnemySpawner.ts`、`waveSpawnScheduler.ts`、`EnemyRegistry.ts`、`GameConfig.ts` |
 | `tests/` | Vitest 单测（`aabbMath`、`comboScore`、`battleRunState`、`waveSpawnScheduler` 等） |
 | `assets/prefabs/ui/` | `EDITOR_SETUP.md`（`UpgradePick.prefab` 制作说明，预制体需在编辑器中创建） |
 

@@ -1,5 +1,6 @@
 import { _decorator, Component } from 'cc';
 import { getBattleMain } from './battleAccess';
+import { spawnEnemyBullet } from './enemyBulletFactory';
 import * as GameConfig from './GameConfig';
 import { enemyRegister, enemyUnregister, type EnemyHitTarget } from './EnemyRegistry';
 
@@ -16,6 +17,7 @@ export class EnemyBasic extends Component implements EnemyHitTarget {
   maxHp = GameConfig.ENEMY_MAX_HP;
   private _hp = 0;
   speed = GameConfig.ENEMY_SPEED;
+  private _fireAcc = 0;
 
   onLoad() {
     const f = GameConfig.waveHpFactor(this.spawnWave);
@@ -33,6 +35,16 @@ export class EnemyBasic extends Component implements EnemyHitTarget {
     const p = this.node.position;
     const ny = p.y - this.speed * dt;
     this.node.setPosition(p.x, ny, p.z);
+
+    this._fireAcc += dt;
+    while (this._fireAcc >= GameConfig.ENEMY_FIRE_INTERVAL) {
+      this._fireAcc -= GameConfig.ENEMY_FIRE_INTERVAL;
+      const pf = this.node.parent;
+      if (pf) {
+        spawnEnemyBullet(pf, p.x, p.y - 28);
+      }
+    }
+
     const limit = GameConfig.DESIGN_H * 0.5 + 120;
     if (ny < -limit) {
       this.node.destroy();
