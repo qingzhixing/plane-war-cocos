@@ -32,7 +32,7 @@
   - 常量：`GameConfig.ts`（设计分辨率、射速/弹速、敌机速度与血量、`bossMaxHpForTier(tier)` 等）
 - 美术与音频：由 `plane-war/assets/` 复制到本仓库 `assets/`（勿提交 Godot 的 `.import`），命名保持与 `docs/gdd/sections/11_art_and_assets.md` 一致。
 - 本地成绩：与 Godot 的 `user://records.cfg` 类似，实现阶段使用 **本地存储**（如 `sys.localStorage` 或原生文件 API），键名与字段见 GDD 与 Godot `Main` 读写逻辑。
-  - **Cocos（本仓库）**：`localRecords.ts` / `localRecordsCore.ts`；**`sys.localStorage`** 键 **`plane_war_cocos_records_v1`**，JSON 字段 **`bestScore`**、**`bestCombo`**、**`bestDps`**（DPS 占位，当前局未统计则保持 0）；**本局结算**（Boss 二选一「本局结算」）与 **战斗内返回主菜单** 时合并写入；**主菜单**文案展示最高得分/连击。
+  - **Cocos（本仓库）**：`localRecords.ts` / `localRecordsCore.ts`；**`sys.localStorage`** 键 **`plane_war_cocos_records_v1`**，JSON 字段 **`bestScore`**、**`bestCombo`**、**`bestDps`**；**`bestDps`** 与本局 **`BattleRunState.maxDps`**（对敌有效伤害、**`DPS_WINDOW_SEC` 秒滑动窗口**）取大合并；**本局结算**与 **返回主菜单** 时写入；**主菜单**展示三项最佳（有则显示）。
 
 ## 视觉与 Shader 约定
 
@@ -47,6 +47,6 @@
 
 - 主菜单与战斗场景可切换，设计分辨率 **720×1280**。
 - **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后三选一升级再进入下一波、经验/得分与简易 HUD、预制体/代码兜底升级 UI**；脚本侧已模块化（工厂/状态/输入/命中等），仓库根目录 **`npm test`（Vitest）** 覆盖 **`aabbMath`、`BattleRunState`、`WaveSpawnScheduler`** 等无引擎逻辑。
-- **下一里程碑**：**精英率**、**局内 DPS 与 `bestDps` 写入**、**成绩查询面板**；美术资源按 `11_art_and_assets.md` 接入。（**敌弹 / 机体移速威胁乘区**、**本地成绩**、**续战块刷怪**、**Boss**、**护盾**、**Boss HUD** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
+- **下一里程碑**：**精英率**、**成绩查询面板**（全屏只读）；美术资源按 `11_art_and_assets.md` 接入。（**局内 DPS / `bestDps`**、**敌弹/机体威胁乘区**、**本地成绩**、**续战块刷怪**、**Boss**、**护盾**、**Boss HUD** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
 
 > 若实现与 Godot 版有路径或 API 差异，优先更新本节与 `README`，再改代码。
