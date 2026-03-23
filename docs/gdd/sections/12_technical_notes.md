@@ -20,7 +20,7 @@
 - 启动流程：**主菜单** `assets/scenes/MainMenu.scene` → **开始游戏** 进入 `assets/scenes/Game.scene`（后续在 `Game` 中挂载战斗与 HUD，与 Godot `Main.tscn` 对齐）。
 - 脚本：`assets/scripts/`  
   - 主菜单：`MainMenu.ts`  
-  - 战斗场景根：`GameRoot.ts`（挂载 `PlayField`、提示与返回；`PlayField` 由 `playFieldFactory.ts` 的 `createPlayField` 代码搭建）  
+  - 战斗场景根：`GameRoot.ts`（挂载 `PlayField`、`BattleMain`；提示条与返回按钮由 `gameChromeFactory.ts` 代码搭建；`PlayField` 由 `playFieldFactory.ts` 的 `createPlayField`）  
   - 玩家：`PlayerController.ts`（对齐 Godot `player.gd`：拖拽 / 键控移动、边界、自动射击）  
   - 玩家基础弹：`PlayerBullet.ts`（对齐 Godot `PlayerBullet.gd` / `BulletBase.gd`：向上运动、出屏销毁；命中敌人后销毁）  
   - 敌人：`EnemyBasic.ts`（对齐 Godot `enemy_basic.gd` / `EnemyBase.gd`：下落、`apply_damage`、HP 归零销毁；占位 Graphics）  
