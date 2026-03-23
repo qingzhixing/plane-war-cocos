@@ -21,7 +21,7 @@
 - 脚本：`assets/scripts/`  
   - 主菜单：`MainMenu.ts`（`mainMenuChromeFactory.ts`：`createMainMenuRoot`、`createMainMenuHint`、`presentRecordsQueryOverlay`）  
   - 战斗场景根：`GameRoot.ts`（挂载 `PlayField`、`BattleMain`；提示条与返回按钮由 `gameChromeFactory.ts` 代码搭建；`PlayField` 由 `playFieldFactory.ts` 的 `createPlayField`：**玩家**含子节点 **`PlayerBody`**（机体图）与 **`HitJudge`**（判定点）；无敌闪烁只改 **`PlayerBody` 的 `UIOpacity`**）  
-  - 玩家：`PlayerController.ts`（对齐 Godot `player.gd`：拖拽 / 键控移动、边界、自动射击）；**擦弹**见 **`grazeResolve.ts`**（擦弹圆 + 敌弹/敌机中心近似）+ **`grazeThrottle.ts`**（每目标节流）+ **`BattleMain.onGrazeTick`** / **`BattleRunState.recordGraze`**；**敌弹 / 敌机撞玩家**时调用 **`BattleMain.onPlayerHit()`**（返回是否**实际断连**；`combo_guard` 吸收则**不断连、不进入无敌**）；**无敌帧**内跳过 hazard 判定，**`UIOpacity` 闪烁**（`GameConfig.PLAYER_INVULN_SEC` / `PLAYER_INVULN_BLINK_HZ`）；敌机重叠检测见 `playerEnemyCollision.ts`，敌弹见 `EnemyBulletRegistry` + AABB；全局 `input` 注册与注销见 `playerInput.ts`；**位移与边界纯数学**见 `playerMotion.ts`（键控方向、拖拽限幅、可玩区域夹取、多发偏移）  
+  - 玩家：`PlayerController.ts`（对齐 Godot `player.gd`：拖拽 / 键控移动、边界、自动射击）；**擦弹**见 **`grazeResolve.ts`**（擦弹圆 + 敌弹/敌机中心近似）+ **`grazeThrottle.ts`**（每目标节流）+ **`grazeVfx.ts`**（`GrazeSpark` MVP）+ **`BattleMain.onGrazeTick`** / **`BattleRunState.recordGraze`**；**敌弹 / 敌机撞玩家**时调用 **`BattleMain.onPlayerHit()`**（返回是否**实际断连**；`combo_guard` 吸收则**不断连、不进入无敌**）；**无敌帧**内跳过 hazard 判定，**`UIOpacity` 闪烁**（`GameConfig.PLAYER_INVULN_SEC` / `PLAYER_INVULN_BLINK_HZ`）；敌机重叠检测见 `playerEnemyCollision.ts`，敌弹见 `EnemyBulletRegistry` + AABB；全局 `input` 注册与注销见 `playerInput.ts`；**位移与边界纯数学**见 `playerMotion.ts`（键控方向、拖拽限幅、可玩区域夹取、多发偏移）  
   - 玩家基础弹：`PlayerBullet.ts`（对齐 Godot `PlayerBullet.gd` / `BulletBase.gd`：向上运动、出屏销毁；命中敌人后销毁）；**节点与占位图**由 `playerBulletFactory.ts` 的 `spawnPlayerBullet`（`PlayerController` 调用）  
   - 敌人：`EnemyBasic.ts`（冲锋机）；`EnemySummoner.ts`（召唤机 Basic03，低频 **追踪弹**）；`EnemyTurret.ts`（炮台机 Basic02，锚定高度 + 前摇扇形弹）；`EnemyElite.ts`（Elite01，圆环敌弹）；`EnemyBoss.ts`（第 `BOSS_WAVE` 波占位 Boss，高 HP、慢速、发敌弹）；**敌弹**见 `EnemyBullet.ts`（可选 **`homing`**）、`enemyBulletFactory.ts`、`EnemyBulletRegistry.ts`；**玩家位置（追踪用）**见 `playerPositionAccess.ts`（`PlayerController` 注册）；**节点生成**见 `enemyBasicFactory.ts` / `enemySummonerFactory.ts` / `enemyTurretFactory.ts` / `enemyEliteFactory.ts` / `enemyBossFactory.ts`（`EnemySpawner`：**精英** → **炮台** → **召唤** → **冲锋**）  
   - 刷怪：`EnemySpawner.ts`（对齐 `enemy_spawner.gd`：实例化敌机、第 `BOSS_WAVE` 波仅刷 Boss、清场后通知 `BattleMain`）；**波次内定时与剩余配额**见 `waveSpawnScheduler.ts` 的 `WaveSpawnScheduler`（**`startBossWave`**、**续战小怪** `startContinuationMobWave`）；续战块参数见 `GameConfig`（`continuationBlockEnemyCount` 等）  
@@ -47,7 +47,7 @@
 ## 第一阶段实现目标（本仓库）
 
 - 主菜单与战斗场景可切换，设计分辨率 **720×1280**。
-- **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后三选一升级再进入下一波、经验/得分与简易 HUD、预制体/代码兜底升级 UI**；**擦弹（`grazeResolve` + 节流 + `Graze.wav`）**；脚本侧已模块化（工厂/状态/输入/命中等），仓库根目录 **`npm test`（Vitest）** 覆盖 **`aabbMath`、`BattleRunState`、`WaveSpawnScheduler`、`grazeMath`/`grazeThrottle`** 等无引擎逻辑。
-- **下一里程碑**：像素美术按 `11_art_and_assets.md` 接入；**擦弹粒子 / 符卡冷却随擦弹** 等按 `09_audio_and_feedback.md` 扩展。（**档位 Combo! 字**、**判定点 / 连击中断**、**三种小怪原型**、**受击无敌帧**、**精英 / Boss / 护盾 / HUD**、**BGM/SFX 批次** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
+- **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后三选一升级再进入下一波、经验/得分与简易 HUD、预制体/代码兜底升级 UI**；**擦弹（`grazeResolve` + 节流 + `Graze.wav` + `grazeVfx`）**；脚本侧已模块化（工厂/状态/输入/命中等），仓库根目录 **`npm test`（Vitest）** 覆盖 **`aabbMath`、`BattleRunState`、`WaveSpawnScheduler`、`grazeMath`/`grazeThrottle`** 等无引擎逻辑。
+- **下一里程碑**：像素美术按 `11_art_and_assets.md` 接入；**符卡冷却随擦弹** 等按 `09_audio_and_feedback.md` 扩展；擦弹 VFX 可再换 **粒子系统 / 贴图** 强化。（**档位 Combo! 字**、**判定点 / 连击中断**、**三种小怪原型**、**受击无敌帧**、**精英 / Boss / 护盾 / HUD**、**BGM/SFX 批次** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
 
 > 若实现与 Godot 版有路径或 API 差异，优先更新本节与 `README`，再改代码。
