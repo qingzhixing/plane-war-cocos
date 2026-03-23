@@ -106,6 +106,8 @@
     - 可选：标记为“危险状态”（例如影响评分结算的一个扣分项或减少部分评分加成）。  
   - 玩家可获得短暂无敌或硬直（实现时选择其一或结合），以避免瞬间多次判定。
 
+> **Cocos 移植（`plane-war-cocos`）**：**实际断连**（`BattleMain.onPlayerHit()` 返回 `true`，即**未被 `combo_guard` 护盾吸收**）后，**`PlayerController`** 进入 **`PLAYER_INVULN_SEC` 秒无敌**：无敌期间**不进行**敌弹/撞机受击判定；机体挂 **`UIOpacity`** 按 **`PLAYER_INVULN_BLINK_HZ`** 明暗闪烁，结束时恢复不透明。
+
 ### 连击与得分加成（与敌人被击中/被击杀绑定）
 
 - **触发条件**：  
