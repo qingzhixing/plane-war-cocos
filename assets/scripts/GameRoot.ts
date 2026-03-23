@@ -3,6 +3,7 @@ import { getBattleMain } from './battleAccess';
 import { BattleMain } from './BattleMain';
 import { createPlayField } from './playFieldFactory';
 import { createBackButton, createHintBanner } from './gameChromeFactory';
+import { destroyGameAudio, initGameAudio } from './gameAudio';
 
 const { ccclass, property } = _decorator;
 
@@ -14,6 +15,7 @@ export class GameRoot extends Component {
   private _backBtn: Node | null = null;
 
   onLoad() {
+    initGameAudio(this.node);
     const playField = createPlayField();
     this.node.addChild(playField);
 
@@ -28,6 +30,7 @@ export class GameRoot extends Component {
   }
 
   onDestroy() {
+    destroyGameAudio();
     this._backBtn?.off(Node.EventType.TOUCH_END, this._back, this);
   }
 

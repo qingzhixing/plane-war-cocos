@@ -31,6 +31,7 @@ import {
   playableHalfExtents,
 } from './playerMotion';
 import { spawnPlayerBullet } from './playerBulletFactory';
+import { playShootSfx } from './gameAudio';
 
 const { ccclass } = _decorator;
 
@@ -212,6 +213,7 @@ export class PlayerController extends Component {
     if (!this._playField) {
       return;
     }
+    playShootSfx();
     const spread = 20;
     for (const ox of multiShotOffsets(this._bulletCount, spread)) {
       this._spawnOneBullet(ox);

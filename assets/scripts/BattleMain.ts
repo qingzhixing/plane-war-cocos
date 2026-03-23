@@ -15,6 +15,11 @@ import { crossedComboMilestone } from './comboMilestone';
 import * as GameConfig from './GameConfig';
 import { BattleRunState } from './battleRunState';
 import { loadLocalRecords, mergeCurrentRunAndSave } from './localRecords';
+import {
+  playComboMilestoneSfx,
+  playHurtSfx,
+  playPowerUpSfx,
+} from './gameAudio';
 
 const { ccclass } = _decorator;
 
@@ -106,6 +111,7 @@ export class BattleMain extends Component {
     const crossed = crossedComboMilestone(prevCombo, this._run.combo);
     this._refreshHud();
     if (crossed !== null) {
+      playComboMilestoneSfx();
       this._hud?.flashComboMilestone(crossed);
     }
   }
@@ -117,6 +123,7 @@ export class BattleMain extends Component {
     }
     this._run.resetCombo();
     this._refreshHud();
+    playHurtSfx();
     this._hud?.flashComboBreak();
     return true;
   }
@@ -198,6 +205,7 @@ export class BattleMain extends Component {
     if (id === 'combo_guard') {
       this._run.applyComboGuardUpgrade();
     }
+    playPowerUpSfx();
   }
 
   private _finishAfterUpgrade() {
