@@ -25,15 +25,15 @@
 | 路径 | 说明 |
 |------|------|
 | `docs/gdd/` | 游戏设计文档（与 Godot 版同步，技术栈说明见 `sections/12_technical_notes.md`） |
-| `assets/scenes/` | `MainMenu`（主菜单）、`Game`（战斗占位，后续接入玩法） |
+| `assets/scenes/` | `MainMenu`（主菜单）、`Game`（战斗 MVP：波次、清场、三选一升级） |
 | `assets/scripts/` | `MainMenu.ts`、`mainMenuChromeFactory.ts`、`GameRoot.ts`、`playFieldFactory.ts`、`gameChromeFactory.ts`、`BattleMain.ts`、`battleRunState.ts`、`BattleHud.ts`、`battleAccess.ts`、`UpgradePool.ts`、`UpgradeUI.ts`、`UpgradePickFlow.ts`、`PlayerController.ts`、`playerInput.ts`、`playerMotion.ts`、`playerBulletFactory.ts`、`aabbMath.ts`、`playerBulletHitscan.ts`、`PlayerBullet.ts`、`EnemyBasic.ts`、`enemyBasicFactory.ts`、`EnemySpawner.ts`、`waveSpawnScheduler.ts`、`EnemyRegistry.ts`、`GameConfig.ts` |
 | `tests/` | Vitest 单测（`aabbMath`、`battleRunState`、`waveSpawnScheduler` 等） |
 | `assets/prefabs/ui/` | `EDITOR_SETUP.md`（`UpgradePick.prefab` 制作说明，预制体需在编辑器中创建） |
 
 ## 下一步（移植里程碑）
 
-- 接入 **Main 状态机**：波次、清场、经验与 HUD（对齐 Godot `main.gd`）。
-- 从 `plane-war/assets/` 复制精灵与音频到 `assets/`，并按 GDD `11_art_and_assets.md` 命名。
+- **美术与音频**：从 `plane-war/assets/` 复制到本仓库 `assets/`，按 GDD `11_art_and_assets.md` 命名。
+- **玩法扩展**：Boss、连击与本地成绩/结算（对齐 Godot `main.gd` 余项）；可选 `npm test` 持续覆盖纯逻辑模块。
 
 ## 许可
 
