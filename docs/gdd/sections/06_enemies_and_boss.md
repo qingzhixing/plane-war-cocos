@@ -133,5 +133,5 @@
 - **主线 Boss**：第 8 波；**续战块**内第 8 波再打 Boss（同场景，**血量显著高于主线**，避免「还不如小怪」）。
 - **Boss HP（实现）**：基数约 **300**；威胁乘区 **1.2^tier**；**续战 Boss** 再乘 **(3.2 + tier)**（tier≥1 时极明显）；弹幕 **speed** 仍 **min(1.35, 1.04^tier)**。小怪仍用 **1.12^tier**。
 
-> **Cocos 移植 MVP**：第 **`BOSS_WAVE`（默认 8）** 波由 `EnemySpawner` 走 **`WaveSpawnScheduler.startBossWave`**，仅生成 **一架** `EnemyBoss`（占位大图、`enemyBossFactory`）；HP 暂用固定 **`BOSS_BASE_HP`**；击杀走 `onEnemyKill`。**续战 / tier 乘区**未接。
+> **Cocos 移植 MVP**：第 **`BOSS_WAVE`（默认 8）** 波由 `EnemySpawner` 走 **`WaveSpawnScheduler.startBossWave`**，仅生成 **一架** `EnemyBoss`（占位大图、`enemyBossFactory`）；**最大 HP** `= round(BOSS_BASE_HP × 1.2^threatTier)`，其中 **`threatTier`** 由 `BattleRunState` 持有（**主线开局为 0**，即与基数 `BOSS_BASE_HP` 一致）；**局内** Boss 血条由 `BattleHud` 顶部展示，波次文案可附加 **「- Boss」**。击杀走 `onEnemyKill`。**续战 Boss 额外乘区 `(3.2 + tier)`** 与块内 **8 波流程**未接。
 
