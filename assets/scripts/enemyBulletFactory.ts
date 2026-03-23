@@ -1,5 +1,6 @@
-import { Color, Graphics, Node, UITransform } from 'cc';
+import { Color, Graphics, Node } from 'cc';
 import { getBattleMain } from './battleAccess';
+import { attachBattleSpriteOrFallback, BattleSpritePath } from './battleSprites';
 import { EnemyBullet } from './EnemyBullet';
 import * as GameConfig from './GameConfig';
 
@@ -19,19 +20,20 @@ export function spawnEnemyBullet(
   opts?: SpawnEnemyBulletOpts,
 ): void {
   const n = new Node('EnemyBullet');
-  const ut = n.addComponent(UITransform);
-  ut.setContentSize(8, 16);
-  ut.setAnchorPoint(0.5, 0.5);
   const tier = getBattleMain()?.getThreatTier() ?? 0;
   const mag = GameConfig.enemyBulletSpeedForTier(tier);
-  const g = n.addComponent(Graphics);
-  g.lineWidth = 0;
   const homing = opts?.homing === true;
-  g.fillColor = homing
-    ? new Color(255, 130, 210, 255)
-    : new Color(255, 180, 100, 255);
-  g.rect(-4, -8, 8, 16);
-  g.fill();
+  const path = homing
+    ? BattleSpritePath.bulletHoming
+    : BattleSpritePath.bulletEnemy;
+  attachBattleSpriteOrFallback(n, path, 8, 16, (g) => {
+    g.lineWidth = 0;
+    g.fillColor = homing
+      ? new Color(255, 130, 210, 255)
+      : new Color(255, 180, 100, 255);
+    g.rect(-4, -8, 8, 16);
+    g.fill();
+  });
   const bullet = n.addComponent(EnemyBullet);
   const hasCustomVel =
     opts !== undefined &&

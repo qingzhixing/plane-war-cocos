@@ -1,4 +1,5 @@
 import { Color, Graphics, Node, UITransform } from 'cc';
+import { attachBattleSpriteOrFallback, BattleSpritePath } from './battleSprites';
 import { EnemySpawner } from './EnemySpawner';
 import { PlayerController } from './PlayerController';
 import * as GameConfig from './GameConfig';
@@ -17,14 +18,12 @@ export function createPlayField(): Node {
   player.setPosition(0, -400, 0);
 
   const body = new Node('PlayerBody');
-  const bUt = body.addComponent(UITransform);
-  bUt.setContentSize(32, 48);
-  bUt.setAnchorPoint(0.5, 0.5);
-  const pg = body.addComponent(Graphics);
-  pg.lineWidth = 0;
-  pg.fillColor = new Color(80, 200, 255, 255);
-  pg.rect(-16, -24, 32, 48);
-  pg.fill();
+  attachBattleSpriteOrFallback(body, BattleSpritePath.playerShip, 32, 48, (g) => {
+    g.lineWidth = 0;
+    g.fillColor = new Color(80, 200, 255, 255);
+    g.rect(-16, -24, 32, 48);
+    g.fill();
+  });
   player.addChild(body);
 
   const hit = new Node('HitJudge');

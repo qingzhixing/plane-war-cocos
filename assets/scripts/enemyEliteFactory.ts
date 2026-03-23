@@ -1,9 +1,10 @@
-import { Color, Graphics, Node, UITransform } from 'cc';
+import { Color, Graphics, Node } from 'cc';
 import { getBattleMain } from './battleAccess';
+import { attachBattleSpriteOrFallback, BattleSpritePath } from './battleSprites';
 import { EnemyElite } from './EnemyElite';
 import * as GameConfig from './GameConfig';
 
-/** 在 PlayField 下生成一架精英（占位 Graphics；`spawnWave` 供 HP 缩放） */
+/** 在 PlayField 下生成一架精英（`enemy_elite_01` 或 Graphics 兜底） */
 export function spawnEnemyElite(
   playField: Node,
   spawnWave: number,
@@ -11,14 +12,12 @@ export function spawnEnemyElite(
   y: number,
 ): void {
   const n = new Node('EnemyElite');
-  const ut = n.addComponent(UITransform);
-  ut.setContentSize(48, 48);
-  ut.setAnchorPoint(0.5, 0.5);
-  const g = n.addComponent(Graphics);
-  g.lineWidth = 0;
-  g.fillColor = new Color(180, 90, 220, 255);
-  g.rect(-24, -24, 48, 48);
-  g.fill();
+  attachBattleSpriteOrFallback(n, BattleSpritePath.enemyElite, 48, 48, (g) => {
+    g.lineWidth = 0;
+    g.fillColor = new Color(180, 90, 220, 255);
+    g.rect(-24, -24, 48, 48);
+    g.fill();
+  });
   const eb = n.addComponent(EnemyElite);
   eb.spawnWave = spawnWave;
   const tier = getBattleMain()?.getThreatTier() ?? 0;
