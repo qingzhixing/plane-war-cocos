@@ -25,6 +25,8 @@ export class BattleRunState {
   threatTier = 0;
   /** 已进入续战块（继续挑战后；波次 1～8 循环，第 8 波为续战 Boss） */
   inContinuationBlock = false;
+  /** 稳态护盾（combo_guard）：受击消耗 1 层可免断连；续关与词条叠加 */
+  comboGuardStacks = 0;
 
   addExp(n: number): void {
     this.exp += n;
@@ -59,6 +61,19 @@ export class BattleRunState {
     this.scoreMultiplier += 0.15;
   }
 
+  applyComboGuardUpgrade(): void {
+    this.comboGuardStacks += 1;
+  }
+
+  /** 有护盾时挡伤并扣 1 层，不断连；无护盾返回 false */
+  tryAbsorbHitWithComboGuard(): boolean {
+    if (this.comboGuardStacks <= 0) {
+      return false;
+    }
+    this.comboGuardStacks -= 1;
+    return true;
+  }
+
   /** 续战第 8 波 Boss 生成时传 `spawnEnemyBoss` */
   continuationBossForWave(wave: number): boolean {
     return this.inContinuationBlock && wave === GameConfig.BOSS_WAVE;
@@ -70,6 +85,7 @@ export class BattleRunState {
   applyContinueChallenge(): void {
     this.threatTier += 1;
     this.scoreMultiplier += 0.08;
+    this.comboGuardStacks += 1;
     this.inContinuationBlock = true;
     this.activeWave = 1;
   }

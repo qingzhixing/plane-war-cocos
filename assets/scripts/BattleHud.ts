@@ -85,6 +85,7 @@ export class BattleHud extends Component {
     exp: number,
     scoreMultiplier: number,
     inContinuationBlock: boolean,
+    comboGuardStacks: number,
     bossBar: { hp: number; maxHp: number } | null,
   ): void {
     if (!this._label) {
@@ -103,7 +104,9 @@ export class BattleHud extends Component {
           ? `波次 ${wave} - Boss`
           : `波次 ${wave}`;
     }
-    this._label.string = `${waveStr}  得分 ${score}  连击 ${combo}  经验 ${exp}  评分×${sm}`;
+    const guardStr =
+      comboGuardStacks > 0 ? `  护盾×${comboGuardStacks}` : '';
+    this._label.string = `${waveStr}  得分 ${score}  连击 ${combo}  经验 ${exp}  评分×${sm}${guardStr}`;
 
     if (this._bossStrip) {
       const show = bossBar !== null && bossBar.maxHp > 0;

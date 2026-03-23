@@ -32,6 +32,11 @@ export const MVP_UPGRADES: UpgradeDef[] = [
     desc: '每次击杀额外 +1 连击（叠层可累加）',
   },
   {
+    id: 'combo_guard',
+    name: '稳态护盾',
+    desc: '护盾 +1 层；受击消耗 1 层以免连击中断',
+  },
+  {
     id: 'score_up',
     name: '评分增幅',
     desc: '评分乘区 +15%（已接 BattleMain 累计得分）',

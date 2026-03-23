@@ -55,4 +55,24 @@ describe('BattleRunState', () => {
     r.resetCombo();
     expect(r.combo).toBe(0);
   });
+
+  it('tryAbsorbHitWithComboGuard 有层时扣层且不断连', () => {
+    const r = new BattleRunState();
+    r.comboGuardStacks = 1;
+    r.onEnemyKill(0, 10);
+    expect(r.tryAbsorbHitWithComboGuard()).toBe(true);
+    expect(r.comboGuardStacks).toBe(0);
+    expect(r.combo).toBe(1);
+  });
+
+  it('tryAbsorbHitWithComboGuard 无层时返回 false', () => {
+    const r = new BattleRunState();
+    expect(r.tryAbsorbHitWithComboGuard()).toBe(false);
+  });
+
+  it('applyContinueChallenge 赠送护盾 +1', () => {
+    const r = new BattleRunState();
+    r.applyContinueChallenge();
+    expect(r.comboGuardStacks).toBe(1);
+  });
 });

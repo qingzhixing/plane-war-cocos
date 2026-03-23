@@ -67,6 +67,10 @@ export class BattleMain extends Component {
   }
 
   onPlayerHit() {
+    if (this._run.tryAbsorbHitWithComboGuard()) {
+      this._refreshHud();
+      return;
+    }
     this._run.resetCombo();
     this._refreshHud();
   }
@@ -144,6 +148,9 @@ export class BattleMain extends Component {
     if (id === 'combo_boost') {
       this._run.applyComboBoostUpgrade();
     }
+    if (id === 'combo_guard') {
+      this._run.applyComboGuardUpgrade();
+    }
   }
 
   private _finishAfterUpgrade() {
@@ -174,6 +181,7 @@ export class BattleMain extends Component {
       this._run.exp,
       this._run.scoreMultiplier,
       this._run.inContinuationBlock,
+      this._run.comboGuardStacks,
       this._bossHudVisible
         ? { hp: this._bossHudHp, maxHp: this._bossHudMax }
         : null,
