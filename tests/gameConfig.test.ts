@@ -8,6 +8,8 @@ import {
   ENEMY_BULLET_SPEED_TIER_CAP,
   ENEMY_SPAWN_INTERVAL,
   MAIN_LINE_ELITE_CHANCE,
+  PLAYER_INVULN_BLINK_HZ,
+  PLAYER_INVULN_SEC,
   bossMaxHpForSpawn,
   bossMaxHpForTier,
   continuationBlockEliteRate,
@@ -151,6 +153,16 @@ describe('GameConfig 炮台混入率', () => {
   it('continuationBlockTurretRate 递增', () => {
     expect(continuationBlockTurretRate(1)).toBe(0.18);
     expect(continuationBlockTurretRate(7)).toBe(0.42);
+  });
+});
+
+describe('GameConfig 玩家无敌帧', () => {
+  it('PLAYER_INVULN_SEC 为正', () => {
+    expect(PLAYER_INVULN_SEC).toBeGreaterThan(0);
+  });
+
+  it('PLAYER_INVULN_BLINK_HZ 为正', () => {
+    expect(PLAYER_INVULN_BLINK_HZ).toBeGreaterThan(0);
   });
 });
 

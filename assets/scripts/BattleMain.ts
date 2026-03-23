@@ -94,13 +94,14 @@ export class BattleMain extends Component {
     this._refreshHud();
   }
 
-  onPlayerHit() {
+  onPlayerHit(): boolean {
     if (this._run.tryAbsorbHitWithComboGuard()) {
       this._refreshHud();
-      return;
+      return false;
     }
     this._run.resetCombo();
     this._refreshHud();
+    return true;
   }
 
   onBossSpawned(maxHp: number) {

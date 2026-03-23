@@ -12,6 +12,10 @@ export const MOVE_SPEED = 600;
 export const KEYBOARD_SPEED_MULT = 1.5;
 /** 单帧拖拽位移上限（像素），与 Godot max_delta */
 export const MAX_DRAG_DELTA = 120;
+/** 实际受击（断连）后的无敌时间（秒），与 GDD「约 1s」一致 */
+export const PLAYER_INVULN_SEC = 1;
+/** 无敌期间机体明暗切换频率（Hz，近似） */
+export const PLAYER_INVULN_BLINK_HZ = 8;
 
 /** 敌机基础弹伤害（对齐 BulletBase damage 默认） */
 export const BULLET_DAMAGE = 1;

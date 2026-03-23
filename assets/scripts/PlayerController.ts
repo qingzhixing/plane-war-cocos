@@ -6,6 +6,7 @@ import {
   EventTouch,
   isValid,
   Node,
+  UIOpacity,
   UITransform,
   Vec2,
 } from 'cc';
@@ -50,6 +51,9 @@ export class PlayerController extends Component {
   private _halfY = 0;
 
   private _inputHandlers: PlayerInputHandlers | null = null;
+  /** 实际受击后的无敌剩余时间（秒） */
+  private _invulnRemain = 0;
+  private _blinkPhase = 0;
 
   start() {
     this._playField = this.node.parent;
@@ -85,6 +89,7 @@ export class PlayerController extends Component {
   }
 
   update(dt: number) {
+    this._tickInvuln(dt);
     this._applyKeyboardMove(dt);
     this._clampToBounds();
     this._resolvePlayerHazards();
@@ -96,8 +101,38 @@ export class PlayerController extends Component {
     }
   }
 
+  private _ensureUiOpacity(): UIOpacity {
+    let op = this.node.getComponent(UIOpacity);
+    if (!op) {
+      op = this.node.addComponent(UIOpacity);
+    }
+    return op;
+  }
+
+  private _tickInvuln(dt: number) {
+    if (this._invulnRemain <= 0) {
+      return;
+    }
+    this._invulnRemain = Math.max(0, this._invulnRemain - dt);
+    this._blinkPhase += dt;
+    const op = this._ensureUiOpacity();
+    if (this._invulnRemain <= 0) {
+      op.opacity = 255;
+      this._blinkPhase = 0;
+      return;
+    }
+    const on =
+      Math.floor(this._blinkPhase * 2 * GameConfig.PLAYER_INVULN_BLINK_HZ) %
+        2 ===
+      0;
+    op.opacity = on ? 255 : 72;
+  }
+
   /** 敌弹命中或撞机：销毁相关节点（不计击杀分）、每帧最多一次 onPlayerHit */
   private _resolvePlayerHazards() {
+    if (this._invulnRemain > 0) {
+      return;
+    }
     const selfUt = this.node.getComponent(UITransform);
     if (!selfUt) {
       return;
@@ -120,7 +155,11 @@ export class PlayerController extends Component {
       }
     }
     if (hit) {
-      getBattleMain()?.onPlayerHit();
+      const took = getBattleMain()?.onPlayerHit() ?? false;
+      if (took) {
+        this._invulnRemain = GameConfig.PLAYER_INVULN_SEC;
+        this._blinkPhase = 0;
+      }
     }
   }
 
