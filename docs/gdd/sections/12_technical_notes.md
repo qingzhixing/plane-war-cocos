@@ -19,10 +19,10 @@
 
 - 启动流程：**主菜单** `assets/scenes/MainMenu.scene` → **开始游戏** 进入 `assets/scenes/Game.scene`（后续在 `Game` 中挂载战斗与 HUD，与 Godot `Main.tscn` 对齐）。
 - 脚本：`assets/scripts/`  
-  - 主菜单：`MainMenu.ts`  
+  - 主菜单：`MainMenu.ts`（提示文案由 `mainMenuChromeFactory.ts` 的 `createMainMenuHint`）  
   - 战斗场景根：`GameRoot.ts`（挂载 `PlayField`、`BattleMain`；提示条与返回按钮由 `gameChromeFactory.ts` 代码搭建；`PlayField` 由 `playFieldFactory.ts` 的 `createPlayField`）  
   - 玩家：`PlayerController.ts`（对齐 Godot `player.gd`：拖拽 / 键控移动、边界、自动射击）  
-  - 玩家基础弹：`PlayerBullet.ts`（对齐 Godot `PlayerBullet.gd` / `BulletBase.gd`：向上运动、出屏销毁；命中敌人后销毁）  
+  - 玩家基础弹：`PlayerBullet.ts`（对齐 Godot `PlayerBullet.gd` / `BulletBase.gd`：向上运动、出屏销毁；命中敌人后销毁）；**节点与占位图**由 `playerBulletFactory.ts` 的 `spawnPlayerBullet`（`PlayerController` 调用）  
   - 敌人：`EnemyBasic.ts`（对齐 Godot `enemy_basic.gd` / `EnemyBase.gd`：下落、`apply_damage`、HP 归零销毁；占位 Graphics）  
   - 刷怪：`EnemySpawner.ts`（对齐 `enemy_spawner.gd`：`startWave(wave)` 按波次数量刷怪、间隔定时；清场后通知 `BattleMain`）  
   - 战斗状态（MVP）：`BattleMain.ts`（对齐 `main.gd` 子集：波次递增、`onWaveCleared`、经验/得分累计；HUD 展示由 `BattleHud.ts`；清场后 **升级三选一**）  
