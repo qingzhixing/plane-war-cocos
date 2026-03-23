@@ -18,6 +18,8 @@ export class BattleHud extends Component {
   private _bossStrip: Node | null = null;
   private _bossFill: Graphics | null = null;
   private readonly _bossBarW = 400;
+  private _comboBreakNode: Node | null = null;
+  private _comboBreakRemain = 0;
 
   onLoad() {
     const ut = this.node.addComponent(UITransform);
@@ -29,6 +31,36 @@ export class BattleHud extends Component {
     this._label = lab;
 
     this._buildBossStrip();
+    this._buildComboBreak();
+  }
+
+  private _buildComboBreak() {
+    const n = new Node('ComboBreak');
+    n.setPosition(0, -120, 0);
+    n.active = false;
+    const lab = n.addComponent(Label);
+    lab.string = '连击中断';
+    lab.fontSize = 26;
+    lab.color = new Color(255, 200, 130, 255);
+    this.node.addChild(n);
+    this._comboBreakNode = n;
+  }
+
+  update(dt: number) {
+    if (this._comboBreakRemain > 0) {
+      this._comboBreakRemain -= dt;
+      if (this._comboBreakRemain <= 0 && this._comboBreakNode) {
+        this._comboBreakNode.active = false;
+      }
+    }
+  }
+
+  /** 实际断连时由 `BattleMain.onPlayerHit` 调用 */
+  flashComboBreak() {
+    this._comboBreakRemain = GameConfig.COMBO_BREAK_DISPLAY_SEC;
+    if (this._comboBreakNode) {
+      this._comboBreakNode.active = true;
+    }
   }
 
   private _buildBossStrip() {

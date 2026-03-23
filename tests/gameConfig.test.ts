@@ -10,6 +10,7 @@ import {
   MAIN_LINE_ELITE_CHANCE,
   PLAYER_INVULN_BLINK_HZ,
   PLAYER_INVULN_SEC,
+  COMBO_BREAK_DISPLAY_SEC,
   bossMaxHpForSpawn,
   bossMaxHpForTier,
   continuationBlockEliteRate,
@@ -163,6 +164,10 @@ describe('GameConfig 玩家无敌帧', () => {
 
   it('PLAYER_INVULN_BLINK_HZ 为正', () => {
     expect(PLAYER_INVULN_BLINK_HZ).toBeGreaterThan(0);
+  });
+
+  it('COMBO_BREAK_DISPLAY_SEC 为正', () => {
+    expect(COMBO_BREAK_DISPLAY_SEC).toBeGreaterThan(0);
   });
 });
 

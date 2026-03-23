@@ -101,10 +101,13 @@ export class PlayerController extends Component {
     }
   }
 
+  /** 无敌闪烁仅作用于机体子节点，判定点 `HitJudge` 保持不透明 */
   private _ensureUiOpacity(): UIOpacity {
-    let op = this.node.getComponent(UIOpacity);
+    const body = this.node.getChildByName('PlayerBody');
+    const target = body ?? this.node;
+    let op = target.getComponent(UIOpacity);
     if (!op) {
-      op = this.node.addComponent(UIOpacity);
+      op = target.addComponent(UIOpacity);
     }
     return op;
   }

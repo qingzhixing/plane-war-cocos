@@ -16,6 +16,8 @@ export const MAX_DRAG_DELTA = 120;
 export const PLAYER_INVULN_SEC = 1;
 /** 无敌期间机体明暗切换频率（Hz，近似） */
 export const PLAYER_INVULN_BLINK_HZ = 8;
+/** 连击中断提示显示时长（秒） */
+export const COMBO_BREAK_DISPLAY_SEC = 1.15;
 
 /** 敌机基础弹伤害（对齐 BulletBase damage 默认） */
 export const BULLET_DAMAGE = 1;

@@ -33,7 +33,7 @@
 ## 下一步（移植里程碑）
 
 - **美术与音频**：从 `plane-war/assets/` 复制到本仓库 `assets/`，按 GDD `11_art_and_assets.md` 命名。
-- **玩法扩展**：受击音效、判定点绘制、Combo Break 提示等 GDD 余项；可选 `npm test` 持续覆盖纯逻辑模块。
+- **玩法扩展**：受击音效、档位 Combo! 浮现、New Record 提示等 GDD 余项；可选 `npm test` 持续覆盖纯逻辑模块。
 
 ## 许可
 

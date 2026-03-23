@@ -101,6 +101,7 @@ export class BattleMain extends Component {
     }
     this._run.resetCombo();
     this._refreshHud();
+    this._hud?.flashComboBreak();
     return true;
   }
 
