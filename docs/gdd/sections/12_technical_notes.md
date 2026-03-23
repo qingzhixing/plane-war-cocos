@@ -17,7 +17,7 @@
 
 ## 本仓库目录约定（建议）
 
-- 启动流程：**主菜单** `assets/scenes/MainMenu.scene` → **开始游戏** 进入 `assets/scenes/Game.scene`（后续在 `Game` 中挂载战斗与 HUD，与 Godot `Main.tscn` 对齐）。
+- 启动流程：**主菜单** `assets/scenes/MainMenu.scene` → **开始游戏** 进入 `assets/scenes/Game.scene`（后续在 `Game` 中挂载战斗与 HUD，与 Godot `Main.tscn` 对齐）。**`MainMenu.ts`** 与 **`GameRoot.ts`** 均在 **`preloadUiFonts`** 后再搭建 UI，并对子树 **`applyUiFontsUnder`**；**`UpgradePickFlow` / `postBossChoiceFlow`** 在挂载根节点后对动态面板递归套字。
 - 脚本：`assets/scripts/`  
   - 主菜单：`MainMenu.ts`（`mainMenuChromeFactory.ts`：`createMainMenuRoot`、`createMainMenuHint`、`presentRecordsQueryOverlay`）  
   - 战斗场景根：`GameRoot.ts`（**`preloadBattleSpriteFrames`** 后再 `createPlayField`；挂载 `PlayField`、`BattleMain`；提示条与返回按钮由 `gameChromeFactory.ts` 代码搭建；`PlayField` 由 `playFieldFactory.ts` 的 `createPlayField`：**玩家**含子节点 **`PlayerBody`**（**`battleSprites` 像素机**或 Graphics 兜底）与 **`HitJudge`**（判定点）；无敌闪烁只改 **`PlayerBody` 的 `UIOpacity`**）  
@@ -48,6 +48,6 @@
 
 - 主菜单与战斗场景可切换，设计分辨率 **720×1280**。
 - **当前进度**：`Game` 场景中已实现 **波次刷怪与清场、清场后三选一升级再进入下一波、经验/得分与简易 HUD、预制体/代码兜底升级 UI**；**擦弹（`grazeResolve` + 节流 + `Graze.wav` + `grazeVfx`）**；脚本侧已模块化（工厂/状态/输入/命中等），仓库根目录 **`npm test`（Vitest）** 覆盖 **`aabbMath`、`BattleRunState`、`WaveSpawnScheduler`、`grazeMath`/`grazeThrottle`** 等无引擎逻辑。
-- **下一里程碑**：**Boss 独立立绘**、**字体/theme** 按 `11_art_and_assets.md` 继续补全；**符卡冷却随擦弹** 等按 `09_audio_and_feedback.md` 扩展；擦弹 VFX 可再换 **粒子系统 / 贴图** 强化。（**机体/弹/敌像素 MVP**、**判定点 / 连击中断**、**三种小怪原型**、**受击无敌帧**、**精英 / Boss / 护盾 / HUD**、**BGM/SFX 批次**、**Combo 提示 tween 缩放** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
+- **下一里程碑**：**Boss 独立立绘**、**Godot theme / JetBrainsMono** 等按 `11_art_and_assets.md` 继续补全；**符卡冷却随擦弹** 等按 `09_audio_and_feedback.md` 扩展；擦弹 VFX 可再换 **粒子系统 / 贴图** 强化。（**机体/弹/敌像素 MVP**、**判定点 / 连击中断**、**三种小怪原型**、**受击无敌帧**、**精英 / Boss / 护盾 / HUD**、**BGM/SFX 批次**、**Combo 提示 tween 缩放** 等已实现；**连击 / 敌弹 / 撞机**：见既有模块。）
 
 > 若实现与 Godot 版有路径或 API 差异，优先更新本节与 `README`，再改代码。
