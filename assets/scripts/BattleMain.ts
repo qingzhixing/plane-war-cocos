@@ -55,6 +55,11 @@ export class BattleMain extends Component {
     this._refreshHud();
   }
 
+  onPlayerHit() {
+    this._run.resetCombo();
+    this._refreshHud();
+  }
+
   onWaveCleared() {
     if (!this._run.tryEnterUpgradeFlow()) {
       return;

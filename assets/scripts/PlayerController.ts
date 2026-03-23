@@ -4,10 +4,15 @@ import {
   EventKeyboard,
   EventMouse,
   EventTouch,
+  isValid,
   Node,
+  UITransform,
   Vec2,
 } from 'cc';
+import { getBattleMain } from './battleAccess';
 import * as GameConfig from './GameConfig';
+import { enemiesSnapshot } from './EnemyRegistry';
+import { collectEnemiesTouchingPlayer } from './playerEnemyCollision';
 import {
   bindPlayerInput,
   type PlayerInputHandlers,
@@ -77,12 +82,32 @@ export class PlayerController extends Component {
   update(dt: number) {
     this._applyKeyboardMove(dt);
     this._clampToBounds();
+    this._resolveEnemyRamming();
 
     this._fireTimer -= dt;
     if (this._fireTimer <= 0) {
       this._fireTimer = this._fireInterval;
       this._spawnBullets();
     }
+  }
+
+  /** 与敌机重叠：撞毁敌机（不计分）、清空连击 */
+  private _resolveEnemyRamming() {
+    const selfUt = this.node.getComponent(UITransform);
+    if (!selfUt) {
+      return;
+    }
+    const b = selfUt.getBoundingBoxToWorld();
+    const hits = collectEnemiesTouchingPlayer(b, enemiesSnapshot());
+    if (hits.length === 0) {
+      return;
+    }
+    for (const e of hits) {
+      if (isValid(e.node)) {
+        e.node.destroy();
+      }
+    }
+    getBattleMain()?.onPlayerHit();
   }
 
   applyUpgrade(id: string) {

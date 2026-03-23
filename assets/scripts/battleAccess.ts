@@ -4,6 +4,8 @@ export interface IBattleRewards {
   addScore(n: number): void;
   /** 敌机击杀：连击 + 经验 + 得分（含连击区间系数 × 评分乘区） */
   onEnemyKill(expValue: number, baseScore: number): void;
+  /** 玩家与敌机相撞等待：清零连击（敌机由调用方销毁且不计分） */
+  onPlayerHit(): void;
 }
 
 let _battle: IBattleRewards | null = null;
