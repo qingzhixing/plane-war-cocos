@@ -119,4 +119,5 @@
 - **SFX（第二批）**：`EnemyInjured.ogg` 在 **玩家子弹命中敌人且未致死**时；`Explosion1–5.ogg` 在 **`applyDamage` 导致敌人/Boss 死亡**时 **随机其一**（与 Godot 爆炸池一致）。资源路径：`audio/SFX/enemy/EnemyInjured`、`audio/SFX/explode/Explosion1` … `Explosion5`。
 - **SFX（第三批）**：`game_state/Lose.ogg` 在 **Boss 击破二选一选「结算返回」** 时播放；**切主菜单** 在 **`AudioClip` 时长 + 短尾延迟** 后执行（`gameAudio.scheduleLoadMainMenuAfterSettleSfx`），避免场景卸载过早截断音效。
 - **撞机**：玩家机体与敌机重叠导致 **destroy**（非子弹击杀）时，与子弹击杀一致 **播放爆炸池随机**（`playEnemyExplodeSfx`），**不** 计 `onEnemyKill` 得分（与既有逻辑一致）。
-- **未接**：**擦弹**玩法与 `Graze.wav`（需 `GrazeArea` + 计分/VFX 后再接音效）；其它未列资源仍按上表保留。
+- **擦弹（Cocos）**：`GameConfig` 中 **`GRAZE_RADIUS` / `GRAZE_THROTTLE_SEC` / `GRAZE_SCORE`**；`PlayerController` 每帧在 **受击矩形外、擦弹圆内** 的敌弹/敌机上按节流计分；**`Graze.wav`** 由 `playGrazeSfx` 播放。粒子 `GrazeSpark` 等 VFX 仍为可选项。
+- **未接**：符卡冷却随擦弹缩减等待玩法接入后再对齐 GDD 数值。
