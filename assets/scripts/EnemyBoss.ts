@@ -12,19 +12,21 @@ export class EnemyBoss extends Component implements EnemyHitTarget {
   spawnWave = 1;
   expValue = GameConfig.BOSS_EXP_VALUE;
   scoreValue = GameConfig.BOSS_SCORE_VALUE;
+  /** 生成前由工厂设为 `bossMaxHpForTier(tier)` */
   maxHp = GameConfig.BOSS_BASE_HP;
   private _hp = 0;
   speed = GameConfig.BOSS_SPEED;
   private _fireAcc = 0;
 
   onLoad() {
-    this._hp = GameConfig.BOSS_BASE_HP;
-    this.maxHp = GameConfig.BOSS_BASE_HP;
+    this._hp = this.maxHp;
     enemyRegister(this);
+    getBattleMain()?.onBossSpawned(this.maxHp);
   }
 
   onDestroy() {
     enemyUnregister(this);
+    getBattleMain()?.onBossGone();
   }
 
   update(dt: number) {
@@ -50,6 +52,7 @@ export class EnemyBoss extends Component implements EnemyHitTarget {
 
   applyDamage(amount: number) {
     this._hp -= amount;
+    getBattleMain()?.onBossHpChanged(this._hp, this.maxHp);
     if (this._hp <= 0) {
       getBattleMain()?.onEnemyKill(this.expValue, this.scoreValue);
       this.node.destroy();

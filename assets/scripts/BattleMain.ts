@@ -18,6 +18,10 @@ export class BattleMain extends Component {
 
   private readonly _run = new BattleRunState();
 
+  private _bossHudVisible = false;
+  private _bossHudHp = 0;
+  private _bossHudMax = 0;
+
   init(playField: Node, upgradePickPrefab: Prefab | null) {
     this._playField = playField;
     this._upgradePrefab = upgradePickPrefab;
@@ -28,7 +32,7 @@ export class BattleMain extends Component {
     this._buildHud();
 
     this._run.activeWave = 1;
-    this._spawner.startWave(1);
+    this._spawner.startWave(1, this._run.threatTier);
     this._refreshHud();
   }
 
@@ -57,6 +61,24 @@ export class BattleMain extends Component {
 
   onPlayerHit() {
     this._run.resetCombo();
+    this._refreshHud();
+  }
+
+  onBossSpawned(maxHp: number) {
+    this._bossHudVisible = true;
+    this._bossHudHp = maxHp;
+    this._bossHudMax = maxHp;
+    this._refreshHud();
+  }
+
+  onBossHpChanged(hp: number, maxHp: number) {
+    this._bossHudHp = hp;
+    this._bossHudMax = maxHp;
+    this._refreshHud();
+  }
+
+  onBossGone() {
+    this._bossHudVisible = false;
     this._refreshHud();
   }
 
@@ -89,7 +111,7 @@ export class BattleMain extends Component {
 
   private _finishAfterUpgrade() {
     this._run.finishUpgradeAdvanceWave();
-    this._spawner?.startWave(this._run.activeWave);
+    this._spawner?.startWave(this._run.activeWave, this._run.threatTier);
     this._refreshHud();
   }
 
@@ -106,6 +128,9 @@ export class BattleMain extends Component {
       this._run.combo,
       this._run.exp,
       this._run.scoreMultiplier,
+      this._bossHudVisible
+        ? { hp: this._bossHudHp, maxHp: this._bossHudMax }
+        : null,
     );
   }
 }

@@ -20,6 +20,8 @@ export class BattleRunState {
   waitingForUpgrade = false;
   /** `score_up` 等叠加的评分乘区 */
   scoreMultiplier = 1;
+  /** 威胁等级（Boss HP 等）；主线开局 0，续战递增待接 */
+  threatTier = 0;
 
   addExp(n: number): void {
     this.exp += n;

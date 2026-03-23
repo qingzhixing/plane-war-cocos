@@ -2,7 +2,11 @@ import { Color, Graphics, Node, UITransform } from 'cc';
 import { EnemyBoss } from './EnemyBoss';
 import * as GameConfig from './GameConfig';
 
-export function spawnEnemyBoss(playField: Node, wave: number): void {
+export function spawnEnemyBoss(
+  playField: Node,
+  wave: number,
+  threatTier: number,
+): void {
   const n = new Node('EnemyBoss');
   const ut = n.addComponent(UITransform);
   ut.setContentSize(72, 72);
@@ -14,6 +18,7 @@ export function spawnEnemyBoss(playField: Node, wave: number): void {
   g.fill();
   const eb = n.addComponent(EnemyBoss);
   eb.spawnWave = wave;
+  eb.maxHp = GameConfig.bossMaxHpForTier(threatTier);
   n.setPosition(0, GameConfig.ENEMY_SPAWN_Y, 0);
   playField.addChild(n);
 }

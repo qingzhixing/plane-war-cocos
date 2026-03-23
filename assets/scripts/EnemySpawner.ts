@@ -13,13 +13,15 @@ export class EnemySpawner extends Component {
   private readonly _sched = new WaveSpawnScheduler();
   private _battle: BattleMain | null = null;
   private _bossWave = false;
+  private _threatTier = 0;
 
   setBattleMain(b: BattleMain | null) {
     this._battle = b;
   }
 
   /** 对齐 enemy_spawner.gd start_wave */
-  startWave(wave: number) {
+  startWave(wave: number, threatTier = 0) {
+    this._threatTier = threatTier;
     this._bossWave = wave === GameConfig.BOSS_WAVE;
     if (this._bossWave) {
       this._sched.startBossWave(wave);
@@ -46,7 +48,11 @@ export class EnemySpawner extends Component {
   private _spawnOne() {
     if (this._bossWave) {
       this._bossWave = false;
-      spawnEnemyBoss(this.node, this._sched.spawnWaveForEnemies);
+      spawnEnemyBoss(
+        this.node,
+        this._sched.spawnWaveForEnemies,
+        this._threatTier,
+      );
       return;
     }
     const span = GameConfig.DESIGN_W - 80;

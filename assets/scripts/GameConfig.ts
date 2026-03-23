@@ -30,8 +30,16 @@ export const ENEMY_SPAWN_Y = 580;
 
 /** 主线 Boss 所在波次（GDD：第 8 波） */
 export const BOSS_WAVE = 8;
-/** Boss 占位 HP（MVP 固定；续战乘区未接） */
+/** Boss 基数 HP；实际最大 HP 见 `bossMaxHpForTier`（×1.2^tier） */
 export const BOSS_BASE_HP = 300;
+/** 威胁乘区：与 GDD「Boss 与威胁」一致 */
+export const BOSS_HP_TIER_MULT = 1.2;
+
+/** 主线 / 续战块威胁等级（≥0）；主线开局为 0。 */
+export function bossMaxHpForTier(tier: number): number {
+  const t = Math.max(0, tier);
+  return Math.round(BOSS_BASE_HP * Math.pow(BOSS_HP_TIER_MULT, t));
+}
 export const BOSS_SPEED = 80;
 export const BOSS_EXP_VALUE = 50;
 export const BOSS_SCORE_VALUE = 200;
