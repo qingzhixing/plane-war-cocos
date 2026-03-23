@@ -34,6 +34,8 @@ export class BattleRunState {
   maxDps = 0;
 
   private _dpsSamples: { t: number; amt: number }[] = [];
+  /** 擦弹累计，满 `GRAZE_PER_COMBO_TICKS` 加 1 连击 */
+  private _grazeComboAcc = 0;
 
   addExp(n: number): void {
     this.exp += n;
@@ -62,6 +64,18 @@ export class BattleRunState {
   /** 玩家受击等导致断连（待接碰撞） */
   resetCombo(): void {
     this.combo = 0;
+    this._grazeComboAcc = 0;
+  }
+
+  /** 有效擦弹一次：加分、连击叠层（不增加经验，不计 DPS） */
+  recordGraze(): void {
+    this.score += Math.round(GameConfig.GRAZE_SCORE * this.scoreMultiplier);
+    this._grazeComboAcc += 1;
+    if (this._grazeComboAcc >= GameConfig.GRAZE_PER_COMBO_TICKS) {
+      this._grazeComboAcc = 0;
+      this.combo += 1;
+      this.maxCombo = Math.max(this.maxCombo, this.combo);
+    }
   }
 
   applyScoreUpUpgrade(): void {

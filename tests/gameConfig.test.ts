@@ -27,6 +27,10 @@ import {
   enemyMobilityTierMult,
   ENEMY_MOBILITY_TIER_BASE,
   DPS_HUD_REFRESH_SEC,
+  GRAZE_PER_COMBO_TICKS,
+  GRAZE_RADIUS,
+  GRAZE_SCORE,
+  GRAZE_THROTTLE_SEC,
   mainLineEliteChance,
   mainLineTurretChance,
   mainLineSummonerChance,
@@ -215,5 +219,14 @@ describe('GameConfig 召唤机混入率', () => {
   it('continuationBlockSummonerRate 递增', () => {
     expect(continuationBlockSummonerRate(1)).toBe(0.12);
     expect(continuationBlockSummonerRate(7)).toBe(0.24);
+  });
+});
+
+describe('GameConfig graze', () => {
+  it('擦弹常量与 GDD 对齐', () => {
+    expect(GRAZE_RADIUS).toBe(132);
+    expect(GRAZE_THROTTLE_SEC).toBe(0.05);
+    expect(GRAZE_SCORE).toBe(9);
+    expect(GRAZE_PER_COMBO_TICKS).toBe(3);
   });
 });

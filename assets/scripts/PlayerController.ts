@@ -32,6 +32,11 @@ import {
 } from './playerMotion';
 import { spawnPlayerBullet } from './playerBulletFactory';
 import { playEnemyExplodeSfx, playShootSfx } from './gameAudio';
+import {
+  collectGrazeableBullets,
+  collectGrazeableEnemies,
+} from './grazeResolve';
+import { tryGrazeNow } from './grazeThrottle';
 
 const { ccclass } = _decorator;
 
@@ -55,6 +60,8 @@ export class PlayerController extends Component {
   /** 实际受击后的无敌剩余时间（秒） */
   private _invulnRemain = 0;
   private _blinkPhase = 0;
+  /** 局内时间（秒），供擦弹节流 */
+  private _sceneTime = 0;
 
   start() {
     this._playField = this.node.parent;
@@ -90,9 +97,11 @@ export class PlayerController extends Component {
   }
 
   update(dt: number) {
+    this._sceneTime += dt;
     this._tickInvuln(dt);
     this._applyKeyboardMove(dt);
     this._clampToBounds();
+    this._resolveGraze();
     this._resolvePlayerHazards();
 
     this._fireTimer -= dt;
@@ -130,6 +139,57 @@ export class PlayerController extends Component {
         2 ===
       0;
     op.opacity = on ? 255 : 72;
+  }
+
+  /** 擦弹：受击矩形外、擦弹圆内，按目标节流计分 */
+  private _resolveGraze() {
+    const selfUt = this.node.getComponent(UITransform);
+    if (!selfUt) {
+      return;
+    }
+    const hitRect = selfUt.getBoundingBoxToWorld();
+    const pcx = hitRect.x + hitRect.width * 0.5;
+    const pcy = hitRect.y + hitRect.height * 0.5;
+    const bm = getBattleMain();
+    if (!bm) {
+      return;
+    }
+    const bullets = collectGrazeableBullets(
+      pcx,
+      pcy,
+      hitRect,
+      enemyBulletsSnapshot(),
+    );
+    for (const b of bullets) {
+      const key = `eb:${b.node.uuid}`;
+      if (
+        tryGrazeNow(
+          key,
+          this._sceneTime,
+          GameConfig.GRAZE_THROTTLE_SEC,
+        )
+      ) {
+        bm.onGrazeTick();
+      }
+    }
+    const enemies = collectGrazeableEnemies(
+      pcx,
+      pcy,
+      hitRect,
+      enemiesSnapshot(),
+    );
+    for (const e of enemies) {
+      const key = `en:${e.node.uuid}`;
+      if (
+        tryGrazeNow(
+          key,
+          this._sceneTime,
+          GameConfig.GRAZE_THROTTLE_SEC,
+        )
+      ) {
+        bm.onGrazeTick();
+      }
+    }
   }
 
   /** 敌弹命中或撞机：销毁相关节点（不计击杀分）、每帧最多一次 onPlayerHit */

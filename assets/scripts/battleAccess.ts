@@ -15,6 +15,8 @@ export interface IBattleRewards {
   getThreatTier(): number;
   /** 对敌机/Boss 造成有效伤害（用于 DPS） */
   onPlayerDamageDealt(amount: number): void;
+  /** 敌弹/敌机擦弹成功一次（已节流） */
+  onGrazeTick(): void;
 }
 
 let _battle: IBattleRewards | null = null;

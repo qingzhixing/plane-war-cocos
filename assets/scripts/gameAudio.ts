@@ -6,6 +6,7 @@ import {
   _decorator,
   resources,
 } from 'cc';
+import { clearGrazeThrottle } from './grazeThrottle';
 
 const { ccclass } = _decorator;
 
@@ -24,6 +25,7 @@ const SFX = {
   shoot: 'audio/SFX/player/Shoot',
   hurt: 'audio/SFX/player/hurt',
   powerUp: 'audio/SFX/player/power_up',
+  graze: 'audio/SFX/player/Graze',
   enemyHit: 'audio/SFX/enemy/EnemyInjured',
   settleLose: 'audio/SFX/game_state/Lose',
 } as const;
@@ -135,10 +137,15 @@ export function destroyGameAudio() {
   _bgmQueue = [];
   _bgmIndex = 0;
   _clipCache.clear();
+  clearGrazeThrottle();
 }
 
 export function playShootSfx() {
   playSfx(SFX.shoot, 0.32);
+}
+
+export function playGrazeSfx() {
+  playSfx(SFX.graze, 0.38);
 }
 
 export function playHurtSfx() {

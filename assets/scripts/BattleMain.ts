@@ -17,6 +17,7 @@ import { BattleRunState } from './battleRunState';
 import { loadLocalRecords, mergeCurrentRunAndSave } from './localRecords';
 import {
   playComboMilestoneSfx,
+  playGrazeSfx,
   playHurtSfx,
   playPowerUpSfx,
   scheduleLoadMainMenuAfterSettleSfx,
@@ -94,6 +95,18 @@ export class BattleMain extends Component {
   onPlayerDamageDealt(amount: number) {
     this._run.recordPlayerDamageToEnemies(amount, this._battleTimeSec);
     this._refreshHud();
+  }
+
+  onGrazeTick() {
+    const prevCombo = this._run.combo;
+    this._run.recordGraze();
+    playGrazeSfx();
+    const crossed = crossedComboMilestone(prevCombo, this._run.combo);
+    this._refreshHud();
+    if (crossed !== null) {
+      playComboMilestoneSfx();
+      this._hud?.flashComboMilestone(crossed);
+    }
   }
 
   addExp(n: number) {

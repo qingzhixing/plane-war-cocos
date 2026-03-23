@@ -77,6 +77,16 @@ export function enemyMobilityTierMult(tier: number): number {
 export const DPS_WINDOW_SEC = 5;
 /** HUD 上 DPS 行刷新间隔（秒），减轻抖动与每帧拼串（见 KNOWN_ISSUES） */
 export const DPS_HUD_REFRESH_SEC = 0.4;
+
+/** 擦弹圆半径（像素），与 GDD `04_numbers` GrazeArea 一致 */
+export const GRAZE_RADIUS = 132;
+/** 同一敌弹/敌机目标擦弹计分最小间隔（秒）≈50ms */
+export const GRAZE_THROTTLE_SEC = 0.05;
+/** 单次有效擦弹得分（再乘 `scoreMultiplier`） */
+export const GRAZE_SCORE = 9;
+/** 每累计多少次有效擦弹 +1 连击 */
+export const GRAZE_PER_COMBO_TICKS = 3;
+
 /** 敌机发射敌弹间隔（秒），MVP 占位 */
 export const ENEMY_FIRE_INTERVAL = 2.5;
 /** 秒，MVP 定时刷怪间隔（完整波次见 EnemySpawner / main） */
