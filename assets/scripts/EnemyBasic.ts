@@ -3,6 +3,7 @@ import { getBattleMain } from './battleAccess';
 import { spawnEnemyBullet } from './enemyBulletFactory';
 import * as GameConfig from './GameConfig';
 import { enemyRegister, enemyUnregister, type EnemyHitTarget } from './EnemyRegistry';
+import { playEnemyExplodeSfx, playEnemyHitSfx } from './gameAudio';
 
 const { ccclass } = _decorator;
 
@@ -54,8 +55,11 @@ export class EnemyBasic extends Component implements EnemyHitTarget {
   applyDamage(amount: number) {
     this._hp -= amount;
     if (this._hp <= 0) {
+      playEnemyExplodeSfx();
       getBattleMain()?.onEnemyKill(this.expValue, this.scoreValue);
       this.node.destroy();
+    } else {
+      playEnemyHitSfx();
     }
   }
 }

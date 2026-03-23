@@ -6,7 +6,7 @@
 
 - [Cocos Creator 3.8.8](https://www.cocos.com/creator-download)（与根目录 `package.json` 中 `creator.version` 对齐）
 - **可选**：根目录执行 `npm install` 后运行 **`npm test`**，用 Vitest 跑 `tests/` 下与引擎无关的纯逻辑单测（`aabbMath`、`battleRunState`、`waveSpawnScheduler` 等）。
-- **音频**：首批 BGM / 玩家 SFX 位于 **`assets/resources/audio/`**（自 `plane-war/assets/` 同步）；`Game` 场景由 **`gameAudio.ts`** 在运行时 `resources.load` 播放（见 GDD `09` / `12`）。
+- **音频**：BGM、玩家 SFX、**敌受伤/爆炸**（`SFX/enemy`、`SFX/explode`）位于 **`assets/resources/audio/`**（自 `plane-war/assets/` 同步）；`Game` 场景由 **`gameAudio.ts`** 在运行时 `resources.load` 播放（见 GDD `09` / `12`）。
 
 ## 打开与运行
 
@@ -34,7 +34,7 @@
 ## 下一步（移植里程碑）
 
 - **美术**：像素图从 `plane-war/assets/` 接入本仓库 `assets/`，按 GDD `11_art_and_assets.md` 命名。
-- **音频扩展**：敌受伤/爆炸/擦弹/失败音等（GDD `09`）；主菜单与 BGM 持久化策略若需对齐 Godot 再迭代。
+- **音频扩展**：擦弹、失败 `Lose` 等（GDD `09`）；撞机清敌若也要爆炸音可再统一；主菜单与 BGM 持久化策略若需对齐 Godot 再迭代。
 - **玩法与表现**：Combo 字缩放动画、结算页高亮刷新纪录等 GDD 余项；可选 `npm test` 持续覆盖纯逻辑模块。
 
 ## 许可

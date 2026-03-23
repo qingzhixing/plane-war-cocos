@@ -24,7 +24,16 @@ const SFX = {
   shoot: 'audio/SFX/player/Shoot',
   hurt: 'audio/SFX/player/hurt',
   powerUp: 'audio/SFX/player/power_up',
+  enemyHit: 'audio/SFX/enemy/EnemyInjured',
 } as const;
+
+const EXPLOSION_PATHS = [
+  'audio/SFX/explode/Explosion1',
+  'audio/SFX/explode/Explosion2',
+  'audio/SFX/explode/Explosion3',
+  'audio/SFX/explode/Explosion4',
+  'audio/SFX/explode/Explosion5',
+] as const;
 
 let _scheduler: GameAudioScheduler | null = null;
 let _sfx: AudioSource | null = null;
@@ -142,4 +151,15 @@ export function playPowerUpSfx() {
 /** 连击档位跨越：与升级共用资源，略轻 */
 export function playComboMilestoneSfx() {
   playSfx(SFX.powerUp, 0.52);
+}
+
+export function playEnemyHitSfx() {
+  playSfx(SFX.enemyHit, 0.52);
+}
+
+/** 敌人/Boss 被弹击杀 */
+export function playEnemyExplodeSfx() {
+  const path =
+    EXPLOSION_PATHS[Math.floor(Math.random() * EXPLOSION_PATHS.length)];
+  playSfx(path, 0.62);
 }
