@@ -23,6 +23,8 @@ export class BattleHud extends Component {
   private _comboBreakRemain = 0;
   private _comboMilestoneNode: Node | null = null;
   private _comboMilestoneRemain = 0;
+  private _newRecordNode: Node | null = null;
+  private _newRecordRemain = 0;
 
   onLoad() {
     const ut = this.node.addComponent(UITransform);
@@ -36,6 +38,7 @@ export class BattleHud extends Component {
     this._buildBossStrip();
     this._buildComboBreak();
     this._buildComboMilestone();
+    this._buildNewRecordHint();
   }
 
   private _buildComboBreak() {
@@ -62,6 +65,18 @@ export class BattleHud extends Component {
     this._comboMilestoneNode = n;
   }
 
+  private _buildNewRecordHint() {
+    const n = new Node('NewRecordHint');
+    n.setPosition(300, -205, 0);
+    n.active = false;
+    const lab = n.addComponent(Label);
+    lab.string = '新纪录？';
+    lab.fontSize = 22;
+    lab.color = new Color(255, 220, 100, 255);
+    this.node.addChild(n);
+    this._newRecordNode = n;
+  }
+
   update(dt: number) {
     if (this._comboBreakRemain > 0) {
       this._comboBreakRemain -= dt;
@@ -75,6 +90,12 @@ export class BattleHud extends Component {
         this._comboMilestoneNode.active = false;
       }
     }
+    if (this._newRecordRemain > 0) {
+      this._newRecordRemain -= dt;
+      if (this._newRecordRemain <= 0 && this._newRecordNode) {
+        this._newRecordNode.active = false;
+      }
+    }
   }
 
   /** 实际断连时由 `BattleMain.onPlayerHit` 调用 */
@@ -82,6 +103,14 @@ export class BattleHud extends Component {
     this._comboBreakRemain = GameConfig.COMBO_BREAK_DISPLAY_SEC;
     if (this._comboBreakNode) {
       this._comboBreakNode.active = true;
+    }
+  }
+
+  /** 本局得分首次超过开局时的历史最高分时由 `BattleMain` 调用 */
+  flashNewRecordHint() {
+    this._newRecordRemain = GameConfig.NEW_RECORD_HINT_SEC;
+    if (this._newRecordNode) {
+      this._newRecordNode.active = true;
     }
   }
 

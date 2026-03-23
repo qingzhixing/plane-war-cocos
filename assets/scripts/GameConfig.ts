@@ -20,6 +20,8 @@ export const PLAYER_INVULN_BLINK_HZ = 8;
 export const COMBO_BREAK_DISPLAY_SEC = 1.15;
 /** 连击档位「Combo!」提示显示时长（秒） */
 export const COMBO_MILESTONE_DISPLAY_SEC = 1.05;
+/** 本局得分首次超过历史最高时的「新纪录？」提示（秒） */
+export const NEW_RECORD_HINT_SEC = 2.2;
 
 /** 敌机基础弹伤害（对齐 BulletBase damage 默认） */
 export const BULLET_DAMAGE = 1;

@@ -13,7 +13,7 @@ import {
 import { BattleHud } from './BattleHud';
 import { crossedComboMilestone } from './comboMilestone';
 import { BattleRunState } from './battleRunState';
-import { mergeCurrentRunAndSave } from './localRecords';
+import { loadLocalRecords, mergeCurrentRunAndSave } from './localRecords';
 
 const { ccclass } = _decorator;
 
@@ -33,6 +33,10 @@ export class BattleMain extends Component {
 
   /** 局内时间（秒），供 DPS 窗口与命中时刻共用 */
   private _battleTimeSec = 0;
+  /** 开局时本地历史最高得分（本局对照） */
+  private _historicBestScore = 0;
+  /** 本局是否已弹出过「新纪录？」 */
+  private _newRecordScoreHintShown = false;
 
   init(playField: Node, upgradePickPrefab: Prefab | null) {
     this._playField = playField;
@@ -42,6 +46,9 @@ export class BattleMain extends Component {
     setBattleMain(this);
 
     this._buildHud();
+
+    this._historicBestScore = loadLocalRecords().bestScore;
+    this._newRecordScoreHintShown = false;
 
     this._run.activeWave = 1;
     this._startCurrentWave();
@@ -226,5 +233,16 @@ export class BattleMain extends Component {
         ? { hp: this._bossHudHp, maxHp: this._bossHudMax }
         : null,
     );
+    this._maybeFlashNewRecordScore();
+  }
+
+  private _maybeFlashNewRecordScore() {
+    if (this._newRecordScoreHintShown) {
+      return;
+    }
+    if (this._run.score > this._historicBestScore) {
+      this._newRecordScoreHintShown = true;
+      this._hud?.flashNewRecordHint();
+    }
   }
 }
