@@ -17,7 +17,7 @@
 - 当前项目 **不再要求「必须有自动构建 CI」**，只需保证：
   - Windows 与 Android 均可以通过本地 Godot 导出得到可运行的构建包；
   - 导出流程在 README / 文档中有简单说明，方便未来复现。
-- 若后续需要，可以再增加可选的 CI 工作流（例如 GitHub Actions），但不作为本阶段的硬性要求。
+- **可选 CI（本仓库）**：在 **GitHub Actions** 上对 `master` / `main` 的 **push / PR** 运行 **`npm install` + `npm test`（Vitest）**，验证 `tests/` 下与引擎无关的纯逻辑单测；**不**替代 Cocos Creator 的构建发布，也不作为合并的硬性门槛（可视为开发辅助信号）。
 
 ## 当前工程约定（仅保留与平台相关的约定）
 
