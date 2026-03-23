@@ -60,3 +60,9 @@
 >
 > 如需在极早期阶段临时用占位图，只作为开发便捷手段使用，尽快由正式资源替换。
 >
+## Cocos 移植（`plane-war-cocos`）
+
+- **来源与目录**：与上表同名 **PNG** 从 **`plane-war/assets/sprites/`** 复制到本仓库 **`assets/resources/sprites/`**（`player/`、`bullets/`、`enemies/`）；**不要**复制 Godot 的 `.import`。运行时 **`resources.load(…, SpriteFrame)`** 使用**无扩展名**路径（例：`sprites/player/player_ship_base`）；首次用 Cocos Creator 打开工程会为资源生成 **`.meta`**，建议纳入版本管理。
+- **脚本**：**`battleSprites.ts`** 在 **`GameRoot.onLoad`** 中 **`preloadBattleSpriteFrames`**（先于 **`createPlayField`**），缓存 **`SpriteFrame`**；**`attachBattleSpriteOrFallback`** 在已预载时挂 **`Sprite`**（`SizeMode.CUSTOM` 与 **`UITransform`** 对齐），否则回退 **`Graphics`** 占位。
+- **映射（MVP）**：玩家机 `player_ship_base`；玩家弹 `bullet_player_basic`；敌弹 `bullet_enemy_basic`、追踪弹 **`spell_bullet`**；小怪 `enemy_basic_01`；炮台 **`enemy_basic_02`**；召唤机 **`enemy_basic_01`**；精英 `enemy_elite_01`；Boss **暂复用 `enemy_elite_01`**（有独立 Boss 图后再换路径）。
+
